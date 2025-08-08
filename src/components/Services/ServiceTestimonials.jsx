@@ -1,0 +1,111 @@
+"use client"
+
+import React from "react"
+import { motion } from "framer-motion"
+import { FaStar, FaQuoteLeft } from "react-icons/fa"
+
+const testimonials = [
+  {
+    id: 1,
+    name: "Emily Carter",
+    role: "Patient - Cardiology",
+    rating: 5,
+    image: "https://randomuser.me/api/portraits/women/44.jpg",
+    message:
+      "The staff was so kind and professional. My diagnosis was explained clearly, and I felt genuinely cared for. Highly recommended!",
+  },
+  {
+    id: 2,
+    name: "Dr. Kevin Moore",
+    role: "Family Member - Surgery",
+    rating: 4,
+    image: "https://randomuser.me/api/portraits/men/35.jpg",
+    message:
+      "From admission to discharge, everything was smooth and stress-free. The facility is top-notch and very clean.",
+  },
+  {
+    id: 3,
+    name: "Sara Lopez",
+    role: "Mother - Pediatrics",
+    rating: 5,
+    image: "https://randomuser.me/api/portraits/women/65.jpg",
+    message:
+      "They took excellent care of my daughter. The pediatricians are incredibly warm and understanding.",
+  },
+]
+
+const containerVariants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.2,
+    },
+  },
+}
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: "easeOut" },
+  },
+}
+
+const ServiceTestimonials = () => {
+  return (
+    <section
+      role="region"
+      aria-label="Service Testimonials"
+      className="bg-white py-20 px-6 md:px-12"
+    >
+      <div className="max-w-7xl mx-auto">
+        {/* Section Header */}
+        <div className="text-center mb-14">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900">
+            What <span className="text-blue-700 underline decoration-blue-300 decoration-4 underline-offset-4">People Say</span>
+          </h2>
+          <p className="mt-4 text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto font-light">
+            Real stories from patients and their families sharing their care experiences.
+          </p>
+        </div>
+
+        {/* Testimonials Grid */}
+        <motion.div
+          className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.3 }}
+        >
+          {testimonials.map((t) => (
+            <motion.div
+              key={t.id}
+              variants={cardVariants}
+              className="bg-gray-50 hover:bg-blue-50 transition-colors duration-300 p-6 rounded-xl shadow-md text-center flex flex-col items-center"
+            >
+              <FaQuoteLeft className="text-blue-600 text-2xl mb-4" />
+              <p className="text-gray-700 text-sm leading-relaxed mb-6 italic max-w-xs">
+                "{t.message}"
+              </p>
+              <img
+                src={t.image}
+                alt={t.name}
+                className="w-14 h-14 rounded-full object-cover mb-2 border-2 border-blue-600"
+              />
+              <h4 className="text-md font-semibold text-gray-800">{t.name}</h4>
+              <p className="text-sm text-gray-500 mb-2">{t.role}</p>
+              <div className="flex gap-1 text-yellow-400">
+                {[...Array(t.rating)].map((_, i) => (
+                  <FaStar key={i} />
+                ))}
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
+      </div>
+    </section>
+  )
+}
+
+export default ServiceTestimonials
