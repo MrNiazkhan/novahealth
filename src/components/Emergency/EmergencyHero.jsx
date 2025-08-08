@@ -3,24 +3,23 @@
 import React, { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const PatientInfoHero = () => {
+const EmergencyHero = () => {
   const modalRef = useRef(null);
   const firstInputRef = useRef(null);
   const lastFocusRef = useRef(null);
 
   const [modalOpen, setModalOpen] = useState(false);
   const [formData, setFormData] = useState({
-    fullName: "",
+    name: "",
     phone: "",
-    dob: "",
-    gender: "",
+    emergencyType: "",
+    description: "",
   });
   const [formErrors, setFormErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState("");
 
-  // Focus trap & scroll lock for modal
   useEffect(() => {
     if (!modalOpen) return;
 
@@ -76,24 +75,21 @@ const PatientInfoHero = () => {
     };
   }, [modalOpen]);
 
-  // Validation
   const validate = () => {
     const errors = {};
-    if (!formData.fullName.trim()) errors.fullName = "Full name is required";
+    if (!formData.name.trim()) errors.name = "Name is required";
     if (!formData.phone.trim()) {
       errors.phone = "Phone number is required";
     } else if (!/^\+?\d{7,15}$/.test(formData.phone.trim())) {
       errors.phone = "Enter a valid phone number";
     }
-    if (!formData.dob) errors.dob = "Date of birth is required";
-    if (!formData.gender) errors.gender = "Please select your gender";
+    if (!formData.emergencyType) errors.emergencyType = "Please select emergency type";
+    if (!formData.description.trim()) errors.description = "Please describe the emergency";
     return errors;
   };
 
-  // Handle input change
   const handleChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-
     if (formErrors[e.target.name]) {
       setFormErrors((prev) => {
         const copy = { ...prev };
@@ -101,11 +97,9 @@ const PatientInfoHero = () => {
         return copy;
       });
     }
-
     setSubmitError("");
   };
 
-  // Submit form simulation
   const handleSubmit = async (e) => {
     e.preventDefault();
     setFormErrors({});
@@ -122,17 +116,17 @@ const PatientInfoHero = () => {
 
     try {
       await new Promise((res) => setTimeout(res, 1500));
-      if (Math.random() < 0.25) throw new Error("Simulated error");
+      if (Math.random() < 0.15) throw new Error("Simulated server error");
 
       setSubmitSuccess(true);
       setFormData({
-        fullName: "",
+        name: "",
         phone: "",
-        dob: "",
-        gender: "",
+        emergencyType: "",
+        description: "",
       });
     } catch {
-      setSubmitError("Submission failed. Please try again.");
+      setSubmitError("Failed to submit emergency request. Please try again.");
     } finally {
       setSubmitting(false);
     }
@@ -144,20 +138,19 @@ const PatientInfoHero = () => {
     setSubmitError("");
     setSubmitSuccess(false);
     setFormData({
-      fullName: "",
+      name: "",
       phone: "",
-      dob: "",
-      gender: "",
+      emergencyType: "",
+      description: "",
     });
   };
 
-  // Animation variants
-  const heroTextVariants = {
-    hidden: { opacity: 0, y: 30 },
+  const textVariants = {
+    hidden: { opacity: 0, y: 20 },
     visible: (i) => ({
       opacity: 1,
       y: 0,
-      transition: { delay: i * 0.25, duration: 0.7, ease: "easeOut" },
+      transition: { delay: i * 0.3, duration: 0.6, ease: "easeOut" },
     }),
   };
 
@@ -168,63 +161,62 @@ const PatientInfoHero = () => {
   };
 
   const modalVariants = {
-    hidden: { opacity: 0, y: 30, scale: 0.95 },
+    hidden: { opacity: 0, y: 15, scale: 0.95 },
     visible: {
       opacity: 1,
       y: 0,
       scale: 1,
-      transition: { duration: 0.4, ease: "easeOut" },
+      transition: { duration: 0.35, ease: "easeOut" },
     },
     exit: {
       opacity: 0,
-      y: 30,
+      y: 15,
       scale: 0.95,
-      transition: { duration: 0.3, ease: "easeIn" },
+      transition: { duration: 0.25, ease: "easeIn" },
     },
   };
 
   return (
     <>
       <section
-        aria-label="Patient Information Hero Section"
-        className="bg-white text-black min-h-[480px] flex items-center px-6 md:px-12 my-20 lg:my-0"
+        aria-label="Emergency Services Hero"
+        className="bg-white text-black min-h-[440px] flex items-center px-5 sm:px-8 md:px-12 my-16 md:my-20 "
       >
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center w-full gap-10">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center w-full gap-10 md:gap-16">
           <motion.div
             className="flex-1 text-center md:text-left"
             initial="hidden"
             animate="visible"
             viewport={{ once: true }}
           >
-            <motion.h1
-              custom={0}
-              variants={heroTextVariants}
-              className="text-4xl sm:text-5xl md:text-6xl font-extrabold leading-tight tracking-tight drop-shadow-sm"
-            >
-              Welcome to{" "}
-              <span className="text-blue-700" aria-label="Your Care Center">
-                Your Care Center
-              </span>
-            </motion.h1>
+           <motion.h1
+  custom={0}
+  variants={textVariants}
+  className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight"
+>
+  <span className="text-blue-700">Immediate</span>{" "}
+  <span className="text-black">Emergency Assistance</span>
+</motion.h1>
+
 
             <motion.p
               custom={1}
-              variants={heroTextVariants}
-              className="mt-5 text-lg sm:text-xl md:text-2xl font-light max-w-xl mx-auto md:mx-0"
+              variants={textVariants}
+              className="mt-4 text-base sm:text-lg md:text-xl font-light max-w-lg mx-auto md:mx-0 leading-relaxed"
             >
-              Please provide your details so we can offer personalized patient
-              services and care.
+              If you are facing an emergency, please fill out the form below so
+              our team can respond quickly and effectively.
             </motion.p>
 
             <motion.button
               custom={2}
-              variants={heroTextVariants}
+              variants={textVariants}
               type="button"
               onClick={() => setModalOpen(true)}
-              className="mt-8 px-8 py-3 bg-blue-700 hover:bg-blue-800 text-white font-semibold rounded-lg shadow-lg transition-colors focus:outline-none focus:ring-4 focus:ring-blue-300"
-              aria-label="Provide Patient Information"
+              className="mt-7 px-8 py-2.5 bg-blue-700 text-white font-semibold rounded-lg shadow-md hover:bg-blue-800 transition-colors focus:outline-none focus:ring-4 focus:ring-blue-300"
+              aria-label="Open Emergency Contact Form"
             >
-              Provide Info
+              Request Help Now
             </motion.button>
           </motion.div>
 
@@ -235,8 +227,8 @@ const PatientInfoHero = () => {
             transition={{ duration: 1, ease: "easeOut", delay: 0.3 }}
           >
             <img
-              src="https://plus.unsplash.com/premium_photo-1683121665192-4f1896dd5177?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-              alt="Patient consulting with healthcare professional"
+              src="https://images.unsplash.com/photo-1612574935301-af13ccce9258?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              alt="Emergency medical responders assisting patient"
               className="rounded-xl shadow-xl w-full object-cover"
               loading="lazy"
               decoding="async"
@@ -250,9 +242,9 @@ const PatientInfoHero = () => {
           <motion.div
             aria-modal="true"
             role="dialog"
-            aria-labelledby="patient-info-modal-title"
-            aria-describedby="patient-info-modal-desc"
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm"
+            aria-labelledby="emergency-modal-title"
+            aria-describedby="emergency-modal-desc"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4"
             onClick={(e) => {
               if (e.target === e.currentTarget) closeModal();
             }}
@@ -264,23 +256,22 @@ const PatientInfoHero = () => {
             <motion.div
               ref={modalRef}
               tabIndex={-1}
-              className="bg-white rounded-lg max-w-md w-full p-6 mx-4 relative shadow-2xl ring-1 ring-black ring-opacity-10 focus:outline-none"
+              className="bg-white rounded-lg max-w-md w-full p-5 relative shadow-xl ring-1 ring-black ring-opacity-10 focus:outline-none"
               variants={modalVariants}
               initial="hidden"
               animate="visible"
               exit="exit"
               role="document"
             >
-              {/* Close button */}
               <button
                 type="button"
                 onClick={closeModal}
-                className="absolute top-4 right-4 text-gray-600 hover:text-gray-900 focus:outline-none"
-                aria-label="Close patient information form"
+                className="absolute top-3 right-3 text-gray-600 hover:text-gray-900 focus:outline-none"
+                aria-label="Close emergency contact form"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="h-6 w-6"
+                  className="h-5 w-5"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -295,69 +286,66 @@ const PatientInfoHero = () => {
               </button>
 
               <h2
-                id="patient-info-modal-title"
-                className="text-2xl font-bold mb-4 text-blue-700"
+                id="emergency-modal-title"
+                className="text-xl font-bold mb-4 text-blue-700"
                 tabIndex={-1}
               >
-                Patient Information
+                Emergency Contact Form
               </h2>
 
-              <p id="patient-info-modal-desc" className="mb-6 text-gray-700">
-                Kindly fill out the following details to help us serve you better.
+              <p id="emergency-modal-desc" className="mb-5 text-gray-700 text-sm sm:text-base">
+                Please provide accurate information so our emergency team can
+                assist you immediately.
               </p>
 
               {submitSuccess ? (
                 <div
                   role="alert"
-                  className="text-green-600 font-semibold text-center my-6 animate-fadeIn"
+                  className="text-green-600 font-semibold text-center my-5 animate-fadeIn text-sm sm:text-base"
                 >
-                  Thank you! Your information was submitted successfully.
+                  Your request has been received. Help is on the way.
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} noValidate>
-                  <div className="mb-4">
+                  <div className="mb-3">
                     <label
-                      htmlFor="fullName"
-                      className="block font-semibold mb-1 text-gray-800"
+                      htmlFor="name"
+                      className="block font-semibold mb-1 text-gray-800 text-sm sm:text-base"
                     >
                       Full Name<span className="text-red-600">*</span>
                     </label>
                     <input
                       type="text"
-                      id="fullName"
-                      name="fullName"
+                      id="name"
+                      name="name"
                       ref={firstInputRef}
-                      value={formData.fullName}
+                      value={formData.name}
                       onChange={handleChange}
-                      className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 transition-colors ${
-                        formErrors.fullName
-                          ? "border-red-500"
-                          : "border-gray-300"
+                      className={`w-full px-2.5 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 transition-colors text-sm sm:text-base ${
+                        formErrors.name ? "border-red-500" : "border-gray-300"
                       }`}
-                      aria-invalid={!!formErrors.fullName}
-                      aria-describedby={
-                        formErrors.fullName ? "fullName-error" : undefined
-                      }
-                      placeholder="Jane Doe"
+                      aria-invalid={!!formErrors.name}
+                      aria-describedby={formErrors.name ? "name-error" : undefined}
+                      placeholder="John Doe"
                       disabled={submitting}
                       autoComplete="name"
                       required
                     />
-                    {formErrors.fullName && (
+                    {formErrors.name && (
                       <p
-                        id="fullName-error"
-                        className="text-red-600 text-sm mt-1"
+                        id="name-error"
+                        className="text-red-600 text-xs sm:text-sm mt-1"
                         role="alert"
                       >
-                        {formErrors.fullName}
+                        {formErrors.name}
                       </p>
                     )}
                   </div>
 
-                  <div className="mb-4">
+                  <div className="mb-3">
                     <label
                       htmlFor="phone"
-                      className="block font-semibold mb-1 text-gray-800"
+                      className="block font-semibold mb-1 text-gray-800 text-sm sm:text-base"
                     >
                       Phone Number<span className="text-red-600">*</span>
                     </label>
@@ -367,15 +355,11 @@ const PatientInfoHero = () => {
                       name="phone"
                       value={formData.phone}
                       onChange={handleChange}
-                      className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 transition-colors ${
-                        formErrors.phone
-                          ? "border-red-500"
-                          : "border-gray-300"
+                      className={`w-full px-2.5 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 transition-colors text-sm sm:text-base ${
+                        formErrors.phone ? "border-red-500" : "border-gray-300"
                       }`}
                       aria-invalid={!!formErrors.phone}
-                      aria-describedby={
-                        formErrors.phone ? "phone-error" : undefined
-                      }
+                      aria-describedby={formErrors.phone ? "phone-error" : undefined}
                       placeholder="+1234567890"
                       disabled={submitting}
                       autoComplete="tel"
@@ -384,7 +368,7 @@ const PatientInfoHero = () => {
                     {formErrors.phone && (
                       <p
                         id="phone-error"
-                        className="text-red-600 text-sm mt-1"
+                        className="text-red-600 text-xs sm:text-sm mt-1"
                         role="alert"
                       >
                         {formErrors.phone}
@@ -392,84 +376,83 @@ const PatientInfoHero = () => {
                     )}
                   </div>
 
-                  <div className="mb-4">
+                  <div className="mb-3">
                     <label
-                      htmlFor="dob"
-                      className="block font-semibold mb-1 text-gray-800"
+                      htmlFor="emergencyType"
+                      className="block font-semibold mb-1 text-gray-800 text-sm sm:text-base"
                     >
-                      Date of Birth<span className="text-red-600">*</span>
-                    </label>
-                    <input
-                      type="date"
-                      id="dob"
-                      name="dob"
-                      value={formData.dob}
-                      onChange={handleChange}
-                      className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 transition-colors ${
-                        formErrors.dob ? "border-red-500" : "border-gray-300"
-                      }`}
-                      aria-invalid={!!formErrors.dob}
-                      aria-describedby={formErrors.dob ? "dob-error" : undefined}
-                      disabled={submitting}
-                      max={new Date().toISOString().split("T")[0]}
-                      required
-                    />
-                    {formErrors.dob && (
-                      <p
-                        id="dob-error"
-                        className="text-red-600 text-sm mt-1"
-                        role="alert"
-                      >
-                        {formErrors.dob}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="mb-6">
-                    <label
-                      htmlFor="gender"
-                      className="block font-semibold mb-1 text-gray-800"
-                    >
-                      Gender<span className="text-red-600">*</span>
+                      Emergency Type<span className="text-red-600">*</span>
                     </label>
                     <select
-                      id="gender"
-                      name="gender"
-                      value={formData.gender}
+                      id="emergencyType"
+                      name="emergencyType"
+                      value={formData.emergencyType}
                       onChange={handleChange}
-                      className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 transition-colors ${
-                        formErrors.gender
-                          ? "border-red-500"
-                          : "border-gray-300"
+                      className={`w-full px-2.5 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 transition-colors text-sm sm:text-base ${
+                        formErrors.emergencyType ? "border-red-500" : "border-gray-300"
                       }`}
-                      aria-invalid={!!formErrors.gender}
+                      aria-invalid={!!formErrors.emergencyType}
                       aria-describedby={
-                        formErrors.gender ? "gender-error" : undefined
+                        formErrors.emergencyType ? "emergencyType-error" : undefined
                       }
                       disabled={submitting}
                       required
                     >
-                      <option value="">Select Gender</option>
-                      <option value="female">Female</option>
-                      <option value="male">Male</option>
-                      <option value="nonbinary">Non-binary</option>
+                      <option value="">Select Emergency Type</option>
+                      <option value="medical">Medical</option>
+                      <option value="fire">Fire</option>
+                      <option value="police">Police</option>
                       <option value="other">Other</option>
-                      <option value="preferNotToSay">Prefer not to say</option>
                     </select>
-                    {formErrors.gender && (
+                    {formErrors.emergencyType && (
                       <p
-                        id="gender-error"
-                        className="text-red-600 text-sm mt-1"
+                        id="emergencyType-error"
+                        className="text-red-600 text-xs sm:text-sm mt-1"
                         role="alert"
                       >
-                        {formErrors.gender}
+                        {formErrors.emergencyType}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="mb-5">
+                    <label
+                      htmlFor="description"
+                      className="block font-semibold mb-1 text-gray-800 text-sm sm:text-base"
+                    >
+                      Description<span className="text-red-600">*</span>
+                    </label>
+                    <textarea
+                      id="description"
+                      name="description"
+                      rows={3}
+                      value={formData.description}
+                      onChange={handleChange}
+                      className={`w-full px-2.5 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 transition-colors resize-none text-sm sm:text-base ${
+                        formErrors.description ? "border-red-500" : "border-gray-300"
+                      }`}
+                      aria-invalid={!!formErrors.description}
+                      aria-describedby={
+                        formErrors.description ? "description-error" : undefined
+                      }
+                      placeholder="Briefly describe the emergency..."
+                      disabled={submitting}
+                      required
+                    />
+                    {formErrors.description && (
+                      <p
+                        id="description-error"
+                        className="text-red-600 text-xs sm:text-sm mt-1"
+                        role="alert"
+                      >
+                        {formErrors.description}
                       </p>
                     )}
                   </div>
 
                   {submitError && (
                     <p
-                      className="text-red-600 mb-4 font-semibold text-center"
+                      className="text-red-600 mb-4 font-semibold text-center text-sm sm:text-base"
                       role="alert"
                     >
                       {submitError}
@@ -479,12 +462,12 @@ const PatientInfoHero = () => {
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="w-full bg-blue-700 hover:bg-blue-800 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-lg transition-colors flex justify-center items-center"
+                    className="w-full bg-blue-700 hover:bg-blue-800 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold py-2.5 rounded-lg transition-colors flex justify-center items-center text-sm sm:text-base"
                   >
                     {submitting ? (
                       <>
                         <svg
-                          className="animate-spin h-5 w-5 mr-2 text-white"
+                          className="animate-spin h-4 w-4 mr-2 text-white"
                           xmlns="http://www.w3.org/2000/svg"
                           fill="none"
                           viewBox="0 0 24 24"
@@ -503,10 +486,10 @@ const PatientInfoHero = () => {
                             d="M4 12a8 8 0 018-8v8H4z"
                           ></path>
                         </svg>
-                        Submitting...
+                        Sending...
                       </>
                     ) : (
-                      "Submit Info"
+                      "Send Request"
                     )}
                   </button>
                 </form>
@@ -519,4 +502,4 @@ const PatientInfoHero = () => {
   );
 };
 
-export default PatientInfoHero;
+export default EmergencyHero;

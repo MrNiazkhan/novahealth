@@ -11,7 +11,7 @@ const MENU_ITEMS = [
   { label: "Appointments", href: "/appointments" },
   { label: "Patient Info", href: "/patient-info" },
   { label: "Emergency", href: "/emergency" },
-  { label: "Our Team", href: "/team" },
+  { label: "Our Team", href: "/ourteam" },
   { label: "Testimonials", href: "/testimonials" },
   { label: "Blog", href: "/blog" },
   { label: "FAQs", href: "/faqs" },

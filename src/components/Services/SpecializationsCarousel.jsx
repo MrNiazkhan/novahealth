@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import React, { useState, useEffect } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import React, { useState, useEffect, useCallback } from "react";
+import { motion } from "framer-motion";
 import {
   FaBrain,
   FaStethoscope,
@@ -13,13 +13,7 @@ import {
   FaProcedures,
   FaBaby,
   FaSocks,
-} from "react-icons/fa"
-import { MdLocalHospital, MdHealing, MdPsychology } from "react-icons/md"
-import { GiMedicines, GiHealthNormal, GiSyringe, GiEyeTarget } from "react-icons/gi"
-import { IoMdPulse, IoMdPeople } from "react-icons/io"
-import { BiHealth } from "react-icons/bi"
-import { RiMentalHealthFill } from "react-icons/ri"
-import { HiOutlineUserGroup } from "react-icons/hi"
+} from "react-icons/fa";
 
 const specializations = [
   { id: 1, title: "Neurology", icon: FaBrain },
@@ -32,31 +26,46 @@ const specializations = [
   { id: 8, title: "Pediatrics", icon: FaBaby },
   { id: 9, title: "Oncology", icon: FaProcedures },
   { id: 10, title: "Orthopedics", icon: FaSocks },
-]
+];
 
-const CARD_WIDTH = 280 // px, adjust as needed
+const CARD_WIDTH = 280; // px
 
-const clampIndex = (index, length) => {
-  return ((index % length) + length) % length
-}
+const clampIndex = (index, length) => ((index % length) + length) % length;
 
-const SpecializationsCoverflow = () => {
-  const [current, setCurrent] = useState(0)
-  const length = specializations.length
+export default function SpecializationsCoverflow() {
+  const [current, setCurrent] = useState(0);
+  const length = specializations.length;
 
-  // Handle next and prev
-  const prev = () => setCurrent((prev) => clampIndex(prev - 1, length))
-  const next = () => setCurrent((prev) => clampIndex(prev + 1, length))
+  const [windowWidth, setWindowWidth] = React.useState(
+    typeof window !== "undefined" ? window.innerWidth : 1024
+  );
 
-  // Keyboard arrows for accessibility
   useEffect(() => {
-    const handler = (e) => {
-      if (e.key === "ArrowLeft") prev()
-      else if (e.key === "ArrowRight") next()
-    }
-    window.addEventListener("keydown", handler)
-    return () => window.removeEventListener("keydown", handler)
-  }, [])
+    const onResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
+  const isMobile = windowWidth < 640;
+
+  // Navigation handlers
+  const prev = useCallback(() => {
+    setCurrent((prev) => clampIndex(prev - 1, length));
+  }, [length]);
+
+  const next = useCallback(() => {
+    setCurrent((prev) => clampIndex(prev + 1, length));
+  }, [length]);
+
+  // Keyboard navigation
+  useEffect(() => {
+    const onKeyDown = (e) => {
+      if (e.key === "ArrowLeft") prev();
+      else if (e.key === "ArrowRight") next();
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [prev, next]);
 
   return (
     <section className="py-20 bg-white select-none">
@@ -90,26 +99,50 @@ const SpecializationsCoverflow = () => {
           {/* Carousel Container */}
           <div
             className="relative w-full max-w-[900px] h-[360px] flex justify-center items-center overflow-visible"
-            style={{ perspective: 1200 }}
+            style={{ perspective: isMobile ? "none" : 1200 }}
           >
             {specializations.map((spec, i) => {
-              // Calculate offset relative to current
-              let offset = i - current
+              if (isMobile) {
+                // Mobile: show only current card centered, no rotation or side cards
+                if (i !== current) return null;
 
-              // For infinite effect (loop around)
-              if (offset < -length / 2) offset += length
-              if (offset > length / 2) offset -= length
+                const Icon = spec.icon;
 
-              // Calculate transform props based on offset
-              // Center card: scale 1.1, opacity 1
-              // Left/right: scale down, translateX, rotateY, opacity lower
-              const absOffset = Math.abs(offset)
-              const scale = absOffset === 0 ? 1.1 : 0.8 - 0.1 * Math.min(absOffset, 3)
-              const opacity = absOffset > 3 ? 0 : 1 - 0.3 * Math.min(absOffset, 3)
-              const translateX = offset * (CARD_WIDTH * 0.7)
-              const rotateY = offset * -25
+                return (
+                  <motion.div
+                    key={spec.id}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1, x: 0, rotateY: 0 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                    className="bg-gray-50 rounded-2xl shadow-lg flex flex-col items-center justify-center p-6 cursor-pointer select-none mx-auto"
+                    style={{ width: CARD_WIDTH, height: 320, userSelect: "none" }}
+                    role="listitem"
+                    aria-label={spec.title}
+                    tabIndex={0}
+                    onClick={() => setCurrent(i)}
+                  >
+                    <Icon className="text-blue-600 mb-5" size={64} aria-hidden="true" />
+                    <h3 className="text-xl font-semibold text-gray-900">{spec.title}</h3>
+                  </motion.div>
+                );
+              }
 
-              const Icon = spec.icon
+              // Desktop: multi-card 3D carousel
+              let offset = i - current;
+
+              // Infinite loop effect
+              if (offset < -length / 2) offset += length;
+              if (offset > length / 2) offset -= length;
+
+              const absOffset = Math.abs(offset);
+
+              const scale = absOffset === 0 ? 1.1 : 0.8 - 0.1 * Math.min(absOffset, 3);
+              const opacity = absOffset > 3 ? 0 : 1 - 0.3 * Math.min(absOffset, 3);
+              const translateX = offset * (CARD_WIDTH * 0.7);
+              const rotateY = offset * -25;
+
+              const Icon = spec.icon;
 
               return (
                 <motion.div
@@ -124,7 +157,7 @@ const SpecializationsCoverflow = () => {
                   }}
                   transition={{ type: "spring", stiffness: 300, damping: 30 }}
                   className="absolute top-0 left-1/2 w-[280px] h-[320px] bg-gray-50 rounded-2xl shadow-lg flex flex-col items-center justify-center p-6 cursor-pointer select-none"
-                  style={{ transformOrigin: "50% 50%" }}
+                  style={{ transformOrigin: "50% 50%", userSelect: "none" }}
                   role="listitem"
                   aria-label={spec.title}
                   tabIndex={absOffset === 0 ? 0 : -1}
@@ -133,7 +166,7 @@ const SpecializationsCoverflow = () => {
                   <Icon className="text-blue-600 mb-5" size={64} aria-hidden="true" />
                   <h3 className="text-xl font-semibold text-gray-900">{spec.title}</h3>
                 </motion.div>
-              )
+              );
             })}
           </div>
 
@@ -171,7 +204,5 @@ const SpecializationsCoverflow = () => {
         </div>
       </div>
     </section>
-  )
+  );
 }
-
-export default SpecializationsCoverflow
