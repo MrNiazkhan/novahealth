@@ -10,7 +10,7 @@ const testimonials = [
     name: "Emily Carter",
     role: "Patient - Cardiology",
     rating: 5,
-    image: "https://randomuser.me/api/portraits/women/44.jpg",
+    image: "https://plus.unsplash.com/premium_photo-1664475543697-229156438e1e?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8bGFkeSUyMGRvY3RvcmV8ZW58MHx8MHx8fDA%3D",
     message:
       "The staff was so kind and professional. My diagnosis was explained clearly, and I felt genuinely cared for. Highly recommended!",
   },
@@ -19,7 +19,7 @@ const testimonials = [
     name: "Dr. Kevin Moore",
     role: "Family Member - Surgery",
     rating: 4,
-    image: "https://randomuser.me/api/portraits/men/35.jpg",
+    image: "https://plus.unsplash.com/premium_photo-1661578535048-7a30e3a71d25?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTN8fG1hbiUyMGRvY3RvcmV8ZW58MHx8MHx8fDA%3D",
     message:
       "From admission to discharge, everything was smooth and stress-free. The facility is top-notch and very clean.",
   },
@@ -28,7 +28,7 @@ const testimonials = [
     name: "Sara Lopez",
     role: "Mother - Pediatrics",
     rating: 5,
-    image: "https://randomuser.me/api/portraits/women/65.jpg",
+    image: "https://plus.unsplash.com/premium_photo-1664392363342-47dcc1c5e631?q=80&w=1068&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     message:
       "They took excellent care of my daughter. The pediatricians are incredibly warm and understanding.",
   },

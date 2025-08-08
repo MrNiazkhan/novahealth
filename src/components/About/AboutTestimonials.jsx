@@ -9,7 +9,7 @@ const testimonials = [
     id: 1,
     name: "Emily Carter",
     role: "Patient",
-    avatar: "https://randomuser.me/api/portraits/women/44.jpg",
+    avatar: "https://images.unsplash.com/photo-1659353887871-b0ba4b84dad5?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDE1fHx8ZW58MHx8fHx8",
     rating: 5,
     feedback:
       "The care I received was exceptional. The doctors were attentive and truly cared about my recovery.",
@@ -18,7 +18,7 @@ const testimonials = [
     id: 2,
     name: "James Wilson",
     role: "Patient",
-    avatar: "https://randomuser.me/api/portraits/men/52.jpg",
+    avatar: "https://images.unsplash.com/photo-1620293023555-272e1a661b26?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDE4fHx8ZW58MHx8fHx8",
     rating: 4.5,
     feedback:
       "Amazing staff and facilities. The process was smooth and I felt supported every step of the way.",
@@ -27,7 +27,7 @@ const testimonials = [
     id: 3,
     name: "Sophia Lee",
     role: "Patient",
-    avatar: "https://randomuser.me/api/portraits/women/65.jpg",
+    avatar: "https://plus.unsplash.com/premium_photo-1674499074395-5277fdd707ee?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDEyfHx8ZW58MHx8fHx8",
     rating: 4,
     feedback:
       "Professional, caring, and knowledgeable team. Highly recommend their services for anyone seeking quality healthcare.",
