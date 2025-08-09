@@ -179,7 +179,6 @@ const testimonials = [
   },
 ];
 
-
 const StarRating = ({ rating }) => {
   const stars = [];
   for (let i = 1; i <= 5; i++) {
@@ -227,79 +226,84 @@ const ModernCard = ({
 }) => {
   const words = testimonial.split(" ");
   const shouldTruncate = words.length > 30;
-  const displayedText = isExpanded || !shouldTruncate ? testimonial : words.slice(0, 30).join(" ") + "...";
+  const displayedText = isExpanded || !shouldTruncate
+    ? testimonial
+    : words.slice(0, 30).join(" ") + "...";
 
   return (
     <motion.article
-    id={`testimonial-${id}`}
-    layout
-    initial={{ opacity: 0, y: 40 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.6, ease: "easeOut" }}
-    className="relative bg-white border border-gray-300 rounded-3xl max-w-3xl mx-auto p-8 sm:p-12 flex flex-col sm:flex-row items-center gap-8 cursor-default select-none"
-    tabIndex={0}
-    role="group"
-    aria-label={`Testimonial by ${name}`}
-  >
-    {/* Avatar container with fixed size */}
-    <div className="flex-shrink-0 w-32 h-32 relative">
-      <img
-        src={photo}
-        alt={`Photo of ${name}`}
-        className="w-full h-full rounded-full object-cover"
-        loading="lazy"
-        decoding="async"
-      />
-      <FaCheckCircle
-        className="absolute bottom-1 right-1 text-green-600 text-2xl bg-white rounded-full border border-gray-300"
-        title="Verified"
-        aria-label="Verified"
-      />
-    </div>
-  
-    {/* Content container takes remaining space */}
-    <div className="flex-1 text-left">
-      <p className="text-gray-900 text-lg italic leading-relaxed mb-4" aria-live="polite">
-        “{displayedText}{" "}
-        {shouldTruncate && (
-          <button
-            onClick={() => onToggle(id)}
-            className="text-blue-700 font-semibold underline hover:text-blue-900 transition-colors focus:outline-none"
-            aria-expanded={isExpanded}
-            aria-controls={`testimonial-text-${id}`}
-          >
-            {isExpanded ? "Show Less" : "Read More"}
-          </button>
-        )}
-      </p>
-  
-      <StarRating rating={rating} />
-  
-      <h3 className="mt-6 font-extrabold text-2xl text-gray-900 flex items-center gap-2">
-        {name}
-      </h3>
-      <p className="text-blue-800 font-semibold tracking-wide">{specialty}</p>
-  
-      <div className="mt-6 flex gap-6 flex-wrap">
-        <button
-          onClick={() => onCopy(id)}
-          className="flex items-center gap-2 text-blue-700 hover:text-blue-900 transition-colors font-semibold text-base focus:outline-none focus:ring-2 focus:ring-blue-500 rounded"
-          aria-label={`Copy link for testimonial by ${name}`}
-          type="button"
-        >
-          {copied === id ? "Link Copied!" : "Copy Link"} <FaCopy />
-        </button>
-        <a
-          href={`mailto:?subject=Check this testimonial&body=Check this: ${currentUrl}#testimonial-${id}`}
-          className="flex items-center gap-2 text-blue-700 hover:text-blue-900 transition-colors font-semibold text-base focus:outline-none focus:ring-2 focus:ring-blue-500 rounded"
-          aria-label={`Share testimonial by ${name}`}
-        >
-          Share <FaShareAlt />
-        </a>
+      id={`testimonial-${id}`}
+      layout
+      initial={{ opacity: 0, y: 40 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, ease: "easeOut" }}
+      className="relative bg-white border border-gray-300 rounded-3xl max-w-3xl mx-auto p-8 sm:p-12 flex flex-col sm:flex-row items-center gap-8 cursor-default select-none"
+      tabIndex={0}
+      role="group"
+      aria-label={`Testimonial by ${name}`}
+    >
+      {/* Avatar container */}
+      <div className="flex-shrink-0 w-32 h-32 relative">
+        <img
+          src={photo}
+          alt={`Photo of ${name}`}
+          className="w-full h-full rounded-full object-cover"
+          loading="lazy"
+          decoding="async"
+        />
+        <FaCheckCircle
+          className="absolute bottom-1 right-1 text-green-600 text-2xl bg-white rounded-full border border-gray-300"
+          title="Verified"
+          aria-label="Verified"
+        />
       </div>
-    </div>
-  </motion.article>
-  
+
+      {/* Content */}
+      <div className="flex-1 text-left">
+        <p
+          className="text-gray-900 text-lg italic leading-relaxed mb-4"
+          aria-live="polite"
+          id={`testimonial-text-${id}`}
+        >
+          “{displayedText}{" "}
+          {shouldTruncate && (
+            <button
+              onClick={() => onToggle(id)}
+              className="text-blue-700 font-semibold underline hover:text-blue-900 transition-colors focus:outline-none"
+              aria-expanded={isExpanded}
+              aria-controls={`testimonial-text-${id}`}
+            >
+              {isExpanded ? "Show Less" : "Read More"}
+            </button>
+          )}
+        </p>
+
+        <StarRating rating={rating} />
+
+        <h3 className="mt-6 font-extrabold text-2xl text-gray-900 flex items-center gap-2">
+          {name}
+        </h3>
+        <p className="text-blue-800 font-semibold tracking-wide">{specialty}</p>
+
+        <div className="mt-6 flex gap-6 flex-wrap">
+          <button
+            onClick={() => onCopy(id)}
+            className="flex items-center gap-2 text-blue-700 hover:text-blue-900 transition-colors font-semibold text-base focus:outline-none focus:ring-2 focus:ring-blue-500 rounded"
+            aria-label={`Copy link for testimonial by ${name}`}
+            type="button"
+          >
+            {copied === id ? "Link Copied!" : "Copy Link"} <FaCopy />
+          </button>
+          <a
+            href={`mailto:?subject=Check this testimonial&body=Check this: ${currentUrl}#testimonial-${id}`}
+            className="flex items-center gap-2 text-blue-700 hover:text-blue-900 transition-colors font-semibold text-base focus:outline-none focus:ring-2 focus:ring-blue-500 rounded"
+            aria-label={`Share testimonial by ${name}`}
+          >
+            Share <FaShareAlt />
+          </a>
+        </div>
+      </div>
+    </motion.article>
   );
 };
 
@@ -311,7 +315,9 @@ const HomeTestimonials = () => {
   const sectionRef = useRef(null);
 
   useEffect(() => {
-    if (typeof window !== "undefined") setCurrentUrl(window.location.href);
+    if (typeof window !== "undefined") {
+      setCurrentUrl(window.location.href);
+    }
   }, []);
 
   useEffect(() => {
@@ -387,9 +393,9 @@ const HomeTestimonials = () => {
         <Swiper
           modules={[Autoplay]}
           slidesPerView={1}
-          loop={true}
+          loop
           autoplay={{ delay: 6000, disableOnInteraction: false }}
-          allowTouchMove={true}
+          allowTouchMove
           spaceBetween={24}
           className="w-full"
         >

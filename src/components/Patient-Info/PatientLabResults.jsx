@@ -41,6 +41,7 @@ const initialLabResults = [
   },
 ];
 
+// Status color mapping for badges
 const statusColors = {
   Normal: "text-green-600 bg-green-100",
   High: "text-red-700 bg-red-100",
@@ -49,26 +50,26 @@ const statusColors = {
 };
 
 const PatientLabResults = () => {
-  const [labResults, setLabResults] = useState(initialLabResults);
+  const [labResults] = useState(initialLabResults);
   const [sortAsc, setSortAsc] = useState(false);
 
-  // Sort lab results by date
+  // Memoized sorted results by date ascending/descending
   const sortedResults = useMemo(() => {
     return [...labResults].sort((a, b) => {
-      if (sortAsc) {
-        return new Date(a.date) - new Date(b.date);
-      } else {
-        return new Date(b.date) - new Date(a.date);
-      }
+      const dateA = new Date(a.date);
+      const dateB = new Date(b.date);
+      return sortAsc ? dateA - dateB : dateB - dateA;
     });
   }, [labResults, sortAsc]);
 
+  // Toggle sort order handler
   const toggleSortOrder = () => setSortAsc((prev) => !prev);
 
   return (
     <section className="max-w-6xl mx-auto p-6 bg-white rounded-xl shadow-md">
-      <h2 className="text-3xl font-extrabold text-blue-700 mb-6 text-center">
-        Lab Test Results
+      <h2 className="text-3xl font-extrabold mb-6 text-center">
+        <span className="text-black">Lab </span>
+        <span className="text-blue-700">Test Results</span>
       </h2>
 
       <div className="flex justify-end mb-4">
@@ -76,6 +77,7 @@ const PatientLabResults = () => {
           onClick={toggleSortOrder}
           className="text-blue-700 bg-blue-100 px-4 py-2 rounded-md hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400"
           aria-label={`Sort by date ${sortAsc ? "ascending" : "descending"}`}
+          type="button"
         >
           Sort by Date: {sortAsc ? "Oldest First" : "Newest First"}
         </button>

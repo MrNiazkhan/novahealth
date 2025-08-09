@@ -1,101 +1,156 @@
 "use client";
-import React from "react";
-import { FaPhoneAlt, FaEnvelope, FaMapMarkerAlt, FaFacebookF, FaTwitter, FaLinkedinIn, FaInstagram } from "react-icons/fa";
 
-const OurteamContact = () => {
+import React from "react";
+import {
+  FaPhoneAlt,
+  FaEnvelope,
+  FaMapMarkerAlt,
+  FaFacebookF,
+  FaTwitter,
+  FaLinkedinIn,
+  FaInstagram,
+} from "react-icons/fa";
+
+function ContactIcon({ children }) {
+  return (
+    <div className="w-12 h-12 flex items-center justify-center bg-blue-600 text-white rounded-lg text-lg">
+      {children}
+    </div>
+  );
+}
+
+function ContactInfoItem({ icon, label, value }) {
+  return (
+    <div className="flex items-center space-x-4">
+      <ContactIcon>{icon}</ContactIcon>
+      <div>
+        <p className="text-sm text-gray-500">{label}</p>
+        <p className="text-sm sm:text-base font-medium text-gray-900">{value}</p>
+      </div>
+    </div>
+  );
+}
+
+function SocialLink({ Icon, url, label }) {
+  return (
+    <a
+      href={url}
+      aria-label={label}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="w-10 h-10 flex items-center justify-center bg-white text-blue-600 rounded-lg shadow hover:bg-blue-600 hover:text-white transition-colors duration-300"
+    >
+      <Icon />
+    </a>
+  );
+}
+
+const ContactForm = () => {
+  // No submit handler for now, just markup
+  return (
+    <form className="space-y-5" noValidate>
+      <div>
+        <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+          Full Name
+        </label>
+        <input
+          id="name"
+          name="name"
+          type="text"
+          placeholder="Enter your name"
+          className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          autoComplete="name"
+          required
+        />
+      </div>
+
+      <div>
+        <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+          Email Address
+        </label>
+        <input
+          id="email"
+          name="email"
+          type="email"
+          placeholder="Enter your email"
+          className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          autoComplete="email"
+          required
+        />
+      </div>
+
+      <div>
+        <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-1">
+          Subject
+        </label>
+        <input
+          id="subject"
+          name="subject"
+          type="text"
+          placeholder="Subject"
+          className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          required
+        />
+      </div>
+
+      <div>
+        <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
+          Message
+        </label>
+        <textarea
+          id="message"
+          name="message"
+          rows="5"
+          placeholder="Write your message..."
+          className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          required
+        />
+      </div>
+
+      <button
+        type="submit"
+        className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2 rounded-lg transition-colors duration-300"
+      >
+        Send Message
+      </button>
+    </form>
+  );
+};
+
+export default function OurteamContact() {
   return (
     <section className="w-full bg-gradient-to-b from-gray-50 to-white py-16 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
-        {/* Heading */}
+        {/* Section Heading */}
         <div className="text-center mb-12">
           <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">
             Get in Touch With <span className="text-blue-600">Our Team</span>
           </h2>
           <p className="mt-3 text-gray-600 max-w-2xl mx-auto text-sm sm:text-base">
-            Whether you have a question, want to collaborate, or simply say hello — we’re here to listen.
+            Whether you have a question, want to collaborate, or simply say hello — we’re here to
+            listen.
           </p>
         </div>
 
-        {/* Content */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-          {/* Contact Form */}
+          {/* Contact form panel */}
           <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 sm:p-8">
-            <form className="space-y-5">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-                <input
-                  type="text"
-                  placeholder="Enter your name"
-                  className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-                <input
-                  type="email"
-                  placeholder="Enter your email"
-                  className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Subject</label>
-                <input
-                  type="text"
-                  placeholder="Subject"
-                  className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Message</label>
-                <textarea
-                  rows="5"
-                  placeholder="Write your message..."
-                  className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                ></textarea>
-              </div>
-              <button
-                type="submit"
-                className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2 rounded-lg transition-all"
-              >
-                Send Message
-              </button>
-            </form>
+            <ContactForm />
           </div>
 
-          {/* Contact Info */}
-          <div className="flex flex-col justify-between bg-white rounded-2xl shadow-lg p-6 sm:p-8">
+          {/* Contact details panel */}
+          <aside className="flex flex-col justify-between bg-white rounded-2xl shadow-lg p-6 sm:p-8">
             <div className="space-y-6">
-              <div className="flex items-center space-x-4">
-                <div className="w-12 h-12 flex items-center justify-center bg-blue-600 text-white rounded-lg text-lg">
-                  <FaPhoneAlt />
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Call Us</p>
-                  <p className="text-sm sm:text-base font-medium text-gray-900">+1 234 567 890</p>
-                </div>
-              </div>
-
-              <div className="flex items-center space-x-4">
-                <div className="w-12 h-12 flex items-center justify-center bg-blue-600 text-white rounded-lg text-lg">
-                  <FaEnvelope />
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Email Us</p>
-                  <p className="text-sm sm:text-base font-medium text-gray-900">contact@ourteam.com</p>
-                </div>
-              </div>
-
-              <div className="flex items-center space-x-4">
-                <div className="w-12 h-12 flex items-center justify-center bg-blue-600 text-white rounded-lg text-lg">
-                  <FaMapMarkerAlt />
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Visit Us</p>
-                  <p className="text-sm sm:text-base font-medium text-gray-900">123 Main Street, City, Country</p>
-                </div>
-              </div>
+              <ContactInfoItem icon={<FaPhoneAlt />} label="Call Us" value="+1 234 567 890" />
+              <ContactInfoItem icon={<FaEnvelope />} label="Email Us" value="contact@ourteam.com" />
+              <ContactInfoItem
+                icon={<FaMapMarkerAlt />}
+                label="Visit Us"
+                value="123 Main Street, City, Country"
+              />
             </div>
-            
+
+            {/* Map embed */}
             <div className="w-full h-52 rounded-xl overflow-hidden shadow border border-gray-300 mt-4">
               <iframe
                 title="Our Location"
@@ -103,33 +158,25 @@ const OurteamContact = () => {
                 width="100%"
                 height="100%"
                 style={{ border: 0 }}
-                allowFullScreen=""
+                allowFullScreen
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
-              ></iframe>
+              />
             </div>
-          
 
-            {/* Social Media */}
+            {/* Social media links */}
             <div className="mt-8">
               <p className="text-sm text-gray-500 mb-3">Follow Us</p>
               <div className="flex space-x-3">
-                {[FaFacebookF, FaTwitter, FaLinkedinIn, FaInstagram].map((Icon, idx) => (
-                  <a
-                    key={idx}
-                    href="#"
-                    className="w-10 h-10 flex items-center justify-center bg-white text-blue-600 rounded-lg shadow hover:bg-blue-600 hover:text-white transition-all"
-                  >
-                    <Icon />
-                  </a>
-                ))}
+                <SocialLink Icon={FaFacebookF} url="#" label="Facebook" />
+                <SocialLink Icon={FaTwitter} url="#" label="Twitter" />
+                <SocialLink Icon={FaLinkedinIn} url="#" label="LinkedIn" />
+                <SocialLink Icon={FaInstagram} url="#" label="Instagram" />
               </div>
             </div>
-          </div>
+          </aside>
         </div>
       </div>
     </section>
   );
-};
-
-export default OurteamContact;
+}

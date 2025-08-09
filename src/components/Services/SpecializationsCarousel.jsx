@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   FaBrain,
   FaStethoscope,
@@ -68,7 +68,10 @@ export default function SpecializationsCoverflow() {
   }, [prev, next]);
 
   return (
-    <section className="py-20 bg-white select-none">
+    <section
+      aria-label="Specializations Coverflow Carousel"
+      className="py-20 bg-white select-none mb-[-50px]"
+    >
       <div className="max-w-7xl mx-auto px-6">
         <h2 className="text-4xl font-extrabold text-center mb-12 text-gray-900">
           Our{" "}
@@ -82,7 +85,7 @@ export default function SpecializationsCoverflow() {
           <button
             aria-label="Previous specialization"
             onClick={prev}
-            className="absolute left-0 z-10 p-3 bg-blue-600 rounded-full shadow-lg hover:bg-blue-700 transition"
+            className="absolute left-0 z-10 p-3 bg-blue-600 rounded-full shadow-lg hover:bg-blue-700 transition focus:outline-none focus:ring-4 focus:ring-blue-400"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -91,6 +94,7 @@ export default function SpecializationsCoverflow() {
               viewBox="0 0 24 24"
               stroke="currentColor"
               strokeWidth={2}
+              aria-hidden="true"
             >
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
             </svg>
@@ -101,80 +105,83 @@ export default function SpecializationsCoverflow() {
             className="relative w-full max-w-[900px] h-[360px] flex justify-center items-center overflow-visible"
             style={{ perspective: isMobile ? "none" : 1200 }}
           >
-            {specializations.map((spec, i) => {
-              if (isMobile) {
-                // Mobile: show only current card centered, no rotation or side cards
-                if (i !== current) return null;
-
-                const Icon = spec.icon;
-
-                return (
-                  <motion.div
-                    key={spec.id}
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1, x: 0, rotateY: 0 }}
-                    exit={{ opacity: 0, scale: 0.9 }}
-                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                    className="bg-gray-50 rounded-2xl shadow-lg flex flex-col items-center justify-center p-6 cursor-pointer select-none mx-auto"
-                    style={{ width: CARD_WIDTH, height: 320, userSelect: "none" }}
-                    role="listitem"
-                    aria-label={spec.title}
-                    tabIndex={0}
-                    onClick={() => setCurrent(i)}
-                  >
-                    <Icon className="text-blue-600 mb-5" size={64} aria-hidden="true" />
-                    <h3 className="text-xl font-semibold text-gray-900">{spec.title}</h3>
-                  </motion.div>
-                );
-              }
-
-              // Desktop: multi-card 3D carousel
-              let offset = i - current;
-
-              // Infinite loop effect
-              if (offset < -length / 2) offset += length;
-              if (offset > length / 2) offset -= length;
-
-              const absOffset = Math.abs(offset);
-
-              const scale = absOffset === 0 ? 1.1 : 0.8 - 0.1 * Math.min(absOffset, 3);
-              const opacity = absOffset > 3 ? 0 : 1 - 0.3 * Math.min(absOffset, 3);
-              const translateX = offset * (CARD_WIDTH * 0.7);
-              const rotateY = offset * -25;
-
-              const Icon = spec.icon;
-
-              return (
+            <AnimatePresence initial={false} mode="wait">
+              {isMobile ? (
+                // Mobile: show only current card
                 <motion.div
-                  key={spec.id}
-                  initial={false}
-                  animate={{
-                    x: translateX,
-                    scale,
-                    rotateY,
-                    opacity,
-                    zIndex: absOffset === 0 ? 10 : 10 - absOffset,
-                  }}
+                  key={specializations[current].id}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1, x: 0, rotateY: 0 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
                   transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                  className="absolute top-0 left-1/2 w-[280px] h-[320px] bg-gray-50 rounded-2xl shadow-lg flex flex-col items-center justify-center p-6 cursor-pointer select-none"
-                  style={{ transformOrigin: "50% 50%", userSelect: "none" }}
+                  className="bg-gray-50 rounded-2xl shadow-lg flex flex-col items-center justify-center p-6 cursor-pointer select-none mx-auto"
+                  style={{ width: CARD_WIDTH, height: 320, userSelect: "none" }}
                   role="listitem"
-                  aria-label={spec.title}
-                  tabIndex={absOffset === 0 ? 0 : -1}
-                  onClick={() => setCurrent(i)}
+                  aria-label={specializations[current].title}
+                  tabIndex={0}
+                  onClick={() => setCurrent(current)}
                 >
-                  <Icon className="text-blue-600 mb-5" size={64} aria-hidden="true" />
-                  <h3 className="text-xl font-semibold text-gray-900">{spec.title}</h3>
+                  {React.createElement(specializations[current].icon, {
+                    className: "text-blue-600 mb-5",
+                    size: 64,
+                    "aria-hidden": true,
+                  })}
+                  <h3 className="text-xl font-semibold text-gray-900">
+                    {specializations[current].title}
+                  </h3>
                 </motion.div>
-              );
-            })}
+              ) : (
+                specializations.map((spec, i) => {
+                  let offset = i - current;
+
+                  // Infinite loop effect
+                  if (offset < -length / 2) offset += length;
+                  if (offset > length / 2) offset -= length;
+
+                  const absOffset = Math.abs(offset);
+
+                  const scale = absOffset === 0 ? 1.1 : 0.8 - 0.1 * Math.min(absOffset, 3);
+                  const opacity = absOffset > 3 ? 0 : 1 - 0.3 * Math.min(absOffset, 3);
+                  const translateX = offset * (CARD_WIDTH * 0.7);
+                  const rotateY = offset * -25;
+
+                  return (
+                    <motion.div
+                      key={spec.id}
+                      initial={false}
+                      animate={{
+                        x: translateX,
+                        scale,
+                        rotateY,
+                        opacity,
+                        zIndex: absOffset === 0 ? 10 : 10 - absOffset,
+                      }}
+                      transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                      className="absolute top-0 left-1/2 w-[280px] h-[320px] bg-gray-50 rounded-2xl shadow-lg flex flex-col items-center justify-center p-6 cursor-pointer select-none"
+                      style={{ transformOrigin: "50% 50%", userSelect: "none" }}
+                      role="listitem"
+                      aria-label={spec.title}
+                      tabIndex={absOffset === 0 ? 0 : -1}
+                      onClick={() => setCurrent(i)}
+                    >
+                      {React.createElement(spec.icon, {
+                        className: "text-blue-600 mb-5",
+                        size: 64,
+                        "aria-hidden": true,
+                      })}
+                      <h3 className="text-xl font-semibold text-gray-900">{spec.title}</h3>
+                    </motion.div>
+                  );
+                })
+              )}
+            </AnimatePresence>
           </div>
 
           {/* Right Arrow */}
           <button
             aria-label="Next specialization"
             onClick={next}
-            className="absolute right-0 z-10 p-3 bg-blue-600 rounded-full shadow-lg hover:bg-blue-700 transition"
+            className="absolute right-0 z-10 p-3 bg-blue-600 rounded-full shadow-lg hover:bg-blue-700 transition focus:outline-none focus:ring-4 focus:ring-blue-400"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -183,6 +190,7 @@ export default function SpecializationsCoverflow() {
               viewBox="0 0 24 24"
               stroke="currentColor"
               strokeWidth={2}
+              aria-hidden="true"
             >
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
             </svg>
@@ -199,6 +207,8 @@ export default function SpecializationsCoverflow() {
               className={`w-3 h-3 rounded-full transition ${
                 current === idx ? "bg-blue-600" : "bg-gray-300"
               }`}
+              aria-current={current === idx ? "true" : undefined}
+              type="button"
             />
           ))}
         </div>

@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import { FaStar } from "react-icons/fa";
 
+// --- Testimonial Data ---
 const testimonials = [
   {
     id: 1,
@@ -55,46 +56,53 @@ const testimonials = [
   },
 ];
 
-const clampIndex = (index, length) => ((index % length) + length) % length;
+// Utility to wrap index within bounds
+const wrapIndex = (index, length) => ((index % length) + length) % length;
 
 export default function TestimonialsCarousel() {
-  const [current, setCurrent] = useState(0);
-  const length = testimonials.length;
+  const [activeIndex, setActiveIndex] = useState(0);
+  const totalSlides = testimonials.length;
 
-  const [windowWidth, setWindowWidth] = React.useState(
+  const [windowWidth, setWindowWidth] = useState(
     typeof window !== "undefined" ? window.innerWidth : 1024
   );
 
+  // Responsive updates
   useEffect(() => {
-    const onResize = () => setWindowWidth(window.innerWidth);
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   const isMobile = windowWidth < 640;
 
+  // Card sizes
   const cardWidth = isMobile ? Math.min(windowWidth - 64, 280) : 320;
-  const cardHeight = isMobile ? 340 : 340;
-  const translateFactor = 0.7; // desktop only, ignored on mobile
-  const rotationFactor = -25; // desktop only, ignored on mobile
-  const minScale = 0.85;
+  const cardHeight = 340;
 
-  const prev = useCallback(() => {
-    setCurrent((prev) => clampIndex(prev - 1, length));
-  }, [length]);
+  // Desktop transform factors
+  const translateFactor = 0.7;
+  const rotationFactor = -25;
 
-  const next = useCallback(() => {
-    setCurrent((prev) => clampIndex(prev + 1, length));
-  }, [length]);
+  // Navigation controls
+  const goPrev = useCallback(
+    () => setActiveIndex((prev) => wrapIndex(prev - 1, totalSlides)),
+    [totalSlides]
+  );
+  const goNext = useCallback(
+    () => setActiveIndex((prev) => wrapIndex(prev + 1, totalSlides)),
+    [totalSlides]
+  );
 
+  // Keyboard navigation
   useEffect(() => {
-    const onKeyDown = (e) => {
-      if (e.key === "ArrowLeft") prev();
-      if (e.key === "ArrowRight") next();
+    const handleKey = (e) => {
+      if (e.key === "ArrowLeft") goPrev();
+      if (e.key === "ArrowRight") goNext();
     };
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [prev, next]);
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [goPrev, goNext]);
 
   return (
     <section
@@ -110,25 +118,14 @@ export default function TestimonialsCarousel() {
         </h2>
 
         <div className="relative flex items-center justify-center">
-          {/* Left Arrow */}
-          <button
-            aria-label="Previous testimonial"
-            onClick={prev}
-            className="absolute left-3 sm:left-0 z-20 p-2 sm:p-3 bg-blue-600 rounded-full shadow-lg hover:bg-blue-700 transition"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5 sm:h-6 sm:w-6 text-white"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-            </svg>
-          </button>
+          {/* Prev Button */}
+          <CarouselArrow
+            direction="left"
+            onClick={goPrev}
+            className="absolute left-3 sm:left-0"
+          />
 
-          {/* Carousel Container */}
+          {/* Carousel */}
           <div
             className="relative w-full flex justify-center items-center overflow-visible"
             style={{
@@ -140,174 +137,163 @@ export default function TestimonialsCarousel() {
               willChange: "transform",
             }}
           >
-            {testimonials.map((testimonial, i) => {
-              if (isMobile) {
-                // On mobile: show only the current card centered, no rotation or side cards
-                if (i !== current) return null;
-
-                return (
-                  <motion.div
-                    key={testimonial.id}
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1, x: 0, rotateY: 0 }}
-                    exit={{ opacity: 0, scale: 0.9 }}
-                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                    className="bg-gray-50 rounded-3xl shadow-xl flex flex-col justify-start p-6 cursor-pointer select-none mx-auto"
-                    style={{
-                      width: cardWidth,
-                      height: cardHeight,
-                      boxShadow: "0 10px 25px rgba(0,0,0,0.12)",
-                      userSelect: "none",
-                      WebkitFontSmoothing: "antialiased",
-                      MozOsxFontSmoothing: "grayscale",
-                    }}
-                    role="listitem"
-                    aria-label={`Testimonial by ${testimonial.author}`}
-                    tabIndex={0}
-                    onClick={() => setCurrent(i)}
-                  >
-                    <img
-                      src={testimonial.image}
-                      alt={`Photo of ${testimonial.author}`}
-                      className="w-20 h-20 rounded-full object-cover mb-6 mx-auto"
-                      loading="lazy"
-                      style={{ imageRendering: "auto" }}
-                    />
-                    <blockquote
-                      className="text-gray-900 italic text-base mb-6 flex-grow text-center leading-relaxed"
-                      style={{ fontSmooth: "always" }}
-                    >
-                      “{testimonial.text}”
-                    </blockquote>
-                    <footer className="text-gray-700 font-semibold text-lg mb-4 text-center">
-                      — {testimonial.author}
-                    </footer>
-                    <div className="flex justify-center space-x-1">
-                      {[...Array(5)].map((_, starIndex) => (
-                        <FaStar
-                          key={starIndex}
-                          className={`w-5 h-5 ${
-                            starIndex < testimonial.rating
-                              ? "text-yellow-400"
-                              : "text-gray-300"
-                          }`}
-                          aria-hidden="true"
-                        />
-                      ))}
-                    </div>
-                  </motion.div>
-                );
-              }
-
-              // Desktop: multi-card 3D carousel
-              let offset = i - current;
-              if (offset < -length / 2) offset += length;
-              if (offset > length / 2) offset -= length;
-
-              const absOffset = Math.abs(offset);
-
-              const rawScale =
-                absOffset === 0 ? 1 : 0.75 - 0.1 * Math.min(absOffset, 3);
-              const scale = Math.max(rawScale, 0.85);
-
-              const opacity = absOffset > 3 ? 0 : 1 - 0.3 * Math.min(absOffset, 3);
-              const translateX = offset * (cardWidth * translateFactor);
-              const rotateY = offset * rotationFactor;
-
-              return (
-                <motion.div
-                  key={testimonial.id}
-                  initial={false}
-                  animate={{
-                    x: translateX,
-                    scale,
-                    rotateY,
-                    opacity,
-                    zIndex: absOffset === 0 ? 10 : 10 - absOffset,
-                  }}
-                  transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                  className="absolute top-0 left-1/2 bg-gray-50 rounded-3xl shadow-xl flex flex-col justify-start p-5 cursor-pointer select-none"
-                  style={{
-                    width: cardWidth,
-                    height: cardHeight,
-                    transformOrigin: "50% 50%",
-                    boxShadow: "0 10px 20px rgba(0,0,0,0.12)",
-                    userSelect: "none",
-                    WebkitFontSmoothing: "antialiased",
-                    MozOsxFontSmoothing: "grayscale",
-                  }}
-                  role="listitem"
-                  aria-label={`Testimonial by ${testimonial.author}`}
-                  tabIndex={absOffset === 0 ? 0 : -1}
-                  onClick={() => setCurrent(i)}
-                >
-                  <img
-                    src={testimonial.image}
-                    alt={`Photo of ${testimonial.author}`}
-                    className="w-20 h-20 rounded-full object-cover mb-5 mx-auto"
-                    loading="lazy"
-                    style={{ imageRendering: "auto" }}
-                  />
-                  <blockquote
-                    className="text-gray-900 italic text-base mb-5 flex-grow text-center leading-relaxed"
-                    style={{ fontSmooth: "always" }}
-                  >
-                    “{testimonial.text}”
-                  </blockquote>
-                  <footer className="text-gray-700 font-semibold text-lg mb-3 text-center">
-                    — {testimonial.author}
-                  </footer>
-                  <div className="flex justify-center space-x-1">
-                    {[...Array(5)].map((_, starIndex) => (
-                      <FaStar
-                        key={starIndex}
-                        className={`w-5 h-5 ${
-                          starIndex < testimonial.rating
-                            ? "text-yellow-400"
-                            : "text-gray-300"
-                        }`}
-                        aria-hidden="true"
-                      />
-                    ))}
-                  </div>
-                </motion.div>
-              );
-            })}
+            {testimonials.map((t, i) =>
+              isMobile
+                ? renderMobileCard(t, i, activeIndex, cardWidth, cardHeight, setActiveIndex)
+                : renderDesktopCard(
+                    t,
+                    i,
+                    activeIndex,
+                    totalSlides,
+                    cardWidth,
+                    cardHeight,
+                    translateFactor,
+                    rotationFactor,
+                    setActiveIndex
+                  )
+            )}
           </div>
 
-          {/* Right Arrow */}
-          <button
-            aria-label="Next testimonial"
-            onClick={next}
-            className="absolute right-3 sm:right-0 z-20 p-2 sm:p-3 bg-blue-600 rounded-full shadow-lg hover:bg-blue-700 transition"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5 sm:h-6 sm:w-6 text-white"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
+          {/* Next Button */}
+          <CarouselArrow
+            direction="right"
+            onClick={goNext}
+            className="absolute right-3 sm:right-0"
+          />
         </div>
 
-        {/* Dots Navigation */}
+        {/* Dot Navigation */}
         <div className="mt-10 flex justify-center space-x-3">
           {testimonials.map((_, idx) => (
             <button
               key={idx}
-              onClick={() => setCurrent(idx)}
+              onClick={() => setActiveIndex(idx)}
               aria-label={`Go to testimonial ${idx + 1}`}
               className={`w-3 h-3 rounded-full transition ${
-                current === idx ? "bg-blue-600" : "bg-gray-300"
+                activeIndex === idx ? "bg-blue-600" : "bg-gray-300"
               }`}
             />
           ))}
         </div>
       </div>
     </section>
+  );
+}
+
+// --- Components ---
+
+function CarouselArrow({ direction, onClick, className }) {
+  const isLeft = direction === "left";
+  return (
+    <button
+      aria-label={isLeft ? "Previous testimonial" : "Next testimonial"}
+      onClick={onClick}
+      className={`${className} z-20 p-2 sm:p-3 bg-blue-600 rounded-full shadow-lg hover:bg-blue-700 transition`}
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        className="h-5 w-5 sm:h-6 sm:w-6 text-white"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        strokeWidth={2}
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d={
+            isLeft
+              ? "M15 19l-7-7 7-7"
+              : "M9 5l7 7-7 7"
+          }
+        />
+      </svg>
+    </button>
+  );
+}
+
+function renderMobileCard(t, index, activeIndex, width, height, setActiveIndex) {
+  if (index !== activeIndex) return null;
+  return (
+    <motion.div
+      key={t.id}
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ type: "spring", stiffness: 300, damping: 30 }}
+      className="bg-gray-50 rounded-3xl shadow-xl flex flex-col p-6 mx-auto cursor-pointer"
+      style={{ width, height, boxShadow: "0 10px 25px rgba(0,0,0,0.12)" }}
+      onClick={() => setActiveIndex(index)}
+    >
+      <TestimonialCardContent testimonial={t} />
+    </motion.div>
+  );
+}
+
+function renderDesktopCard(
+  t,
+  index,
+  activeIndex,
+  totalSlides,
+  width,
+  height,
+  translateFactor,
+  rotationFactor,
+  setActiveIndex
+) {
+  let offset = index - activeIndex;
+  if (offset < -totalSlides / 2) offset += totalSlides;
+  if (offset > totalSlides / 2) offset -= totalSlides;
+
+  const absOffset = Math.abs(offset);
+  const scale = Math.max(absOffset === 0 ? 1 : 0.75 - 0.1 * Math.min(absOffset, 3), 0.85);
+  const opacity = absOffset > 3 ? 0 : 1 - 0.3 * Math.min(absOffset, 3);
+
+  return (
+    <motion.div
+      key={t.id}
+      initial={false}
+      animate={{
+        x: offset * (width * translateFactor),
+        scale,
+        rotateY: offset * rotationFactor,
+        opacity,
+        zIndex: absOffset === 0 ? 10 : 10 - absOffset,
+      }}
+      transition={{ type: "spring", stiffness: 300, damping: 30 }}
+      className="absolute top-0 left-1/2 bg-gray-50 rounded-3xl shadow-xl flex flex-col p-5 cursor-pointer"
+      style={{ width, height, transformOrigin: "50% 50%" }}
+      onClick={() => setActiveIndex(index)}
+    >
+      <TestimonialCardContent testimonial={t} />
+    </motion.div>
+  );
+}
+
+function TestimonialCardContent({ testimonial }) {
+  return (
+    <>
+      <img
+        src={testimonial.image}
+        alt={`Photo of ${testimonial.author}`}
+        className="w-20 h-20 rounded-full object-cover mb-5 mx-auto"
+        loading="lazy"
+      />
+      <blockquote className="text-gray-900 italic text-base mb-5 flex-grow text-center leading-relaxed">
+        “{testimonial.text}”
+      </blockquote>
+      <footer className="text-gray-700 font-semibold text-lg mb-3 text-center">
+        — {testimonial.author}
+      </footer>
+      <div className="flex justify-center space-x-1">
+        {[...Array(5)].map((_, idx) => (
+          <FaStar
+            key={idx}
+            className={`w-5 h-5 ${
+              idx < testimonial.rating ? "text-yellow-400" : "text-gray-300"
+            }`}
+          />
+        ))}
+      </div>
+    </>
   );
 }

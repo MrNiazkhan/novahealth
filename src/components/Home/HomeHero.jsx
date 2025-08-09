@@ -2,7 +2,14 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FaCheckCircle, FaTimesCircle, FaCalendarAlt, FaClock, FaPhoneAlt, FaShieldAlt } from "react-icons/fa";
+import {
+  FaCheckCircle,
+  FaTimesCircle,
+  FaCalendarAlt,
+  FaClock,
+  FaPhoneAlt,
+  FaShieldAlt,
+} from "react-icons/fa";
 
 const FEATURES = [
   {
@@ -27,7 +34,7 @@ const FEATURES = [
   },
 ];
 
-const HomeHero = () => {
+export default function HomeHero() {
   const modalRef = useRef(null);
   const firstInputRef = useRef(null);
   const lastFocusRef = useRef(null);
@@ -44,6 +51,7 @@ const HomeHero = () => {
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState("");
 
+  // Manage modal open/close focus and keyboard trap
   useEffect(() => {
     if (!modalOpen) return;
 
@@ -51,7 +59,7 @@ const HomeHero = () => {
     setTimeout(() => firstInputRef.current?.focus(), 150);
     document.body.style.overflow = "hidden";
 
-    const handleFocus = (e) => {
+    const handleFocusTrap = (e) => {
       if (!modalRef.current?.contains(e.target)) {
         e.preventDefault();
         firstInputRef.current?.focus();
@@ -63,13 +71,13 @@ const HomeHero = () => {
         closeModal();
       }
       if (e.key === "Tab") {
-        const focusable = modalRef.current?.querySelectorAll(
+        const focusableEls = modalRef.current?.querySelectorAll(
           'a[href], button, textarea, input, select, [tabindex]:not([tabindex="-1"])'
         );
-        if (!focusable || focusable.length === 0) return;
+        if (!focusableEls || focusableEls.length === 0) return;
 
-        const first = focusable[0];
-        const last = focusable[focusable.length - 1];
+        const first = focusableEls[0];
+        const last = focusableEls[focusableEls.length - 1];
 
         if (e.shiftKey && document.activeElement === first) {
           e.preventDefault();
@@ -81,18 +89,19 @@ const HomeHero = () => {
       }
     };
 
-    window.addEventListener("focus", handleFocus, true);
+    window.addEventListener("focus", handleFocusTrap, true);
     window.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      window.removeEventListener("focus", handleFocus, true);
+      window.removeEventListener("focus", handleFocusTrap, true);
       window.removeEventListener("keydown", handleKeyDown);
       document.body.style.overflow = "";
       lastFocusRef.current?.focus();
     };
   }, [modalOpen]);
 
-  const validate = () => {
+  // Simple form validation function
+  function validate() {
     const errors = {};
     if (!formData.name.trim()) errors.name = "Full Name is required";
     if (!formData.email.trim()) {
@@ -103,11 +112,12 @@ const HomeHero = () => {
     if (!formData.date) errors.date = "Please select a date";
     if (!formData.time) errors.time = "Please select a time";
     return errors;
-  };
+  }
 
+  // Handle input changes & clear related errors
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((p) => ({ ...p, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
 
     if (formErrors[name]) {
       setFormErrors((prev) => {
@@ -119,6 +129,7 @@ const HomeHero = () => {
     setSubmitError("");
   };
 
+  // Handle form submission with simulated delay & random failure
   const handleSubmit = async (e) => {
     e.preventDefault();
     setFormErrors({});
@@ -141,6 +152,7 @@ const HomeHero = () => {
     }
   };
 
+  // Close modal and reset all form & state
   const closeModal = () => {
     setModalOpen(false);
     setFormErrors({});
@@ -149,6 +161,7 @@ const HomeHero = () => {
     setFormData({ name: "", email: "", date: "", time: "" });
   };
 
+  // Animation variants for hero texts, features, and modal
   const heroTextVariants = {
     hidden: { opacity: 0, y: 30 },
     visible: (i) => ({
@@ -157,10 +170,12 @@ const HomeHero = () => {
       transition: { delay: i * 0.3, duration: 0.8, ease: "easeOut" },
     }),
   };
+
   const heroImageVariants = {
     hidden: { opacity: 0, scale: 0.95 },
     visible: { opacity: 1, scale: 1, transition: { duration: 1, delay: 0.4 } },
   };
+
   const featuresVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: (i) => ({
@@ -169,8 +184,14 @@ const HomeHero = () => {
       transition: { delay: 1 + i * 0.25, duration: 0.6, ease: "easeOut" },
     }),
   };
-  const modalBackdrop = { hidden: { opacity: 0 }, visible: { opacity: 1 }, exit: { opacity: 0 } };
-  const modalContent = {
+
+  const modalBackdropVariants = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1 },
+    exit: { opacity: 0 },
+  };
+
+  const modalContentVariants = {
     hidden: { opacity: 0, y: 40, scale: 0.95 },
     visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.4 } },
     exit: { opacity: 0, y: 40, scale: 0.95, transition: { duration: 0.3 } },
@@ -181,7 +202,7 @@ const HomeHero = () => {
       {/* Hero Section */}
       <section
         aria-label="Healthcare Hero Section"
-        className="relative bg-white w-full  flex flex-col justify-center"
+        className="relative bg-white w-full flex flex-col justify-center"
       >
         <div className="max-w-7xl mx-auto px-6 sm:px-12 lg:px-20 py-20 flex flex-col lg:flex-row items-center gap-12">
           {/* Text Content */}
@@ -200,22 +221,22 @@ const HomeHero = () => {
             >
               Your Health,
               <br />
-              <span
-                className="text-black"
-                aria-label="Our Priority"
-                role="text"
-              >
+              <span className="text-black" aria-label="Our Priority" role="text">
                 Our Priority
               </span>
             </motion.h1>
             <motion.p
-  id="hero-subtext"
-  className="mt-6 text-lg sm:text-xl font-light text-gray-900 max-w-3xl mx-auto lg:mx-0"
-  custom={1}
-  variants={heroTextVariants}
->
-  At NovaHealth, we know that everyone’s health journey is different. Our caring team listens closely and combines genuine compassion with the latest technology to give you care you can trust. Whether it’s a routine checkup or specialized advice, we’re here to help you feel comfortable and supported. Because for us, healthcare is about treating you like family.
-</motion.p>
+              id="hero-subtext"
+              className="mt-6 text-lg sm:text-xl font-light text-gray-900 max-w-3xl mx-auto lg:mx-0"
+              custom={1}
+              variants={heroTextVariants}
+            >
+              At NovaHealth, we know that everyone’s health journey is different. Our caring team
+              listens closely and combines genuine compassion with the latest technology to give
+              you care you can trust. Whether it’s a routine checkup or specialized advice, we’re
+              here to help you feel comfortable and supported. Because for us, healthcare is about
+              treating you like family.
+            </motion.p>
 
             <motion.button
               custom={2}
@@ -282,13 +303,13 @@ const HomeHero = () => {
             initial="hidden"
             animate="visible"
             exit="exit"
-            variants={modalBackdrop}
+            variants={modalBackdropVariants}
           >
             <motion.div
               ref={modalRef}
               tabIndex={-1}
               className="bg-white rounded-2xl w-full max-w-4xl p-8 relative shadow-2xl max-h-[90vh] overflow-y-auto grid grid-cols-1 md:grid-cols-2 gap-8"
-              variants={modalContent}
+              variants={modalContentVariants}
             >
               {/* Close Button */}
               <button
@@ -338,10 +359,7 @@ const HomeHero = () => {
                   </div>
                 ) : (
                   <form onSubmit={handleSubmit} className="space-y-6" noValidate>
-                    <h2
-                      id="modal-title"
-                      className="text-3xl font-extrabold text-blue-700 mb-2"
-                    >
+                    <h2 id="modal-title" className="text-3xl font-extrabold text-blue-700 mb-2">
                       Schedule an Appointment
                     </h2>
                     <p id="modal-desc" className="text-gray-600 mb-6 font-light">
@@ -373,11 +391,7 @@ const HomeHero = () => {
                         autoComplete="name"
                       />
                       {formErrors.name && (
-                        <p
-                          id="name-error"
-                          className="mt-1 text-xs text-red-600"
-                          role="alert"
-                        >
+                        <p id="name-error" className="mt-1 text-xs text-red-600" role="alert">
                           {formErrors.name}
                         </p>
                       )}
@@ -407,11 +421,7 @@ const HomeHero = () => {
                         autoComplete="email"
                       />
                       {formErrors.email && (
-                        <p
-                          id="email-error"
-                          className="mt-1 text-xs text-red-600"
-                          role="alert"
-                        >
+                        <p id="email-error" className="mt-1 text-xs text-red-600" role="alert">
                           {formErrors.email}
                         </p>
                       )}
@@ -440,11 +450,7 @@ const HomeHero = () => {
                         required
                       />
                       {formErrors.date && (
-                        <p
-                          id="date-error"
-                          className="mt-1 text-xs text-red-600"
-                          role="alert"
-                        >
+                        <p id="date-error" className="mt-1 text-xs text-red-600" role="alert">
                           {formErrors.date}
                         </p>
                       )}
@@ -477,11 +483,7 @@ const HomeHero = () => {
                         Available between 08:00 and 18:00
                       </p>
                       {formErrors.time && (
-                        <p
-                          id="time-error"
-                          className="mt-1 text-xs text-red-600"
-                          role="alert"
-                        >
+                        <p id="time-error" className="mt-1 text-xs text-red-600" role="alert">
                           {formErrors.time}
                         </p>
                       )}
@@ -543,6 +545,4 @@ const HomeHero = () => {
       </AnimatePresence>
     </>
   );
-};
-
-export default HomeHero;
+}

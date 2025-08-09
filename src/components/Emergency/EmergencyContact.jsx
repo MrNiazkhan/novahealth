@@ -2,16 +2,41 @@
 
 import React, { useRef, useEffect, useState } from "react";
 
+function ContactDetail({ icon, label, children, href, ariaLabel }) {
+  // Reusable component for contact info item: phone, email, address
+  return (
+    <div className="flex items-center gap-4">
+      <div className="w-6 h-6 text-blue-700 flex-shrink-0">{icon}</div>
+      <div>
+        <h3 className="font-semibold text-black text-lg">{label}</h3>
+        {href ? (
+          <a
+            href={href}
+            className="text-blue-700 hover:underline text-base"
+            aria-label={ariaLabel}
+          >
+            {children}
+          </a>
+        ) : (
+          <div className="text-gray-700 text-base">{children}</div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 const EmergencyContact = () => {
-  const leftContentRef = useRef(null);
-  const [leftHeight, setLeftHeight] = useState(0);
+  const leftSectionRef = useRef(null);
+  const [leftSectionHeight, setLeftSectionHeight] = useState(0);
 
   useEffect(() => {
+    // Updates height state so map matches left section height responsively
     const updateHeight = () => {
-      if (leftContentRef.current) {
-        setLeftHeight(leftContentRef.current.offsetHeight);
+      if (leftSectionRef.current) {
+        setLeftSectionHeight(leftSectionRef.current.offsetHeight);
       }
     };
+
     updateHeight();
     window.addEventListener("resize", updateHeight);
     return () => window.removeEventListener("resize", updateHeight);
@@ -23,9 +48,9 @@ const EmergencyContact = () => {
       className="bg-white text-black py-12 px-6 sm:px-12 md:px-20 lg:px-32"
     >
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-start md:items-stretch gap-12">
-        {/* Left: Contact Info */}
+        {/* Left panel: emergency contact details */}
         <div
-          ref={leftContentRef}
+          ref={leftSectionRef}
           className="flex-1 max-w-md flex flex-col justify-between"
         >
           <div>
@@ -49,86 +74,78 @@ const EmergencyContact = () => {
             </h2>
 
             <div className="space-y-8 text-gray-800">
-              {/* Phone */}
-              <div className="flex items-center gap-4">
-                <svg
-                  className="w-6 h-6 text-blue-700 flex-shrink-0"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                >
-                  <path d="M3 5a2 2 0 012-2h2.586a1 1 0 01.707.293l2.414 2.414a1 1 0 010 1.414L8 9a11.042 11.042 0 005.586 5.586l1.293-1.293a1 1 0 011.414 0l2.414 2.414a1 1 0 01.293.707V19a2 2 0 01-2 2h-1C9.477 21 3 14.523 3 7V5z" />
-                </svg>
-                <div>
-                  <h3 className="font-semibold text-black text-lg">Phone</h3>
-                  <a
-                    href="tel:911"
-                    className="text-blue-700 hover:underline text-base"
-                    aria-label="Call emergency phone number"
+              <ContactDetail
+                icon={
+                  <svg
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
                   >
-                    911 
-                  </a>
-                </div>
-              </div>
+                    <path d="M3 5a2 2 0 012-2h2.586a1 1 0 01.707.293l2.414 2.414a1 1 0 010 1.414L8 9a11.042 11.042 0 005.586 5.586l1.293-1.293a1 1 0 011.414 0l2.414 2.414a1 1 0 01.293.707V19a2 2 0 01-2 2h-1C9.477 21 3 14.523 3 7V5z" />
+                  </svg>
+                }
+                label="Phone"
+                href="tel:911"
+                ariaLabel="Call emergency phone number"
+              >
+                911
+              </ContactDetail>
 
-              {/* Email */}
-              <div className="flex items-center gap-4">
-                <svg
-                  className="w-6 h-6 text-blue-700 flex-shrink-0"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                >
-                  <path d="M16 12H8m0 0l4-4m-4 4l4 4" />
-                </svg>
-                <div>
-                  <h3 className="font-semibold text-black text-lg">Email</h3>
-                  <a
-                    href="mailto:emergency@yourcarecenter.com"
-                    className="text-blue-700 hover:underline text-base"
-                    aria-label="Send email to emergency contact"
+              <ContactDetail
+                icon={
+                  <svg
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
                   >
-                    emergency@yourcarecenter.com
-                  </a>
-                </div>
-              </div>
+                    <path d="M16 12H8m0 0l4-4m-4 4l4 4" />
+                  </svg>
+                }
+                label="Email"
+                href="mailto:emergency@yourcarecenter.com"
+                ariaLabel="Send email to emergency contact"
+              >
+                emergency@yourcarecenter.com
+              </ContactDetail>
 
-              {/* Address */}
-              <div className="flex items-center gap-4">
-                <svg
-                  className="w-6 h-6 text-blue-700 flex-shrink-0"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                >
-                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
-                  <circle cx="12" cy="9" r="2.5" />
-                </svg>
-                <div>
-                  <h3 className="font-semibold text-black text-lg">Address</h3>
-                  <address className="not-italic text-gray-700 text-base max-w-md">
-                    123 Care Center Lane,
-                    <br />
-                    Cityville, State 12345
-                  </address>
-                </div>
-              </div>
+              <ContactDetail
+                icon={
+                  <>
+                    <svg
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                      className="block"
+                    >
+                      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
+                      <circle cx="12" cy="9" r="2.5" />
+                    </svg>
+                  </>
+                }
+                label="Address"
+              >
+                <address className="not-italic max-w-md">
+                  123 Care Center Lane,
+                  <br />
+                  Cityville, State 12345
+                </address>
+              </ContactDetail>
             </div>
           </div>
 
-          {/* Call to Action Button */}
+          {/* Action button to quickly call emergency services */}
           <div className="mt-10">
             <a
               href="tel:911"
@@ -140,10 +157,10 @@ const EmergencyContact = () => {
           </div>
         </div>
 
-        {/* Right: Embedded Map */}
+        {/* Right panel: Google Maps embed */}
         <div
           className="flex-1 rounded-lg overflow-hidden shadow-lg border border-gray-200"
-          style={{ height: leftHeight || "auto" }}
+          style={{ height: leftSectionHeight || "auto" }}
           aria-label="Map showing emergency care center location"
         >
           <iframe

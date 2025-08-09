@@ -4,7 +4,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { FaHandsHelping, FaLightbulb, FaUsers, FaStar } from "react-icons/fa";
 
-const values = [
+const coreValues = [
   {
     icon: <FaHandsHelping className="text-blue-700 w-8 h-8" aria-hidden="true" />,
     title: "Passion",
@@ -31,13 +31,11 @@ const values = [
   },
 ];
 
-const OurteamIntro = () => {
+export default function OurteamIntro() {
   const containerVariants = {
     hidden: {},
     visible: {
-      transition: {
-        staggerChildren: 0.25,
-      },
+      transition: { staggerChildren: 0.25 },
     },
   };
 
@@ -56,7 +54,7 @@ const OurteamIntro = () => {
       className="bg-white text-black py-20 px-5 sm:px-8 md:px-12"
     >
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-16 items-stretch">
-        {/* Left: Text content */}
+        {/* Text content on the left */}
         <motion.div
           initial="hidden"
           whileInView="visible"
@@ -68,7 +66,7 @@ const OurteamIntro = () => {
             className="text-4xl sm:text-5xl font-extrabold text-blue-700 mb-4 relative inline-block max-w-max"
             variants={itemVariants}
           >
-            Meet the Heart of Our Success
+            <span className="text-black">Meet the Heart of Our</span> Success
             <span
               aria-hidden="true"
               className="absolute left-0 bottom-[-8px] h-1.5 w-28 bg-blue-200 rounded-full"
@@ -89,7 +87,7 @@ const OurteamIntro = () => {
             className="grid grid-cols-1 sm:grid-cols-2 gap-8"
             variants={containerVariants}
           >
-            {values.map(({ icon, title, description }, idx) => (
+            {coreValues.map(({ icon, title, description }, idx) => (
               <motion.div
                 key={idx}
                 className="flex items-start gap-4"
@@ -108,7 +106,7 @@ const OurteamIntro = () => {
           </motion.div>
         </motion.div>
 
-        {/* Right: Image */}
+        {/* Image on the right */}
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}
@@ -128,6 +126,4 @@ const OurteamIntro = () => {
       </div>
     </section>
   );
-};
-
-export default OurteamIntro;
+}

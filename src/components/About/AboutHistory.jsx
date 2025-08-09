@@ -3,7 +3,8 @@
 import React from "react";
 import { motion } from "framer-motion";
 
-const timelineEvents = [
+// Timeline data — each milestone with year, title, and description
+const timelineData = [
   {
     year: "2005",
     title: "Foundation",
@@ -36,7 +37,8 @@ const timelineEvents = [
   },
 ];
 
-const containerVariants = {
+// Container animation controls for staggering children fade-in
+const containerAnim = {
   hidden: {},
   visible: {
     transition: {
@@ -46,24 +48,25 @@ const containerVariants = {
   },
 };
 
-const eventVariants = {
+// Animation for each timeline event — slide in from left with fade
+const eventAnim = {
   hidden: { opacity: 0, x: -50 },
   visible: { opacity: 1, x: 0, transition: { duration: 0.6, ease: "easeOut" } },
 };
 
-const AboutHistory = () => {
+export default function AboutHistory() {
   return (
     <section
       aria-label="Our History Timeline"
-      className="bg-gray-50 py-20 px-6 sm:px-12 max-w-7xl mx-auto my-[-50px] mb-[-80px]"
+      className="bg-white py-20 px-6 sm:px-12 max-w-7xl mx-auto my-[-50px] mb-[-80px]"
     >
-      {/* Header */}
+      {/* Section header */}
       <motion.div
+        className="text-center max-w-3xl mx-auto mb-16"
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.3 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
-        className="text-center max-w-3xl mx-auto mb-16"
       >
         <h2 className="text-4xl sm:text-5xl font-extrabold text-gray-900 tracking-tight">
           Our <span className="text-blue-600">History</span>
@@ -73,51 +76,45 @@ const AboutHistory = () => {
         </p>
       </motion.div>
 
-      {/* Timeline Container */}
+      {/* Timeline list container */}
       <motion.div
         className="relative max-w-4xl mx-auto"
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.3 }}
-        variants={containerVariants}
+        variants={containerAnim}
       >
-        {/* Vertical line */}
+        {/* Vertical timeline line */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1 bg-blue-200 rounded h-full" />
 
-        {/* Timeline events */}
+        {/* Timeline events list */}
         <ul className="space-y-16">
-          {timelineEvents.map(({ year, title, description }, index) => {
-            const isLeft = index % 2 === 0;
+          {timelineData.map(({ year, title, description }, idx) => {
+            // Alternate event placement left/right on larger screens
+            const alignLeft = idx % 2 === 0;
 
             return (
               <motion.li
                 key={year}
                 className={`relative flex flex-col items-center sm:flex-row ${
-                  isLeft
-                    ? "sm:justify-start sm:pr-12"
-                    : "sm:justify-end sm:pl-12"
+                  alignLeft ? "sm:justify-start sm:pr-12" : "sm:justify-end sm:pl-12"
                 }`}
-                variants={eventVariants}
+                variants={eventAnim}
               >
-                {/* Connector dot */}
+                {/* Timeline dot */}
                 <span
                   className="absolute left-1/2 top-4 sm:top-6 -translate-x-1/2 w-5 h-5 bg-blue-600 rounded-full border-4 border-white shadow-lg"
                   aria-hidden="true"
                 />
 
-                {/* Content box */}
+                {/* Content bubble */}
                 <div
-                  className={`bg-white rounded-xl shadow-lg p-6 max-w-[320px] w-full
-                    ${
-                      isLeft
-                        ? "sm:mr-auto sm:text-left"
-                        : "sm:ml-auto sm:text-right"
-                    }`}
+                  className={`bg-white rounded-xl shadow-lg p-6 max-w-[320px] w-full ${
+                    alignLeft ? "sm:mr-auto sm:text-left" : "sm:ml-auto sm:text-right"
+                  }`}
                 >
                   <p className="text-sm text-blue-600 font-semibold">{year}</p>
-                  <h3 className="mt-1 text-xl font-semibold text-gray-900">
-                    {title}
-                  </h3>
+                  <h3 className="mt-1 text-xl font-semibold text-gray-900">{title}</h3>
                   <p className="mt-2 text-gray-600 text-sm sm:text-base leading-relaxed">
                     {description}
                   </p>
@@ -129,6 +126,4 @@ const AboutHistory = () => {
       </motion.div>
     </section>
   );
-};
-
-export default AboutHistory;
+}

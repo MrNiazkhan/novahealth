@@ -3,40 +3,45 @@
 import React, { useEffect, useRef, useState } from "react";
 
 const BlogHero = () => {
-  let imageDiv = null;
+  // Reference to background image div for parallax transform
+  const bgImageRef = useRef(null);
 
-  const setImageRef = (el) => {
-    imageDiv = el;
-  };
-
-  // State to trigger animation once
-  const [animate, setAnimate] = useState(false);
+  // State to trigger entrance animations only once
+  const [startAnimation, setStartAnimation] = useState(false);
 
   useEffect(() => {
-    // Start animations immediately on mount
-    setAnimate(true);
+    setStartAnimation(true); // trigger animation on mount
 
-    const handleScroll = () => {
-      if (!imageDiv) return;
+    // Parallax scroll handler
+    const onScroll = () => {
+      if (!bgImageRef.current) return;
 
       const scrollTop = window.pageYOffset;
       const movement = window.innerWidth > 768 ? scrollTop * 0.3 : scrollTop * 0.15;
-      imageDiv.style.transform = `translateY(${movement}px)`;
+
+      bgImageRef.current.style.transform = `translateY(${movement}px)`;
     };
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", onScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+    };
   }, []);
+
+  // Text to animate letter by letter
+  const animatedTitle = "Insights & Stories";
 
   return (
     <section
       aria-label="Blog Hero Section"
       className="relative overflow-hidden bg-black rounded-xl"
-      style={{ minHeight: "480px" }}
+      style={{ minHeight: 480 }}
     >
-      {/* Background Image with parallax */}
+      {/* Background with parallax effect */}
       <div
-        ref={setImageRef}
+        ref={bgImageRef}
+        aria-hidden="true"
         className="absolute inset-0 pointer-events-none select-none rounded-xl"
         style={{
           backgroundImage:
@@ -47,31 +52,30 @@ const BlogHero = () => {
           zIndex: 0,
           borderRadius: "1rem",
         }}
-        aria-hidden="true"
       />
 
-      {/* Content Wrapper */}
+      {/* Content container */}
       <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 py-20 flex flex-col justify-center text-center md:text-left min-h-[480px]">
-        {/* Heading with letter-by-letter slideInLeft animation */}
+        {/* Animated heading */}
         <h1
-          className="text-3xl sm:text-4xl md:text-5xl font-extrabold leading-tight text-white drop-shadow-lg max-w-3xl mx-auto md:mx-0"
           aria-label="Insights and Stories from Our Health Experts"
+          className="text-3xl sm:text-4xl md:text-5xl font-extrabold leading-tight text-white drop-shadow-lg max-w-3xl mx-auto md:mx-0"
         >
-          {animate &&
-            "Insights & Stories".split("").map((char, idx) => (
-              <span
-                key={idx}
-                className="inline-block animate-slideInLeft"
-                style={{ animationDelay: `${idx * 0.03}s`, willChange: "transform, opacity" }}
-              >
-                {char === " " ? "\u00A0" : char}
-              </span>
-            ))}
-          {!animate && "Insights & Stories"}
+          {startAnimation
+            ? animatedTitle.split("").map((char, index) => (
+                <span
+                  key={index}
+                  className="inline-block animate-slideInLeft"
+                  style={{ animationDelay: `${index * 0.03}s`, willChange: "transform, opacity" }}
+                >
+                  {char === " " ? "\u00A0" : char}
+                </span>
+              ))
+            : animatedTitle}
           <br />
           <span
             className={`text-indigo-400 block mt-2 font-semibold tracking-wide glow-underline ${
-              animate ? "animate-fadeIn" : ""
+              startAnimation ? "animate-fadeIn" : ""
             }`}
             style={{ animationDelay: "0.9s" }}
           >
@@ -79,30 +83,31 @@ const BlogHero = () => {
           </span>
         </h1>
 
-        {/* Paragraph with fadeIn and delay */}
+        {/* Subheading paragraph */}
         <p
           className={`mt-5 max-w-xl mx-auto md:mx-0 text-gray-300 text-base sm:text-lg font-light leading-relaxed ${
-            animate ? "animate-fadeIn" : ""
+            startAnimation ? "animate-fadeIn" : ""
           }`}
           style={{ animationDelay: "1.2s" }}
         >
-          Stay updated with the latest health news, expert advice, and wellness tips to help you live your best life.
+          Stay updated with the latest health news, expert advice, and wellness tips to help you live your best
+          life.
         </p>
 
-        {/* Button with fadeIn and delay */}
+        {/* CTA button */}
         <a
           href="https://medium.com/"
+          aria-label="Read our blog articles"
           className={`inline-block mt-8 px-7 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg shadow-lg transition duration-300 max-w-max mx-auto md:mx-0 ${
-            animate ? "animate-fadeIn" : ""
+            startAnimation ? "animate-fadeIn" : ""
           }`}
           style={{ animationDelay: "1.5s" }}
-          aria-label="Read our blog articles"
         >
           Explore Articles
         </a>
       </div>
 
-      {/* Animations */}
+      {/* Animation keyframes and styles */}
       <style jsx>{`
         @keyframes slideInLeft {
           0% {

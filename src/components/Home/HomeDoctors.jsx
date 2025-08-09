@@ -67,66 +67,59 @@ const doctors = [
   },
 ];
 
-// Variants for the container that staggers children animation
+// Animation variants for staggering and fade effects
 const containerVariants = {
   hidden: {},
-  visible: {
-    transition: {
-      staggerChildren: 0.15,
-      delayChildren: 0.15,
-    },
-  },
+  visible: { transition: { staggerChildren: 0.15, delayChildren: 0.15 } },
 };
 
-// Each card fades up and scales in
 const cardVariants = {
   hidden: { opacity: 0, y: 30, scale: 0.95 },
   visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.4 } },
 };
 
-// Heading & paragraph fade up
 const textVariants = {
   hidden: { opacity: 0, y: 40 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
 };
 
-// Modal backdrop fade in/out
-const modalBackdropVariants = {
+const backdropVariants = {
   hidden: { opacity: 0 },
   visible: { opacity: 1 },
   exit: { opacity: 0 },
 };
 
-// Modal content fade + scale + slide
-const modalContentVariants = {
+const modalVariants = {
   hidden: { opacity: 0, scale: 0.95, y: 20 },
   visible: { opacity: 1, scale: 1, y: 0, transition: { duration: 0.35 } },
   exit: { opacity: 0, scale: 0.95, y: 20, transition: { duration: 0.25 } },
 };
 
-const HomeDoctors = () => {
-  const [selectedDoctor, setSelectedDoctor] = useState(null);
+export default function HomeDoctors() {
+  const [activeDoctor, setActiveDoctor] = useState(null);
   const modalRef = useRef(null);
 
+  // Close modal on ESC key press
   useEffect(() => {
-    const handleEsc = (e) => {
+    const onKeyDown = (e) => {
       if (e.key === "Escape") {
-        setSelectedDoctor(null);
+        setActiveDoctor(null);
       }
     };
-    window.addEventListener("keydown", handleEsc);
-    return () => window.removeEventListener("keydown", handleEsc);
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
   }, []);
 
-  const handleOverlayClick = (e) => {
+  // Close modal when clicking on overlay backdrop
+  const onBackdropClick = (e) => {
     if (e.target === modalRef.current) {
-      setSelectedDoctor(null);
+      setActiveDoctor(null);
     }
   };
 
   return (
     <section className="bg-white py-16 px-6 sm:px-12 lg:px-24 my-[-60px] mb-[-30px]">
-      {/* Animated Heading & Subtitle */}
+      {/* Heading and subtitle */}
       <motion.div
         className="max-w-7xl mx-auto text-center mb-12"
         variants={containerVariants}
@@ -149,7 +142,7 @@ const HomeDoctors = () => {
         </motion.p>
       </motion.div>
 
-      {/* Animated Doctors Grid */}
+      {/* Doctors Grid */}
       <motion.div
         className="max-w-7xl mx-auto grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6"
         variants={containerVariants}
@@ -158,26 +151,25 @@ const HomeDoctors = () => {
         viewport={{ once: true, amount: 0.3 }}
         aria-live="polite"
       >
-        {doctors.map((doc) => (
+        {doctors.map((doctor) => (
           <motion.article
-            key={doc.id}
-            className="relative bg-gray-50 rounded-lg shadow border border-gray-200 flex flex-col items-center p-4 hover:shadow-md transition-shadow duration-300"
-            aria-label={`Profile of ${doc.name}, ${doc.specialty}`}
+            key={doctor.id}
+            className="relative bg-gray-50 rounded-lg border border-gray-200 shadow flex flex-col items-center p-4 hover:shadow-md transition-shadow duration-300 cursor-pointer focus:outline-none focus:ring-4 focus:ring-blue-500"
+            aria-label={`${doctor.name}, ${doctor.specialty}`}
             variants={cardVariants}
             tabIndex={0}
             role="button"
-            onClick={() => setSelectedDoctor(doc)}
+            onClick={() => setActiveDoctor(doctor)}
             onKeyDown={(e) => {
               if (e.key === "Enter" || e.key === " ") {
-                setSelectedDoctor(doc);
+                setActiveDoctor(doctor);
               }
             }}
           >
-            {/* Tooltip wrapper */}
-            <div className="group relative w-24 h-24 rounded-full overflow-hidden border-2 border-blue-300 shadow-sm mb-4 cursor-pointer focus:outline-none focus:ring-4 focus:ring-blue-500 transition-transform hover:scale-[1.05]">
+            <div className="group relative w-24 h-24 rounded-full overflow-hidden border-2 border-blue-300 shadow-sm mb-4 transition-transform hover:scale-105 focus-visible:scale-105">
               <img
-                src={doc.photo}
-                alt={`Photo of ${doc.name}`}
+                src={doctor.photo}
+                alt={`Photo of ${doctor.name}`}
                 className="w-full h-full object-cover"
                 loading="lazy"
                 decoding="async"
@@ -185,32 +177,31 @@ const HomeDoctors = () => {
                 height={96}
                 aria-hidden="true"
               />
-              {/* Tooltip */}
               <span className="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-2 rounded bg-black bg-opacity-90 px-2 py-1 text-xs text-white opacity-0 group-hover:opacity-100 transition-opacity select-none whitespace-nowrap z-10">
                 View Details
               </span>
             </div>
 
             <h3 className="text-sm font-semibold text-gray-900 text-center">
-              {doc.name}
+              {doctor.name}
             </h3>
             <p className="text-xs text-blue-800 font-semibold text-center mb-3">
-              {doc.specialty}
+              {doctor.specialty}
             </p>
 
             <div className="flex gap-4 text-gray-700 text-sm">
               <a
-                href={`tel:${doc.phone.replace(/[^0-9+]/g, "")}`}
+                href={`tel:${doctor.phone.replace(/[^0-9+]/g, "")}`}
                 className="hover:text-blue-800 transition-colors"
-                aria-label={`Call ${doc.name}`}
+                aria-label={`Call ${doctor.name}`}
                 onClick={(e) => e.stopPropagation()}
               >
                 <FaPhoneAlt />
               </a>
               <a
-                href={`mailto:${doc.email}`}
+                href={`mailto:${doctor.email}`}
                 className="hover:text-blue-800 transition-colors"
-                aria-label={`Email ${doc.name}`}
+                aria-label={`Email ${doctor.name}`}
                 onClick={(e) => e.stopPropagation()}
               >
                 <FaEnvelope />
@@ -222,31 +213,30 @@ const HomeDoctors = () => {
 
       {/* Modal */}
       <AnimatePresence>
-        {selectedDoctor && (
+        {activeDoctor && (
           <motion.div
             ref={modalRef}
-            id="doctor-modal"
             role="dialog"
             aria-modal="true"
             aria-labelledby="doctor-modal-title"
             tabIndex={-1}
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 sm:p-6 overflow-auto"
-            onClick={handleOverlayClick}
+            onClick={onBackdropClick}
             initial="hidden"
             animate="visible"
             exit="exit"
-            variants={modalBackdropVariants}
+            variants={backdropVariants}
           >
             <motion.div
               className="bg-white rounded-2xl max-w-xl w-full max-h-[90vh] overflow-y-auto p-6 relative shadow-xl focus:outline-none"
-              variants={modalContentVariants}
+              variants={modalVariants}
               initial="hidden"
               animate="visible"
               exit="exit"
               tabIndex={0}
             >
               <button
-                onClick={() => setSelectedDoctor(null)}
+                onClick={() => setActiveDoctor(null)}
                 aria-label="Close doctor details"
                 className="absolute top-4 right-4 text-gray-600 hover:text-gray-900 focus:outline-none"
               >
@@ -268,8 +258,8 @@ const HomeDoctors = () => {
 
               <div className="flex flex-col sm:flex-row gap-6">
                 <img
-                  src={selectedDoctor.photo}
-                  alt={`Photo of ${selectedDoctor.name}`}
+                  src={activeDoctor.photo}
+                  alt={`Photo of ${activeDoctor.name}`}
                   className="w-40 h-40 rounded-full object-cover border-4 border-blue-300 shadow-md mx-auto sm:mx-0 flex-shrink-0"
                   loading="lazy"
                   decoding="async"
@@ -279,44 +269,44 @@ const HomeDoctors = () => {
                     id="doctor-modal-title"
                     className="text-2xl font-bold text-gray-900 mb-1 truncate"
                   >
-                    {selectedDoctor.name}
+                    {activeDoctor.name}
                   </h3>
                   <p className="text-blue-800 font-semibold text-lg mb-4 truncate">
-                    {selectedDoctor.specialty}
+                    {activeDoctor.specialty}
                   </p>
-                  <p className="text-gray-800 mb-4 leading-relaxed max-w-full whitespace-normal break-words">
-                    {selectedDoctor.bio}
+                  <p className="text-gray-800 mb-4 leading-relaxed break-words">
+                    {activeDoctor.bio}
                   </p>
 
                   <ul className="mb-4 space-y-1 text-gray-700 text-sm leading-snug">
                     <li>
-                      <strong>Experience:</strong> {selectedDoctor.experienceYears}{" "}
+                      <strong>Experience:</strong> {activeDoctor.experienceYears}{" "}
                       years
                     </li>
                     <li>
-                      <strong>Achievements:</strong> {selectedDoctor.achievements}
+                      <strong>Achievements:</strong> {activeDoctor.achievements}
                     </li>
                     <li>
-                      <strong>Salary:</strong> {selectedDoctor.salary}
+                      <strong>Salary:</strong> {activeDoctor.salary}
                     </li>
                   </ul>
 
                   <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 text-gray-700 text-sm sm:text-base">
                     <a
-                      href={`tel:${selectedDoctor.phone.replace(/[^0-9+]/g, "")}`}
+                      href={`tel:${activeDoctor.phone.replace(/[^0-9+]/g, "")}`}
                       className="flex items-center gap-2 hover:text-blue-800 transition-colors truncate max-w-full"
-                      aria-label={`Call ${selectedDoctor.name}`}
+                      aria-label={`Call ${activeDoctor.name}`}
                     >
                       <FaPhoneAlt className="flex-shrink-0" />
-                      <span className="truncate">{selectedDoctor.phone}</span>
+                      <span className="truncate">{activeDoctor.phone}</span>
                     </a>
                     <a
-                      href={`mailto:${selectedDoctor.email}`}
+                      href={`mailto:${activeDoctor.email}`}
                       className="flex items-center gap-2 hover:text-blue-800 transition-colors truncate max-w-full"
-                      aria-label={`Email ${selectedDoctor.name}`}
+                      aria-label={`Email ${activeDoctor.name}`}
                     >
                       <FaEnvelope className="flex-shrink-0" />
-                      <span className="truncate">{selectedDoctor.email}</span>
+                      <span className="truncate">{activeDoctor.email}</span>
                     </a>
                   </div>
                 </div>
@@ -327,6 +317,4 @@ const HomeDoctors = () => {
       </AnimatePresence>
     </section>
   );
-};
-
-export default HomeDoctors;
+}

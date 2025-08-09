@@ -76,7 +76,7 @@ const BlogFeatured = () => {
       className="max-w-7xl mx-auto px-6 sm:px-12 lg:px-20 py-16"
     >
       <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-12 text-center">
-        Featured Articles
+        Featured <span className="text-blue-700">Articles</span>
       </h2>
 
       <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
@@ -85,22 +85,28 @@ const BlogFeatured = () => {
             key={id}
             className="group bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-shadow duration-500 flex flex-col"
           >
-            {/* Image */}
-            <a href={href} className="block overflow-hidden relative">
+            {/* Post image with subtle zoom on hover */}
+            <a
+              href={href}
+              className="block relative overflow-hidden"
+              tabIndex={-1}
+              aria-hidden="true"
+            >
               <img
                 src={image}
                 alt={title}
-                className="w-full h-56 object-cover transform group-hover:scale-105 transition-transform duration-500 ease-out"
+                className="w-full h-56 object-cover transition-transform duration-500 ease-out group-hover:scale-105"
                 loading="lazy"
                 decoding="async"
               />
             </a>
 
-            {/* Content */}
+            {/* Post content */}
             <div className="p-6 flex flex-col flex-grow">
               <a
                 href={href}
                 className="text-xl font-bold text-gray-900 hover:text-blue-600 transition-colors duration-300 leading-snug line-clamp-2"
+                aria-label={`Read full article: ${title}`}
               >
                 {title}
               </a>
@@ -109,25 +115,22 @@ const BlogFeatured = () => {
                 {excerpt}
               </p>
 
-              {/* Author + Date */}
+              {/* Author and publication date */}
               <div className="mt-6 flex items-center justify-between text-sm text-gray-500">
                 <span>
-                  By{" "}
-                  <strong className="text-gray-800 font-medium">{author}</strong>
+                  By <strong className="text-gray-800 font-medium">{author}</strong>
                 </span>
                 <time dateTime={new Date(date).toISOString()}>{date}</time>
               </div>
 
-              {/* Read More */}
+              {/* Read More button with smooth arrow animation */}
               <a
                 href={href}
                 className="mt-6 inline-flex items-center gap-2 text-blue-600 font-semibold hover:gap-3 transition-all duration-300"
                 aria-label={`Read full article: ${title}`}
               >
                 Read More
-                <span className="transition-transform group-hover:translate-x-1">
-                  →
-                </span>
+                <span className="transition-transform group-hover:translate-x-1">→</span>
               </a>
             </div>
           </article>

@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import React, { useEffect } from "react"
-import { motion } from "framer-motion"
+import React, { useEffect } from "react";
+import { motion } from "framer-motion";
 
 const containerVariants = {
   hidden: { opacity: 0, y: 30 },
@@ -10,7 +10,7 @@ const containerVariants = {
     y: 0,
     transition: { ease: "easeOut", duration: 0.8, staggerChildren: 0.2 },
   },
-}
+};
 
 const itemVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -19,13 +19,13 @@ const itemVariants = {
     y: 0,
     transition: { ease: "easeOut", duration: 0.6 },
   },
-}
+};
 
 const ServicesIntro = () => {
   useEffect(() => {
-    const heading = document.getElementById("services-intro-heading")
-    if (heading) heading.focus({ preventScroll: true })
-  }, [])
+    const heading = document.getElementById("services-intro-heading");
+    if (heading) heading.focus({ preventScroll: true });
+  }, []);
 
   return (
     <section
@@ -57,22 +57,18 @@ const ServicesIntro = () => {
           className="mt-6 text-base sm:text-lg md:text-xl text-gray-700 font-light leading-relaxed tracking-wide"
           variants={itemVariants}
         >
-          We believe healthcare should be accessible, compassionate, and
-          personalized. Whether you're here for a routine checkup, preventive
-          care, or specialized treatment — our team of professionals is ready to
-          serve you with expertise and empathy.
+          We believe healthcare should be accessible, compassionate, and personalized. Whether you're here for a routine checkup, preventive care, or specialized treatment — our team of professionals is ready to serve you with expertise and empathy.
         </motion.p>
 
         <motion.p
           className="mt-4 text-base sm:text-lg text-gray-600 font-light leading-relaxed"
           variants={itemVariants}
         >
-          Our goal is not just treatment — it’s your total well-being. Experience
-          healthcare that puts you first.
+          Our goal is not just treatment — it’s your total well-being. Experience healthcare that puts you first.
         </motion.p>
       </motion.div>
     </section>
-  )
-}
+  );
+};
 
-export default ServicesIntro
+export default ServicesIntro;

@@ -13,6 +13,7 @@ const statsData = [
         viewBox="0 0 24 24"
         stroke="currentColor"
         strokeWidth={2.5}
+        aria-hidden="true"
       >
         <path
           strokeLinecap="round"
@@ -34,6 +35,7 @@ const statsData = [
         viewBox="0 0 24 24"
         stroke="currentColor"
         strokeWidth={2.5}
+        aria-hidden="true"
       >
         <path
           strokeLinecap="round"
@@ -55,6 +57,7 @@ const statsData = [
         viewBox="0 0 24 24"
         stroke="currentColor"
         strokeWidth={2.5}
+        aria-hidden="true"
       >
         <path
           strokeLinecap="round"
@@ -76,6 +79,7 @@ const statsData = [
         viewBox="0 0 24 24"
         stroke="currentColor"
         strokeWidth={2.5}
+        aria-hidden="true"
       >
         <path
           strokeLinecap="round"
@@ -90,22 +94,24 @@ const statsData = [
 export default function BlogStats() {
   return (
     <section
-      aria-label="Blog statistics"
-      className="max-w-5xl mx-auto px-6 py-16 my-[-30px]"
+      aria-label="Blog statistics overview"
+      className="max-w-5xl mx-auto px-6 py-16 -my-8"
     >
       <h2 className="text-3xl font-extrabold text-center mb-12 text-gray-900">
-        Blog at a Glance
+        <span className="text-blue-700">Blog at a</span> Glance
       </h2>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10">
         {statsData.map(({ id, title, value, icon }) => (
-          <div
+          <article
             key={id}
             className="flex flex-col items-center bg-white rounded-3xl shadow-lg p-8 hover:shadow-2xl transition-shadow duration-300"
+            aria-label={`${title}: ${value}`}
           >
             <div className="mb-4">{icon}</div>
             <p className="text-4xl font-extrabold text-gray-900">{value}</p>
             <p className="mt-2 text-lg text-gray-600 font-medium">{title}</p>
-          </div>
+          </article>
         ))}
       </div>
     </section>

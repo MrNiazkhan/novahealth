@@ -3,10 +3,36 @@
 import React, { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const PatientInfoHero = () => {
+function Spinner() {
+  return (
+    <svg
+      className="animate-spin h-5 w-5 mr-2 text-white"
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+    >
+      <circle
+        className="opacity-25"
+        cx="12"
+        cy="12"
+        r="10"
+        stroke="currentColor"
+        strokeWidth="4"
+      ></circle>
+      <path
+        className="opacity-75"
+        fill="currentColor"
+        d="M4 12a8 8 0 018-8v8H4z"
+      ></path>
+    </svg>
+  );
+}
+
+export default function PatientInfoHero() {
   const modalRef = useRef(null);
   const firstInputRef = useRef(null);
-  const lastFocusRef = useRef(null);
+  const lastFocusedElement = useRef(null);
 
   const [modalOpen, setModalOpen] = useState(false);
   const [formData, setFormData] = useState({
@@ -20,16 +46,16 @@ const PatientInfoHero = () => {
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState("");
 
-  // Focus trap & scroll lock for modal
+  // Focus trap and body scroll lock when modal opens
   useEffect(() => {
     if (!modalOpen) return;
 
-    lastFocusRef.current = document.activeElement;
+    lastFocusedElement.current = document.activeElement;
 
-    setTimeout(() => {
-      firstInputRef.current?.focus();
-    }, 150);
+    // Focus first input after a short delay
+    setTimeout(() => firstInputRef.current?.focus(), 150);
 
+    // Lock body scroll
     document.body.style.overflow = "hidden";
 
     const handleFocus = (e) => {
@@ -45,11 +71,11 @@ const PatientInfoHero = () => {
         closeModal();
       }
       if (e.key === "Tab") {
-        const focusable = modalRef.current.querySelectorAll(
+        const focusableEls = modalRef.current.querySelectorAll(
           'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
         );
-        const firstEl = focusable[0];
-        const lastEl = focusable[focusable.length - 1];
+        const firstEl = focusableEls[0];
+        const lastEl = focusableEls[focusableEls.length - 1];
 
         if (e.shiftKey) {
           if (document.activeElement === firstEl) {
@@ -72,11 +98,11 @@ const PatientInfoHero = () => {
       window.removeEventListener("focus", handleFocus, true);
       window.removeEventListener("keydown", handleKeyDown);
       document.body.style.overflow = "";
-      lastFocusRef.current?.focus();
+      lastFocusedElement.current?.focus();
     };
   }, [modalOpen]);
 
-  // Validation
+  // Simple validation logic
   const validate = () => {
     const errors = {};
     if (!formData.fullName.trim()) errors.fullName = "Full name is required";
@@ -90,24 +116,25 @@ const PatientInfoHero = () => {
     return errors;
   };
 
-  // Handle input change
+  // Handle input changes and clear errors for that field
   const handleChange = (e) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
 
-    if (formErrors[e.target.name]) {
+    if (formErrors[name]) {
       setFormErrors((prev) => {
-        const copy = { ...prev };
-        delete copy[e.target.name];
-        return copy;
+        const updated = { ...prev };
+        delete updated[name];
+        return updated;
       });
     }
-
-    setSubmitError("");
+    if (submitError) setSubmitError("");
   };
 
-  // Submit form simulation
+  // Simulate form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     setFormErrors({});
     setSubmitError("");
     setSubmitSuccess(false);
@@ -121,7 +148,9 @@ const PatientInfoHero = () => {
     setSubmitting(true);
 
     try {
+      // Simulated network delay
       await new Promise((res) => setTimeout(res, 1500));
+      // Simulate occasional failure (25%)
       if (Math.random() < 0.25) throw new Error("Simulated error");
 
       setSubmitSuccess(true);
@@ -138,6 +167,7 @@ const PatientInfoHero = () => {
     }
   };
 
+  // Reset and close modal
   const closeModal = () => {
     setModalOpen(false);
     setFormErrors({});
@@ -151,16 +181,17 @@ const PatientInfoHero = () => {
     });
   };
 
-  // Animation variants
+  // Animation variants for hero texts
   const heroTextVariants = {
     hidden: { opacity: 0, y: 30 },
-    visible: (i) => ({
+    visible: (index) => ({
       opacity: 1,
       y: 0,
-      transition: { delay: i * 0.25, duration: 0.7, ease: "easeOut" },
+      transition: { delay: index * 0.25, duration: 0.7, ease: "easeOut" },
     }),
   };
 
+  // Animation for modal backdrop and container
   const backdropVariants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1 },
@@ -264,12 +295,12 @@ const PatientInfoHero = () => {
             <motion.div
               ref={modalRef}
               tabIndex={-1}
+              role="document"
               className="bg-white rounded-lg max-w-md w-full p-6 mx-4 relative shadow-2xl ring-1 ring-black ring-opacity-10 focus:outline-none"
               variants={modalVariants}
               initial="hidden"
               animate="visible"
               exit="exit"
-              role="document"
             >
               {/* Close button */}
               <button
@@ -315,116 +346,52 @@ const PatientInfoHero = () => {
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} noValidate>
-                  <div className="mb-4">
-                    <label
-                      htmlFor="fullName"
-                      className="block font-semibold mb-1 text-gray-800"
-                    >
-                      Full Name<span className="text-red-600">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      id="fullName"
-                      name="fullName"
-                      ref={firstInputRef}
-                      value={formData.fullName}
-                      onChange={handleChange}
-                      className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 transition-colors ${
-                        formErrors.fullName
-                          ? "border-red-500"
-                          : "border-gray-300"
-                      }`}
-                      aria-invalid={!!formErrors.fullName}
-                      aria-describedby={
-                        formErrors.fullName ? "fullName-error" : undefined
-                      }
-                      placeholder="Jane Doe"
-                      disabled={submitting}
-                      autoComplete="name"
-                      required
-                    />
-                    {formErrors.fullName && (
-                      <p
-                        id="fullName-error"
-                        className="text-red-600 text-sm mt-1"
-                        role="alert"
-                      >
-                        {formErrors.fullName}
-                      </p>
-                    )}
-                  </div>
+                  {/* Full Name */}
+                  <FormField
+                    label="Full Name"
+                    id="fullName"
+                    name="fullName"
+                    value={formData.fullName}
+                    onChange={handleChange}
+                    error={formErrors.fullName}
+                    placeholder="Jane Doe"
+                    disabled={submitting}
+                    ref={firstInputRef}
+                    required
+                    autoComplete="name"
+                    type="text"
+                  />
 
-                  <div className="mb-4">
-                    <label
-                      htmlFor="phone"
-                      className="block font-semibold mb-1 text-gray-800"
-                    >
-                      Phone Number<span className="text-red-600">*</span>
-                    </label>
-                    <input
-                      type="tel"
-                      id="phone"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleChange}
-                      className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 transition-colors ${
-                        formErrors.phone
-                          ? "border-red-500"
-                          : "border-gray-300"
-                      }`}
-                      aria-invalid={!!formErrors.phone}
-                      aria-describedby={
-                        formErrors.phone ? "phone-error" : undefined
-                      }
-                      placeholder="+1234567890"
-                      disabled={submitting}
-                      autoComplete="tel"
-                      required
-                    />
-                    {formErrors.phone && (
-                      <p
-                        id="phone-error"
-                        className="text-red-600 text-sm mt-1"
-                        role="alert"
-                      >
-                        {formErrors.phone}
-                      </p>
-                    )}
-                  </div>
+                  {/* Phone Number */}
+                  <FormField
+                    label="Phone Number"
+                    id="phone"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    error={formErrors.phone}
+                    placeholder="+1234567890"
+                    disabled={submitting}
+                    required
+                    autoComplete="tel"
+                    type="tel"
+                  />
 
-                  <div className="mb-4">
-                    <label
-                      htmlFor="dob"
-                      className="block font-semibold mb-1 text-gray-800"
-                    >
-                      Date of Birth<span className="text-red-600">*</span>
-                    </label>
-                    <input
-                      type="date"
-                      id="dob"
-                      name="dob"
-                      value={formData.dob}
-                      onChange={handleChange}
-                      className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 transition-colors ${
-                        formErrors.dob ? "border-red-500" : "border-gray-300"
-                      }`}
-                      aria-invalid={!!formErrors.dob}
-                      aria-describedby={formErrors.dob ? "dob-error" : undefined}
-                      disabled={submitting}
-                      max={new Date().toISOString().split("T")[0]}
-                      required
-                    />
-                    {formErrors.dob && (
-                      <p
-                        id="dob-error"
-                        className="text-red-600 text-sm mt-1"
-                        role="alert"
-                      >
-                        {formErrors.dob}
-                      </p>
-                    )}
-                  </div>
+                  {/* Date of Birth */}
+                  <FormField
+                    label="Date of Birth"
+                    id="dob"
+                    name="dob"
+                    value={formData.dob}
+                    onChange={handleChange}
+                    error={formErrors.dob}
+                    disabled={submitting}
+                    required
+                    type="date"
+                    max={new Date().toISOString().split("T")[0]}
+                  />
 
+                  {/* Gender Select */}
                   <div className="mb-6">
                     <label
                       htmlFor="gender"
@@ -438,14 +405,10 @@ const PatientInfoHero = () => {
                       value={formData.gender}
                       onChange={handleChange}
                       className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 transition-colors ${
-                        formErrors.gender
-                          ? "border-red-500"
-                          : "border-gray-300"
+                        formErrors.gender ? "border-red-500" : "border-gray-300"
                       }`}
                       aria-invalid={!!formErrors.gender}
-                      aria-describedby={
-                        formErrors.gender ? "gender-error" : undefined
-                      }
+                      aria-describedby={formErrors.gender ? "gender-error" : undefined}
                       disabled={submitting}
                       required
                     >
@@ -467,6 +430,7 @@ const PatientInfoHero = () => {
                     )}
                   </div>
 
+                  {/* Submit error message */}
                   {submitError && (
                     <p
                       className="text-red-600 mb-4 font-semibold text-center"
@@ -476,6 +440,7 @@ const PatientInfoHero = () => {
                     </p>
                   )}
 
+                  {/* Submit button */}
                   <button
                     type="submit"
                     disabled={submitting}
@@ -483,26 +448,7 @@ const PatientInfoHero = () => {
                   >
                     {submitting ? (
                       <>
-                        <svg
-                          className="animate-spin h-5 w-5 mr-2 text-white"
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                        >
-                          <circle
-                            className="opacity-25"
-                            cx="12"
-                            cy="12"
-                            r="10"
-                            stroke="currentColor"
-                            strokeWidth="4"
-                          ></circle>
-                          <path
-                            className="opacity-75"
-                            fill="currentColor"
-                            d="M4 12a8 8 0 018-8v8H4z"
-                          ></path>
-                        </svg>
+                        <Spinner />
                         Submitting...
                       </>
                     ) : (
@@ -517,6 +463,58 @@ const PatientInfoHero = () => {
       </AnimatePresence>
     </>
   );
-};
+}
 
-export default PatientInfoHero;
+// Reusable input field with label and error display
+const FormField = React.forwardRef(
+  (
+    {
+      label,
+      id,
+      name,
+      value,
+      onChange,
+      error,
+      placeholder,
+      disabled,
+      required,
+      autoComplete,
+      type,
+      max,
+    },
+    ref
+  ) => {
+    const inputProps = {
+      id,
+      name,
+      value,
+      onChange,
+      placeholder,
+      disabled,
+      required,
+      autoComplete,
+      type,
+      max,
+      className: `w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 transition-colors ${
+        error ? "border-red-500" : "border-gray-300"
+      }`,
+      "aria-invalid": !!error,
+      "aria-describedby": error ? `${id}-error` : undefined,
+      ref,
+    };
+
+    return (
+      <div className="mb-4">
+        <label htmlFor={id} className="block font-semibold mb-1 text-gray-800">
+          {label} {required && <span className="text-red-600">*</span>}
+        </label>
+        <input {...inputProps} />
+        {error && (
+          <p id={`${id}-error`} className="text-red-600 text-sm mt-1" role="alert">
+            {error}
+          </p>
+        )}
+      </div>
+    );
+  }
+);

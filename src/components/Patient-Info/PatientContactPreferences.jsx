@@ -2,52 +2,86 @@
 
 import React, { useState } from "react";
 
-const contactMethods = [
+const CONTACT_OPTIONS = [
   { id: "email", label: "Email" },
   { id: "phone", label: "Phone" },
   { id: "sms", label: "SMS" },
 ];
 
-const PatientContactPreferences = () => {
+// Checkbox group for contact methods
+function ContactMethodCheckbox({ id, label, checked, onToggle }) {
+  return (
+    <label
+      htmlFor={id}
+      className="inline-flex items-center cursor-pointer select-none"
+    >
+      <input
+        type="checkbox"
+        id={id}
+        name="contactMethods"
+        value={id}
+        checked={checked}
+        onChange={onToggle}
+        className="form-checkbox h-5 w-5 text-blue-700 transition duration-150 ease-in-out"
+      />
+      <span className="ml-2 text-gray-900 text-base">{label}</span>
+    </label>
+  );
+}
+
+export default function PatientContactPreferences() {
   const [selectedMethods, setSelectedMethods] = useState([]);
-  const [contactTime, setContactTime] = useState("");
-  const [errors, setErrors] = useState({});
+  const [preferredTime, setPreferredTime] = useState("");
+  const [formErrors, setFormErrors] = useState({});
 
-  // Toggle contact method checkbox
-  const toggleMethod = (methodId) => {
-    setSelectedMethods((prev) =>
-      prev.includes(methodId)
-        ? prev.filter((m) => m !== methodId)
-        : [...prev, methodId]
-    );
-    setErrors((prev) => ({ ...prev, methods: undefined }));
-  };
+  // Toggle method selection and clear error if needed
+  function handleToggleMethod(methodId) {
+    setSelectedMethods((current) => {
+      const isSelected = current.includes(methodId);
+      return isSelected
+        ? current.filter((m) => m !== methodId)
+        : [...current, methodId];
+    });
+    if (formErrors.methods) {
+      setFormErrors((errors) => ({ ...errors, methods: undefined }));
+    }
+  }
 
-  const handleTimeChange = (e) => {
-    setContactTime(e.target.value);
-    if (e.target.value) setErrors((prev) => ({ ...prev, time: undefined }));
-  };
+  // Handle select change and clear error if needed
+  function handleTimeChange(e) {
+    setPreferredTime(e.target.value);
+    if (formErrors.time) {
+      setFormErrors((errors) => ({ ...errors, time: undefined }));
+    }
+  }
 
-  // Validate inputs before submission
-  const validate = () => {
-    const newErrors = {};
-    if (selectedMethods.length === 0)
-      newErrors.methods = "Please select at least one contact method.";
-    if (!contactTime) newErrors.time = "Please select the best time to contact.";
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+  // Validate before submit, set errors if any
+  function validateForm() {
+    const errors = {};
+    if (selectedMethods.length === 0) {
+      errors.methods = "Please select at least one contact method.";
+    }
+    if (!preferredTime) {
+      errors.time = "Please select the best time to contact.";
+    }
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  }
 
-  // Simulate form submit
-  const handleSubmit = (e) => {
+  // Form submission
+  function handleSubmit(e) {
     e.preventDefault();
-    if (!validate()) return;
+
+    if (!validateForm()) {
+      return;
+    }
+
     alert(
       `Preferences saved:\nMethods: ${selectedMethods.join(
         ", "
-      )}\nBest time to contact: ${contactTime}`
+      )}\nBest time to contact: ${preferredTime}`
     );
-  };
+  }
 
   return (
     <section
@@ -67,51 +101,45 @@ const PatientContactPreferences = () => {
           <legend className="text-lg font-semibold text-gray-700 mb-3">
             Preferred Contact Methods <span className="text-red-600">*</span>
           </legend>
+
           <div className="flex flex-wrap gap-6">
-            {contactMethods.map(({ id, label }) => (
-              <label
+            {CONTACT_OPTIONS.map(({ id, label }) => (
+              <ContactMethodCheckbox
                 key={id}
-                htmlFor={id}
-                className="inline-flex items-center cursor-pointer select-none"
-              >
-                <input
-                  type="checkbox"
-                  id={id}
-                  name="contactMethods"
-                  value={id}
-                  checked={selectedMethods.includes(id)}
-                  onChange={() => toggleMethod(id)}
-                  className="form-checkbox h-5 w-5 text-blue-700 transition duration-150 ease-in-out"
-                />
-                <span className="ml-2 text-gray-900 text-base">{label}</span>
-              </label>
+                id={id}
+                label={label}
+                checked={selectedMethods.includes(id)}
+                onToggle={() => handleToggleMethod(id)}
+              />
             ))}
           </div>
-          {errors.methods && (
+
+          {formErrors.methods && (
             <p className="mt-2 text-sm text-red-600" role="alert">
-              {errors.methods}
+              {formErrors.methods}
             </p>
           )}
         </fieldset>
 
-        {/* Best Contact Time */}
+        {/* Best Time to Contact */}
         <div className="mb-6">
           <label
-            htmlFor="contactTime"
+            htmlFor="preferredTime"
             className="block text-lg font-semibold text-gray-700 mb-2"
           >
             Best Time to Contact <span className="text-red-600">*</span>
           </label>
+
           <select
-            id="contactTime"
-            name="contactTime"
-            value={contactTime}
+            id="preferredTime"
+            name="preferredTime"
+            value={preferredTime}
             onChange={handleTimeChange}
             className={`w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 transition-colors ${
-              errors.time ? "border-red-500" : "border-gray-300"
+              formErrors.time ? "border-red-500" : "border-gray-300"
             }`}
-            aria-invalid={errors.time ? "true" : "false"}
-            aria-describedby={errors.time ? "contactTime-error" : undefined}
+            aria-invalid={formErrors.time ? "true" : "false"}
+            aria-describedby={formErrors.time ? "preferredTime-error" : undefined}
             required
           >
             <option value="" disabled>
@@ -121,17 +149,19 @@ const PatientContactPreferences = () => {
             <option value="afternoon">Afternoon (12PM - 4PM)</option>
             <option value="evening">Evening (4PM - 8PM)</option>
           </select>
-          {errors.time && (
+
+          {formErrors.time && (
             <p
-              id="contactTime-error"
+              id="preferredTime-error"
               className="mt-2 text-sm text-red-600"
               role="alert"
             >
-              {errors.time}
+              {formErrors.time}
             </p>
           )}
         </div>
 
+        {/* Submit Button */}
         <button
           type="submit"
           className="w-full bg-blue-700 hover:bg-blue-800 text-white font-semibold py-3 rounded-lg shadow-md transition-colors focus:outline-none focus:ring-4 focus:ring-blue-300"
@@ -141,6 +171,4 @@ const PatientContactPreferences = () => {
       </form>
     </section>
   );
-};
-
-export default PatientContactPreferences;
+}

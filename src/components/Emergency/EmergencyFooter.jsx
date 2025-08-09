@@ -13,7 +13,7 @@ const EmergencyFooter = () => {
       transition={{ duration: 0.7, ease: "easeOut" }}
     >
       <div className="flex flex-col md:flex-row justify-between items-center gap-6 md:gap-0">
-        {/* Left: Thank you and info */}
+        {/* Left section: Gratitude and info */}
         <motion.div
           className="max-w-lg text-center md:text-left"
           initial={{ opacity: 0, x: -20 }}
@@ -24,18 +24,19 @@ const EmergencyFooter = () => {
             Thank You for Trusting Your Emergency Team
           </h3>
           <p className="text-gray-700 text-sm sm:text-base md:text-lg leading-relaxed">
-            We’re dedicated to providing rapid and expert emergency assistance whenever you need it. Your safety and care are our top priorities.
+            We’re dedicated to providing rapid and expert emergency assistance
+            whenever you need it. Your safety and care are our top priorities.
           </p>
         </motion.div>
 
-        {/* Right: Contact info & CTA */}
+        {/* Right section: Contact details and call-to-action */}
         <motion.div
           className="flex flex-col sm:flex-row items-center gap-4 sm:gap-8 md:gap-12 mt-6 md:mt-0"
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.7, delay: 0.5 }}
         >
-          {/* Contact Info */}
+          {/* Contact info */}
           <div className="flex flex-col space-y-3 text-gray-700 text-sm sm:text-base">
             <div className="flex items-center space-x-2 sm:space-x-3 select-none">
               <svg
@@ -61,6 +62,7 @@ const EmergencyFooter = () => {
                 911
               </a>
             </div>
+
             <div className="flex items-center space-x-2 sm:space-x-3 select-none">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -87,7 +89,7 @@ const EmergencyFooter = () => {
             </div>
           </div>
 
-          {/* CTA Button */}
+          {/* Contact button */}
           <motion.button
             type="button"
             className="bg-blue-700 hover:bg-blue-800 text-white font-semibold text-sm sm:text-base px-6 sm:px-8 py-2.5 sm:py-3 rounded-lg shadow-lg transition-colors focus:outline-none focus:ring-4 focus:ring-blue-300 whitespace-nowrap"

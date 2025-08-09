@@ -54,19 +54,19 @@ const teamMembers = [
   },
 ];
 
-const OurteamMembers = () => {
+export default function OurteamMembers() {
   return (
     <section
       aria-label="Meet Our Team Members"
       className="max-w-7xl mx-auto px-5 sm:px-8 md:px-12 py-20 bg-white my-[-30px]"
     >
       <h2 className="text-4xl font-extrabold text-blue-700 mb-12 text-center">
-        Meet Our Team
+        <span className="text-black">Meet Our</span> Team
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10">
-        {teamMembers.map(({ name, role, photo, bio, socials }, idx) => (
+        {teamMembers.map(({ name, role, photo, bio, socials }, index) => (
           <article
-            key={idx}
+            key={index}
             tabIndex={0}
             role="group"
             aria-label={`Team member: ${name}, ${role}`}
@@ -78,6 +78,7 @@ const OurteamMembers = () => {
               className="w-32 h-32 rounded-full object-cover mb-6 shadow-md"
               loading="lazy"
               decoding="async"
+              draggable={false}
             />
             <h3 className="text-xl font-semibold text-gray-900 mb-1">{name}</h3>
             <p className="text-blue-700 font-medium mb-4">{role}</p>
@@ -122,6 +123,4 @@ const OurteamMembers = () => {
       </div>
     </section>
   );
-};
-
-export default OurteamMembers;
+}

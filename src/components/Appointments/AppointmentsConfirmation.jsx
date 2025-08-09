@@ -7,6 +7,32 @@ const PRIMARY_BLUE = "#2563eb";
 const PRIMARY_BLUE_HOVER = "#1e40af";
 const TEXT_DARK = "#111827";
 
+const formatDate = (date) => {
+  if (!date) return "N/A";
+  try {
+    const options = { year: "numeric", month: "long", day: "numeric" };
+    return new Date(date).toLocaleDateString(undefined, options);
+  } catch {
+    return "N/A";
+  }
+};
+
+const formatTime = (time) => {
+  if (!time) return "N/A";
+  try {
+    const [hours, minutes] = time.split(":").map(Number);
+    const dateObj = new Date();
+    dateObj.setHours(hours, minutes);
+    return dateObj.toLocaleTimeString(undefined, {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
+  } catch {
+    return "N/A";
+  }
+};
+
 const AppointmentsConfirmation = ({
   fullName,
   email,
@@ -16,12 +42,14 @@ const AppointmentsConfirmation = ({
   message,
   onReset,
 }) => {
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
   const controls = useAnimation();
   const containerRef = useRef(null);
 
-  // Intersection Observer to trigger animation on scroll into view
+  // Trigger fade-in animation when component scrolls into view
   useEffect(() => {
+    if (!containerRef.current) return;
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -35,40 +63,23 @@ const AppointmentsConfirmation = ({
       { threshold: 0.3 }
     );
 
-    if (containerRef.current) observer.observe(containerRef.current);
+    observer.observe(containerRef.current);
     return () => observer.disconnect();
   }, [controls]);
 
-  const formatDate = (d) => {
-    try {
-      const options = { year: "numeric", month: "long", day: "numeric" };
-      return new Date(d).toLocaleDateString(undefined, options);
-    } catch {
-      return d || "N/A";
-    }
-  };
+  // Handler for the reset button - disables during processing
+  const handleResetClick = () => {
+    if (isProcessing) return;
+    setIsProcessing(true);
 
-  const formatTime = (t) => {
-    try {
-      if (!t) return "N/A";
-      const [h, m] = t.split(":");
-      const dateObj = new Date();
-      dateObj.setHours(parseInt(h), parseInt(m));
-      return dateObj.toLocaleTimeString(undefined, {
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: true,
-      });
-    } catch {
-      return t || "N/A";
+    if (typeof onReset === "function") {
+      onReset();
     }
-  };
 
-  const handleReset = () => {
-    if (isSubmitting) return;
-    setIsSubmitting(true);
-    onReset && onReset();
-    setTimeout(() => setIsSubmitting(false), 1500);
+    // Simulate processing delay for UX polish
+    setTimeout(() => {
+      setIsProcessing(false);
+    }, 1500);
   };
 
   return (
@@ -86,8 +97,6 @@ const AppointmentsConfirmation = ({
           font-family: 'Inter', sans-serif;
           color: ${TEXT_DARK};
           user-select: none;
-          /* Remove old fade-in CSS */
-          /* opacity and transform are handled by framer-motion */
         }
         .appointment-confirmation h2 {
           font-size: 28px;
@@ -167,7 +176,6 @@ const AppointmentsConfirmation = ({
             gap: 8px 0;
           }
           dl.appointment-details dt {
-            font-weight: 600;
             margin-top: 12px;
           }
           button.reset-btn {
@@ -186,7 +194,10 @@ const AppointmentsConfirmation = ({
         initial={{ opacity: 0, y: 15 }}
         animate={controls}
       >
-        <h2 tabIndex={-1}>Appointment Confirmed</h2>
+        <h2 tabIndex={-1}>
+          <span style={{ color: "black" }}>Appointment </span>
+          <span style={{ color: PRIMARY_BLUE }}>Confirmed</span>
+        </h2>
 
         <p>
           Thank you, <strong>{fullName || "Guest"}</strong>! Your appointment
@@ -215,12 +226,12 @@ const AppointmentsConfirmation = ({
 
         <button
           type="button"
-          onClick={handleReset}
+          onClick={handleResetClick}
           className="reset-btn"
-          disabled={isSubmitting}
+          disabled={isProcessing}
           aria-label="Reset appointment form to book another appointment"
         >
-          {isSubmitting ? "Processing..." : "Book Another Appointment"}
+          {isProcessing ? "Processing..." : "Book Another Appointment"}
         </button>
       </motion.section>
     </>

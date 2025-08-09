@@ -42,6 +42,7 @@ const FAQ_DATA = [
   },
 ];
 
+// Animation variants for the container and individual items
 const containerVariants = {
   hidden: {},
   visible: {
@@ -61,15 +62,17 @@ const itemVariants = {
   },
 };
 
-const HomeFAQ = () => {
+export default function HomeFAQ() {
   const [openId, setOpenId] = useState(null);
   const controls = useAnimation();
   const sectionRef = useRef(null);
 
-  const toggle = (id) => {
-    setOpenId((prev) => (prev === id ? null : id));
-  };
+  // Toggle the open FAQ 
+  function toggleOpen(id) {
+    setOpenId((current) => (current === id ? null : id));
+  }
 
+  // Start animation when the FAQ section scrolls into view
   useEffect(() => {
     if (!sectionRef.current) return;
 
@@ -114,26 +117,26 @@ const HomeFAQ = () => {
         animate={controls}
       >
         {FAQ_DATA.map(({ id, question, answer }) => {
-          const isOpen = id === openId;
+          const isOpen = openId === id;
 
           return (
             <motion.div
               key={id}
-              className="border border-gray-300 rounded-lg overflow-hidden shadow-sm"
+              className="border border-gray-300 rounded-lg shadow-sm overflow-hidden"
               variants={itemVariants}
             >
               <button
-                onClick={() => toggle(id)}
+                onClick={() => toggleOpen(id)}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" || e.key === " ") {
                     e.preventDefault();
-                    toggle(id);
+                    toggleOpen(id);
                   }
                 }}
                 aria-expanded={isOpen}
                 aria-controls={`faq-panel-${id}`}
                 id={`faq-header-${id}`}
-                className="flex items-center justify-between w-full px-6 py-4 text-left text-gray-800 font-semibold text-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2"
+                className="flex justify-between items-center w-full px-6 py-4 text-left font-semibold text-lg text-gray-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2"
               >
                 <span>{question}</span>
                 <motion.span
@@ -174,6 +177,4 @@ const HomeFAQ = () => {
       </motion.div>
     </section>
   );
-};
-
-export default HomeFAQ;
+}

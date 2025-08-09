@@ -1,9 +1,10 @@
-"use client"
+"use client";
 
-import React from "react"
-import { motion } from "framer-motion"
+import React from "react";
+import { motion } from "framer-motion";
 
-const partners = [
+// Partner details
+const partnerList = [
   {
     id: 1,
     name: "Global Health Inc.",
@@ -13,13 +14,15 @@ const partners = [
   {
     id: 2,
     name: "MediCorp",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/7/7d/Mediacorp_flat_logo_%282015%29.svg",
+    logo:
+      "https://upload.wikimedia.org/wikipedia/commons/7/7d/Mediacorp_flat_logo_%282015%29.svg",
     website: "https://medicorp.example.com",
   },
   {
     id: 3,
     name: "Wellness Partners",
-    logo: "https://wellnesspartnershealth.org/wp-content/uploads/2023/05/WELLNESS_copy-removebg-preview-1.png",
+    logo:
+      "https://wellnesspartnershealth.org/wp-content/uploads/2023/05/WELLNESS_copy-removebg-preview-1.png",
     website: "https://wellnesspartners.example.com",
   },
   {
@@ -31,7 +34,8 @@ const partners = [
   {
     id: 5,
     name: "CareConnect",
-    logo: "https://images.squarespace-cdn.com/content/v1/607d8d759f6f9a4d163f12c4/1621958541204-7NS60OZ2DMEHJVKC0921/logo.png",
+    logo:
+      "https://images.squarespace-cdn.com/content/v1/607d8d759f6f9a4d163f12c4/1621958541204-7NS60OZ2DMEHJVKC0921/logo.png",
     website: "https://careconnect.example.com",
   },
   {
@@ -40,9 +44,10 @@ const partners = [
     logo: "https://www.seniorliving.org/app/uploads/2019/01/Lifeline-Logo.png",
     website: "https://lifeline.example.com",
   },
-]
+];
 
-const containerVariants = {
+// Animation variants for the container
+const containerAnimation = {
   hidden: {},
   visible: {
     transition: {
@@ -50,26 +55,28 @@ const containerVariants = {
       delayChildren: 0.3,
     },
   },
-}
+};
 
-const itemVariants = {
+// Each partner logo animation with fade + scale, plus hover effect
+const partnerAnimation = {
   hidden: { opacity: 0, scale: 0.85 },
   visible: { opacity: 1, scale: 1, transition: { duration: 0.4, ease: "easeOut" } },
   hover: { scale: 1.1, boxShadow: "0 8px 20px rgba(0,0,0,0.15)" },
-}
+};
 
-const AboutPartners = () => {
+export default function AboutPartners() {
   return (
     <section
       aria-label="Our Partners"
-      className="bg-white py-20 px-6 sm:px-12 max-w-7xl mx-auto "
+      className="bg-white py-20 px-6 sm:px-12 max-w-7xl mx-auto"
     >
+      {/* Heading and intro */}
       <motion.div
+        className="max-w-3xl mx-auto text-center mb-16"
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.3 }}
         transition={{ duration: 0.7, ease: "easeOut" }}
-        className="max-w-3xl mx-auto text-center mb-16"
       >
         <h2 className="text-4xl sm:text-5xl font-extrabold text-gray-900 tracking-tight">
           Trusted <span className="text-blue-600">Partners</span>
@@ -79,21 +86,22 @@ const AboutPartners = () => {
         </p>
       </motion.div>
 
+      {/* Partners grid */}
       <motion.div
         className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-8 max-w-6xl mx-auto"
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.3 }}
-        variants={containerVariants}
+        variants={containerAnimation}
       >
-        {partners.map(({ id, name, logo, website }) => (
+        {partnerList.map(({ id, name, logo, website }) => (
           <motion.a
             key={id}
             href={website}
             target="_blank"
             rel="noopener noreferrer"
             className="flex justify-center items-center p-4 bg-gray-50 rounded-xl cursor-pointer select-none"
-            variants={itemVariants}
+            variants={partnerAnimation}
             whileHover="hover"
             aria-label={`Visit partner ${name}`}
             tabIndex={0}
@@ -110,7 +118,5 @@ const AboutPartners = () => {
         ))}
       </motion.div>
     </section>
-  )
+  );
 }
-
-export default AboutPartners

@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useRef, useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { motion, useAnimation } from "framer-motion";
 
-const blogPosts = [
+const BLOG_POSTS = [
   {
     id: 1,
     title: "How to Maintain a Healthy Lifestyle",
@@ -76,7 +76,7 @@ const containerVariants = {
   },
 };
 
-const itemVariants = {
+const cardVariants = {
   hidden: { opacity: 0, y: 30, scale: 0.95 },
   visible: {
     opacity: 1,
@@ -86,22 +86,22 @@ const itemVariants = {
   },
 };
 
-const imageHover = {
+const imageHoverVariants = {
   hover: {
     scale: 1.07,
     transition: { duration: 0.4, ease: "easeInOut" },
   },
 };
 
-const focusRingScale = {
+const focusVariants = {
+  rest: { scale: 1, boxShadow: "none" },
   focus: {
     scale: 1.03,
-    boxShadow: "0 0 0 4px rgba(59, 130, 246, 0.5)", // blue ring
+    boxShadow: "0 0 0 4px rgba(59, 130, 246, 0.5)", // blue ring on focus
   },
-  rest: { scale: 1, boxShadow: "none" },
 };
 
-const HomeBlogPreview = () => {
+export default function HomeBlogPreview() {
   const controls = useAnimation();
   const sectionRef = useRef(null);
 
@@ -125,9 +125,9 @@ const HomeBlogPreview = () => {
 
   return (
     <section
+      ref={sectionRef}
       aria-labelledby="blog-preview-title"
       className="bg-white py-16 px-6 sm:px-12 md:px-20 max-w-7xl mx-auto my-[-30px]"
-      ref={sectionRef}
     >
       <motion.h2
         id="blog-preview-title"
@@ -136,7 +136,11 @@ const HomeBlogPreview = () => {
         animate={controls}
         variants={{
           hidden: { opacity: 0, y: 40 },
-          visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: "easeOut" } },
+          visible: {
+            opacity: 1,
+            y: 0,
+            transition: { duration: 0.7, ease: "easeOut" },
+          },
         }}
       >
         Latest From Our <span className="text-blue-700">Blog</span>
@@ -144,32 +148,32 @@ const HomeBlogPreview = () => {
 
       <motion.div
         className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3"
-        variants={containerVariants}
         initial="hidden"
         animate={controls}
+        variants={containerVariants}
       >
-        {blogPosts.map(({ id, title, summary, image, url, date }) => (
+        {BLOG_POSTS.map(({ id, title, summary, image, url, date }) => (
           <motion.article
             key={id}
             tabIndex={0}
             className="flex flex-col rounded-lg shadow-md overflow-hidden border border-gray-200 hover:shadow-xl transition-shadow duration-300 focus:outline-none focus:ring-4 focus:ring-blue-300 cursor-pointer bg-white"
-            variants={itemVariants}
-            whileFocus="focus"
+            variants={cardVariants}
             initial="rest"
             animate="rest"
             whileHover="hover"
+            whileFocus="focus"
           >
             <motion.a
               href={url}
               className="block overflow-hidden flex-shrink-0"
-              variants={imageHover}
+              variants={imageHoverVariants}
             >
               <img
                 src={image}
                 alt={title}
                 loading="lazy"
-                className="w-full h-48 object-cover transition-transform duration-500 ease-in-out"
                 draggable={false}
+                className="w-full h-48 object-cover transition-transform duration-500 ease-in-out"
               />
             </motion.a>
             <div className="flex flex-col flex-grow p-6">
@@ -183,8 +187,8 @@ const HomeBlogPreview = () => {
               <p className="text-gray-700 flex-grow">{summary}</p>
               <a
                 href={url}
-                className="mt-6 inline-block text-blue-700 hover:text-blue-800 font-semibold transition-colors duration-300"
                 aria-label={`Read more about ${title}`}
+                className="mt-6 inline-block text-blue-700 hover:text-blue-800 font-semibold transition-colors duration-300"
               >
                 Read More &rarr;
               </a>
@@ -194,6 +198,4 @@ const HomeBlogPreview = () => {
       </motion.div>
     </section>
   );
-};
-
-export default HomeBlogPreview;
+}

@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import React from "react"
-import { motion } from "framer-motion"
+import React from "react";
+import { motion } from "framer-motion";
 import {
   FaStethoscope,
   FaHeartbeat,
@@ -9,9 +9,9 @@ import {
   FaUserNurse,
   FaSyringe,
   FaCapsules,
-} from "react-icons/fa"
+} from "react-icons/fa";
 
-const services = [
+const serviceItems = [
   {
     id: 1,
     icon: <FaStethoscope size={36} className="text-blue-600" />,
@@ -54,9 +54,9 @@ const services = [
     description:
       "Access to a wide range of medicines and health products with expert guidance.",
   },
-]
+];
 
-const containerVariants = {
+const containerMotion = {
   hidden: {},
   visible: {
     transition: {
@@ -64,26 +64,27 @@ const containerVariants = {
       delayChildren: 0.3,
     },
   },
-}
+};
 
-const itemVariants = {
+const itemMotion = {
   hidden: { opacity: 0, y: 20 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
   hover: { scale: 1.05, boxShadow: "0 10px 20px rgba(0,0,0,0.12)" },
-}
+};
 
-const AboutServices = () => {
+export default function AboutServices() {
   return (
     <section
       aria-label="Our Services"
       className="bg-white py-20 px-6 sm:px-12 max-w-7xl mx-auto"
     >
+      {/* Section header */}
       <motion.div
+        className="max-w-3xl mx-auto text-center mb-16"
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.3 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
-        className="max-w-3xl mx-auto text-center mb-16"
       >
         <h2 className="text-4xl sm:text-5xl font-extrabold text-gray-900 tracking-tight">
           Our <span className="text-blue-600">Services</span>
@@ -93,18 +94,19 @@ const AboutServices = () => {
         </p>
       </motion.div>
 
+      {/* Services grid */}
       <motion.div
         className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 max-w-5xl mx-auto"
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.3 }}
-        variants={containerVariants}
+        variants={containerMotion}
       >
-        {services.map(({ id, icon, title, description }) => (
+        {serviceItems.map(({ id, icon, title, description }) => (
           <motion.article
             key={id}
             className="bg-gray-50 rounded-2xl p-8 flex flex-col items-center text-center cursor-default select-none"
-            variants={itemVariants}
+            variants={itemMotion}
             whileHover="hover"
             tabIndex={0}
             aria-label={title}
@@ -116,7 +118,5 @@ const AboutServices = () => {
         ))}
       </motion.div>
     </section>
-  )
+  );
 }
-
-export default AboutServices

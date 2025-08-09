@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import React, { useState } from "react"
-import { motion } from "framer-motion"
-import { FaPhoneAlt, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa"
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import { FaPhoneAlt, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
 
 const containerVariants = {
   hidden: { opacity: 0, y: 40 },
@@ -11,12 +11,12 @@ const containerVariants = {
     y: 0,
     transition: { staggerChildren: 0.15, ease: "easeOut", duration: 0.6 },
   },
-}
+};
 
 const itemVariants = {
   hidden: { opacity: 0, y: 20 },
   visible: { opacity: 1, y: 0 },
-}
+};
 
 const AboutContact = () => {
   const [formData, setFormData] = useState({
@@ -24,21 +24,23 @@ const AboutContact = () => {
     email: "",
     subject: "",
     message: "",
-  })
+  });
 
-  const [submitted, setSubmitted] = useState(false)
+  const [submitted, setSubmitted] = useState(false);
 
+  // Update form state on input change
   const handleChange = (e) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
-  }
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
+  // Handle form submission
   const handleSubmit = (e) => {
-    e.preventDefault()
-    // Your form submission logic here
-    setSubmitted(true)
-    setFormData({ name: "", email: "", subject: "", message: "" })
-  }
+    e.preventDefault();
+    // Insert your form submission logic here (e.g., API call)
+    setSubmitted(true);
+    setFormData({ name: "", email: "", subject: "", message: "" });
+  };
 
   return (
     <section
@@ -52,7 +54,7 @@ const AboutContact = () => {
         viewport={{ once: true }}
         variants={containerVariants}
       >
-        {/* Contact Info Panel */}
+        {/* Contact Information */}
         <motion.div variants={itemVariants} className="space-y-8">
           <h2 className="text-4xl font-extrabold text-gray-900 leading-tight">
             Get in <span className="text-blue-700">Touch</span>
@@ -65,36 +67,44 @@ const AboutContact = () => {
 
           <div className="space-y-6 max-w-md">
             <div className="flex items-center space-x-4 text-gray-800">
-              <FaPhoneAlt className="text-blue-700 w-6 h-6" />
-              <a href="tel:+1234567890" className="hover:text-blue-700 transition">
+              <FaPhoneAlt className="text-blue-700 w-6 h-6" aria-hidden="true" />
+              <a
+                href="tel:+1234567890"
+                className="hover:text-blue-700 transition"
+                aria-label="Call us at +1 (234) 567-890"
+              >
                 +1 (234) 567-890
               </a>
             </div>
             <div className="flex items-center space-x-4 text-gray-800">
-              <FaEnvelope className="text-blue-700 w-6 h-6" />
+              <FaEnvelope className="text-blue-700 w-6 h-6" aria-hidden="true" />
               <a
                 href="mailto:contact@novahealth.com"
                 className="hover:text-blue-700 transition"
+                aria-label="Email us at contact@novahealth.com"
               >
                 contact@novahealth.com
               </a>
             </div>
             <div className="flex flex-col space-y-2 text-gray-800 max-w-md">
               <div className="flex items-center space-x-4">
-                <FaMapMarkerAlt className="text-blue-700 w-6 h-6" />
+                <FaMapMarkerAlt
+                  className="text-blue-700 w-6 h-6"
+                  aria-hidden="true"
+                />
                 <address className="not-italic">
                   123 Nova Street, Health City, Country
                 </address>
               </div>
 
               {/* Embedded Google Map */}
-              <div className="w-full aspect-[16/9] rounded-lg overflow-hidden border border-gray-300 shadow-sm my-13 mb-[-30px]">
+              <div className="w-full aspect-[16/9] rounded-lg overflow-hidden border border-gray-300 shadow-sm mt-12">
                 <iframe
                   title="NovaHealth Location Map"
                   src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3153.019709728927!2d-122.41941508468113!3d37.77492977975943!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8085808cc71deeb1%3A0x2f0956efc3f80f06!2s123%20Nova%20Street%2C%20San%20Francisco%2C%20CA!5e0!3m2!1sen!2sus!4v1691423852000!5m2!1sen!2sus"
                   loading="lazy"
                   className="w-full h-full border-0"
-                  allowFullScreen=""
+                  allowFullScreen
                   referrerPolicy="no-referrer-when-downgrade"
                 />
               </div>
@@ -108,9 +118,14 @@ const AboutContact = () => {
           variants={itemVariants}
           className="bg-gray-50 rounded-xl shadow-md p-8"
           noValidate
+          aria-label="Contact form"
         >
           {submitted && (
-            <p className="mb-6 text-green-600 font-semibold">
+            <p
+              className="mb-6 text-green-600 font-semibold"
+              role="alert"
+              aria-live="polite"
+            >
               Thank you for reaching out! We will get back to you soon.
             </p>
           )}
@@ -199,7 +214,7 @@ const AboutContact = () => {
         </motion.form>
       </motion.div>
     </section>
-  )
-}
+  );
+};
 
-export default AboutContact
+export default AboutContact;

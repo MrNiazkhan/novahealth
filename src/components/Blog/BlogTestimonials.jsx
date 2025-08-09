@@ -5,7 +5,8 @@ const TESTIMONIALS = [
     id: 1,
     name: "Sophia Johnson",
     role: "Health Enthusiast",
-    photo: "https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fHdvbWFufGVufDB8fDB8fHww",
+    photo:
+      "https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fHdvbWFufGVufDB8fDB8fHww",
     rating: 5,
     text:
       "This blog has completely transformed how I approach my wellness routine. The tips are practical and easy to follow!",
@@ -14,7 +15,8 @@ const TESTIMONIALS = [
     id: 2,
     name: "James Smith",
     role: "Fitness Trainer",
-    photo: "https://plus.unsplash.com/premium_photo-1725022935609-585e3f42b992?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mjl8fG1hbiU1Q3xlbnwwfHwwfHx8MA%3D%3D",
+    photo:
+      "https://plus.unsplash.com/premium_photo-1725022935609-585e3f42b992?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mjl8fG1hbiU1Q3xlbnwwfHwwfHx8MA%3D%3D",
     rating: 4,
     text:
       "I appreciate the well-researched articles and genuine advice. A go-to resource for fitness and health topics.",
@@ -23,7 +25,8 @@ const TESTIMONIALS = [
     id: 3,
     name: "Emily Davis",
     role: "Nutritionist",
-    photo: "https://images.unsplash.com/photo-1609505848912-b7c3b8b4beda?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fHdvbWFufGVufDB8fDB8fHww",
+    photo:
+      "https://images.unsplash.com/photo-1609505848912-b7c3b8b4beda?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fHdvbWFufGVufDB8fDB8fHww",
     rating: 5,
     text:
       "The balanced diet tips and recipes here are fantastic. I've recommended this blog to all my clients!",
@@ -32,7 +35,8 @@ const TESTIMONIALS = [
     id: 4,
     name: "Michael Brown",
     role: "Yoga Instructor",
-    photo: "https://plus.unsplash.com/premium_photo-1689977927774-401b12d137d6?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTN8fG1hbiU1Q3xlbnwwfHwwfHx8MA%3D%3D",
+    photo:
+      "https://plus.unsplash.com/premium_photo-1689977927774-401b12d137d6?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTN8fG1hbiU1Q3xlbnwwfHwwfHx8MA%3D%3D",
     rating: 4,
     text:
       "Great insights on mental health and mindfulness. The articles are very relatable and helpful.",
@@ -41,7 +45,8 @@ const TESTIMONIALS = [
     id: 5,
     name: "Olivia Wilson",
     role: "Lifestyle Blogger",
-    photo: "https://plus.unsplash.com/premium_photo-1689266188052-704d33673e69?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTd8fHdvbWFufGVufDB8fDB8fHww",
+    photo:
+      "https://plus.unsplash.com/premium_photo-1689266188052-704d33673e69?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTd8fHdvbWFufGVufDB8fDB8fHww",
     rating: 5,
     text:
       "I love how this blog combines science and simplicity. The content always motivates me to live better.",
@@ -49,7 +54,7 @@ const TESTIMONIALS = [
 ];
 
 const Stars = ({ count }) => (
-  <div className="flex mt-1" aria-label={`${count} out of 5 stars`}>
+  <div className="flex mt-1" aria-label={`${count} out of 5 stars`} role="img">
     {[...Array(5)].map((_, i) => (
       <svg
         key={i}
@@ -69,15 +74,16 @@ export default function BlogTestimonials() {
   const length = TESTIMONIALS.length;
   const timeoutRef = useRef(null);
 
-  // Auto slide every 8 seconds (for both desktop and mobile)
+  // Auto slide every 8 seconds
   useEffect(() => {
     timeoutRef.current = setTimeout(() => {
       setCurrentIndex((prev) => (prev === length - 1 ? 0 : prev + 1));
     }, 8000);
+
     return () => clearTimeout(timeoutRef.current);
   }, [currentIndex, length]);
 
-  // Swipe support for carousel (both desktop md+ and mobile)
+  // Swipe support
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
 
@@ -96,11 +102,11 @@ export default function BlogTestimonials() {
 
   return (
     <section
-      className="max-w-4xl mx-auto px-6 py-16 bg-gary-50 rounded-3xl my-[-40px] mb-0"
+      className="max-w-4xl mx-auto px-6 py-16 bg-gray-50 rounded-3xl -my-10 mb-0"
       aria-label="User testimonials section"
     >
       <h2 className="text-4xl font-extrabold text-center mb-12 text-gray-900 relative inline-block">
-        What Our Readers Say
+        <span className="text-blue-700">What Our Readers</span> Say
         <span className="block h-1.5 w-24 bg-gradient-to-r from-blue-500 to-indigo-600 rounded mt-2 mx-auto"></span>
       </h2>
 
@@ -109,6 +115,9 @@ export default function BlogTestimonials() {
         className="relative overflow-hidden hidden md:block"
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
+        role="region"
+        aria-roledescription="carousel"
+        aria-label="Testimonials carousel"
       >
         <div
           className="flex transition-transform duration-700 ease-in-out"
@@ -184,6 +193,9 @@ export default function BlogTestimonials() {
         className="relative overflow-hidden block md:hidden"
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
+        role="region"
+        aria-roledescription="carousel"
+        aria-label="Testimonials carousel"
       >
         <div
           className="flex transition-transform duration-700 ease-in-out"

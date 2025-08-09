@@ -4,86 +4,88 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiPlus, FiMinus } from "react-icons/fi";
 
-const faqData = [
+const faqList = [
   {
     question: "Who are the key members of your team?",
     answer:
-      "Our team is composed of highly skilled professionals including designers, developers, marketers, and project managers, each bringing years of industry expertise.",
+      "Our team consists of experienced designers, developers, marketers, and project managers — all experts in their fields.",
   },
   {
     question: "What makes your team unique?",
     answer:
-      "We combine creativity, innovation, and technical excellence to deliver solutions tailored specifically to client needs while maintaining a collaborative spirit.",
+      "We blend creativity with technical skills and a collaborative approach to craft solutions that truly fit our clients' needs.",
   },
   {
     question: "Do you work with international clients?",
     answer:
-      "Yes, our team has worked with clients from over 20 countries, ensuring we adapt to diverse cultural and business environments.",
+      "Absolutely! We've partnered with clients across 20+ countries, adapting seamlessly to different cultures and markets.",
   },
   {
     question: "How can I join your team?",
     answer:
-      "We’re always looking for passionate talent! You can apply via our Careers page or contact us directly with your portfolio and resume.",
+      "We’re always on the lookout for passionate professionals. Visit our Careers page or reach out directly with your resume and portfolio.",
   },
   {
     question: "What industries do you specialize in?",
     answer:
-      "We have successfully delivered projects in e-commerce, healthcare, finance, education, and entertainment industries.",
+      "Our experience spans e-commerce, healthcare, finance, education, and entertainment sectors.",
   },
 ];
 
-const OurteamFAQs = () => {
-  const [openIndex, setOpenIndex] = useState(null);
+export default function OurteamFAQs() {
+  const [activeIndex, setActiveIndex] = useState(null);
 
-  const toggleFAQ = (index) => {
-    setOpenIndex((prev) => (prev === index ? null : index));
+  const handleToggle = (index) => {
+    setActiveIndex((current) => (current === index ? null : index));
   };
 
   return (
     <section
-      aria-label="Our Team Frequently Asked Questions"
+      aria-label="Frequently Asked Questions about Our Team"
       className="relative max-w-5xl mx-auto px-4 sm:px-8 py-12 my-[-30px] mb-0"
     >
-      {/* Background */}
-      <div className="absolute inset-0 bg-white  rounded-3xl "></div>
+      {/* Background layer */}
+      <div className="absolute inset-0 bg-white rounded-3xl"></div>
 
-      {/* Content */}
+      {/* Foreground content */}
       <div className="relative z-10">
-        <h2 className="text-4xl sm:text-5xl font-extrabold text-center text-blue-800 mb-10">
-          Our Team FAQs
+        <h2 className="text-4xl sm:text-5xl font-extrabold text-center text-blue-600 mb-10">
+          <span className="text-black">Our Team</span> FAQs
         </h2>
 
         <ul className="space-y-4">
-          {faqData.map(({ question, answer }, index) => {
-            const isOpen = openIndex === index;
+          {faqList.map(({ question, answer }, i) => {
+            const isOpen = activeIndex === i;
+
             return (
               <li
-                key={index}
+                key={i}
                 className="bg-white border border-gray-200 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300"
               >
                 <button
-                  onClick={() => toggleFAQ(index)}
+                  type="button"
                   aria-expanded={isOpen}
-                  aria-controls={`faq-answer-${index}`}
-                  id={`faq-question-${index}`}
+                  aria-controls={`faq-answer-${i}`}
+                  id={`faq-question-${i}`}
+                  onClick={() => handleToggle(i)}
                   className="w-full flex justify-between items-center px-6 py-4 text-left"
                 >
                   <span className="text-lg sm:text-xl font-semibold text-gray-800">
                     {question}
                   </span>
                   {isOpen ? (
-                    <FiMinus className="text-blue-700 text-2xl" />
+                    <FiMinus className="text-blue-700 text-2xl" aria-hidden="true" />
                   ) : (
-                    <FiPlus className="text-blue-700 text-2xl" />
+                    <FiPlus className="text-blue-700 text-2xl" aria-hidden="true" />
                   )}
                 </button>
 
                 <AnimatePresence initial={false}>
                   {isOpen && (
                     <motion.div
-                      id={`faq-answer-${index}`}
+                      id={`faq-answer-${i}`}
                       role="region"
-                      aria-labelledby={`faq-question-${index}`}
+                      aria-labelledby={`faq-question-${i}`}
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: "auto", opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
@@ -103,6 +105,4 @@ const OurteamFAQs = () => {
       </div>
     </section>
   );
-};
-
-export default OurteamFAQs;
+}

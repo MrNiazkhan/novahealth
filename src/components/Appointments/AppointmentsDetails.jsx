@@ -10,50 +10,56 @@ const exampleAppointment = {
   notes: "Patient has a history of hypertension.\nDiscuss medication adjustments.",
 };
 
-const statusColors = {
+const statusStyles = {
   Confirmed: "bg-green-100 text-green-800",
   Pending: "bg-yellow-100 text-yellow-800",
   Cancelled: "bg-red-100 text-red-800",
 };
 
 export default function AppointmentDetailsPanel() {
-  const [showDetails, setShowDetails] = useState(false);
+  const [isDetailsVisible, setIsDetailsVisible] = useState(false);
   const detailsRef = useRef(null);
 
-  // Focus the details container when it appears
+  // Automatically focus the details panel when it becomes visible for accessibility
   useEffect(() => {
-    if (showDetails && detailsRef.current) {
+    if (isDetailsVisible && detailsRef.current) {
       detailsRef.current.focus();
     }
-  }, [showDetails]);
+  }, [isDetailsVisible]);
+
+  // Toggle details visibility
+  const toggleDetails = () => setIsDetailsVisible((visible) => !visible);
 
   return (
-    <main className=" my-10 bg-white flex items-center justify-center p-6">
-      {!showDetails ? (
+    <main className="my-10 flex justify-center p-6">
+      {!isDetailsVisible ? (
         <button
-          onClick={() => setShowDetails(true)}
-          className="bg-indigo-600 text-white px-8 py-4 rounded-2xl font-semibold text-lg hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-400 transition-shadow shadow-lg"
+          type="button"
+          onClick={toggleDetails}
+          className="bg-blue-600 px-8 py-4 rounded-2xl font-semibold text-lg text-white shadow-lg transition hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-400"
           aria-label="Show appointment details"
         >
           Show Appointment Details
         </button>
       ) : (
         <section
-          aria-label="Appointment Details"
-          role="dialog"
-          tabIndex={-1}
           ref={detailsRef}
-          className="max-w-xl mx-auto bg-white shadow-2xl rounded-3xl p-10 select-none outline-none focus:ring-4 focus:ring-indigo-300"
+          tabIndex={-1}
+          role="dialog"
+          aria-label="Appointment Details"
+          className="max-w-xl mx-auto rounded-3xl bg-white p-10 shadow-2xl select-none outline-none focus:ring-4 focus:ring-indigo-300"
         >
           {/* Header */}
-          <header className="flex items-center justify-between mb-8">
-            <h2 className="text-3xl font-extrabold text-gray-900 leading-tight">
-              Appointment Details
+          <header className="mb-8 flex items-center justify-between">
+            <h2 className="leading-tight text-3xl font-extrabold text-gray-900">
+              Appointment <span className="text-blue-600">Details</span>
             </h2>
+
             <button
-              onClick={() => setShowDetails(false)}
+              type="button"
+              onClick={toggleDetails}
               aria-label="Close appointment details"
-              className="text-gray-500 hover:text-gray-900 rounded-full p-2 transition focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="rounded-full p-2 text-gray-500 transition hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -71,23 +77,23 @@ export default function AppointmentDetailsPanel() {
             </button>
           </header>
 
-          {/* Content */}
+          {/* Appointment Content */}
           <div className="space-y-8 text-gray-800 text-lg">
-            <div>
-              <h3 className="text-xl font-semibold mb-2 text-gray-900">Patient</h3>
+            <section>
+              <h3 className="mb-2 text-xl font-semibold text-gray-900">Patient</h3>
               <p>{exampleAppointment.patient}</p>
-            </div>
+            </section>
 
-            <div>
-              <h3 className="text-xl font-semibold mb-2 text-gray-900">Appointment Type</h3>
-              <p className="text-indigo-600 font-semibold">{exampleAppointment.type}</p>
-            </div>
+            <section>
+              <h3 className="mb-2 text-xl font-semibold text-gray-900">Appointment Type</h3>
+              <p className="font-semibold text-blue-600">{exampleAppointment.type}</p>
+            </section>
 
-            <div>
-              <h3 className="text-xl font-semibold mb-2 text-gray-900">Date &amp; Time</h3>
+            <section>
+              <h3 className="mb-2 text-xl font-semibold text-gray-900">Date &amp; Time</h3>
               <time
                 dateTime={exampleAppointment.datetime.toISOString()}
-                className="font-mono text-gray-700 text-base"
+                className="font-mono text-base text-gray-700"
               >
                 {exampleAppointment.datetime.toLocaleDateString(undefined, {
                   weekday: "long",
@@ -101,23 +107,23 @@ export default function AppointmentDetailsPanel() {
                   minute: "2-digit",
                 })}
               </time>
-            </div>
+            </section>
 
-            <div>
-              <h3 className="text-xl font-semibold mb-2 text-gray-900">Status</h3>
+            <section>
+              <h3 className="mb-2 text-xl font-semibold text-gray-900">Status</h3>
               <span
-                className={`inline-block px-5 py-2 rounded-full text-sm font-semibold select-none ${
-                  statusColors[exampleAppointment.status] || "bg-gray-100 text-gray-700"
+                className={`inline-block select-none rounded-full px-5 py-2 text-sm font-semibold ${
+                  statusStyles[exampleAppointment.status] ?? "bg-gray-100 text-gray-700"
                 }`}
               >
                 {exampleAppointment.status}
               </span>
-            </div>
+            </section>
 
-            <div>
-              <h3 className="text-xl font-semibold mb-2 text-gray-900">Notes</h3>
+            <section>
+              <h3 className="mb-2 text-xl font-semibold text-gray-900">Notes</h3>
               <p className="whitespace-pre-line text-gray-700">{exampleAppointment.notes}</p>
-            </div>
+            </section>
           </div>
         </section>
       )}

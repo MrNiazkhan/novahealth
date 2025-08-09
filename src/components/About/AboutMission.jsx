@@ -3,7 +3,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 
-const containerVariants = {
+const containerAnim = {
   hidden: { opacity: 0, y: 40 },
   visible: {
     opacity: 1,
@@ -12,29 +12,34 @@ const containerVariants = {
   },
 };
 
-const itemVariants = {
+const itemAnim = {
   hidden: { opacity: 0, y: 20 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
 };
 
-const AboutMission = () => {
+export default function AboutMission() {
+  // Click handler for button — simple feedback alert for now
+  const handleLearnMoreClick = () => {
+    alert("Thank you for your interest in our mission!");
+  };
+
   return (
     <section
       aria-labelledby="about-mission-title"
       className="max-w-7xl mx-auto px-6 sm:px-12 lg:px-24 py-20 bg-white rounded-3xl shadow-lg my-[-50px]"
     >
       <motion.div
-        variants={containerVariants}
+        className="flex flex-col lg:flex-row items-center lg:items-start gap-12 lg:gap-20"
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.3 }}
-        className="flex flex-col lg:flex-row items-center lg:items-start gap-12 lg:gap-20"
+        variants={containerAnim}
       >
-        {/* Left side: Image */}
+        {/* Left side: Mission image */}
         <motion.div
-          variants={itemVariants}
           className="w-full lg:w-1/2 rounded-2xl overflow-hidden shadow-xl"
           style={{ boxShadow: "0 15px 30px rgba(29, 78, 216, 0.25)" }}
+          variants={itemAnim}
         >
           <img
             src="https://plus.unsplash.com/premium_photo-1673953510107-d5aee40d80a7?w=600&auto=format&fit=crop&q=80"
@@ -46,10 +51,10 @@ const AboutMission = () => {
           />
         </motion.div>
 
-        {/* Right side: Text Content */}
+        {/* Right side: Textual content */}
         <motion.div
-          variants={itemVariants}
           className="w-full lg:w-1/2 flex flex-col justify-center"
+          variants={itemAnim}
         >
           <motion.h1
             id="about-mission-title"
@@ -83,13 +88,13 @@ const AboutMission = () => {
           </motion.ul>
 
           <motion.button
+            className="mt-12 px-12 py-4 bg-blue-700 text-white font-semibold rounded-2xl shadow-lg transition-shadow focus:outline-none focus:ring-4 focus:ring-blue-400 max-w-max"
             whileHover={{
               scale: 1.05,
               boxShadow: "0 8px 20px rgba(29, 78, 216, 0.4)",
             }}
             whileTap={{ scale: 0.95 }}
-            className="mt-12 px-12 py-4 bg-blue-700 text-white font-semibold rounded-2xl shadow-lg transition-shadow focus:outline-none focus:ring-4 focus:ring-blue-400 max-w-max"
-            onClick={() => alert("Thank you for your interest in our mission!")}
+            onClick={handleLearnMoreClick}
             aria-label="Learn more about our mission"
           >
             Learn More
@@ -98,6 +103,4 @@ const AboutMission = () => {
       </motion.div>
     </section>
   );
-};
-
-export default AboutMission;
+}

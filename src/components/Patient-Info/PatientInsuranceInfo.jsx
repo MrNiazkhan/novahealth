@@ -16,6 +16,22 @@ Suite 400
 New York, NY 10001`,
 };
 
+const formatDate = (dateString) =>
+  new Date(dateString).toLocaleDateString(undefined, {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+
+const InfoItem = ({ label, children, link }) => (
+  <div className="mb-4">
+    <dt className="font-semibold text-gray-700">{label}</dt>
+    <dd className={`mt-1 ${link ? "text-blue-700 underline" : "text-gray-900"}`}>
+      {link ? <a href={link}>{children}</a> : children}
+    </dd>
+  </div>
+);
+
 const PatientInsuranceInfo = () => {
   return (
     <section
@@ -24,78 +40,36 @@ const PatientInsuranceInfo = () => {
     >
       <h2
         id="insurance-info-title"
-        className="text-3xl font-extrabold text-blue-700 mb-6 text-center"
+        className="text-3xl font-extrabold mb-6 text-center"
       >
-        Insurance Information
+        <span className="text-black">Insurance </span>
+        <span className="text-blue-700">Information</span>
       </h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         {/* Left Column */}
-        <div>
-          <dl>
-            <div className="mb-4">
-              <dt className="font-semibold text-gray-700">Provider</dt>
-              <dd className="mt-1 text-gray-900">{insuranceData.provider}</dd>
-            </div>
-            <div className="mb-4">
-              <dt className="font-semibold text-gray-700">Policy Number</dt>
-              <dd className="mt-1 text-gray-900">{insuranceData.policyNumber}</dd>
-            </div>
-            <div className="mb-4">
-              <dt className="font-semibold text-gray-700">Group Number</dt>
-              <dd className="mt-1 text-gray-900">{insuranceData.groupNumber}</dd>
-            </div>
-            <div className="mb-4">
-              <dt className="font-semibold text-gray-700">Plan Type</dt>
-              <dd className="mt-1 text-gray-900">{insuranceData.planType}</dd>
-            </div>
-          </dl>
-        </div>
+        <dl>
+          <InfoItem label="Provider">{insuranceData.provider}</InfoItem>
+          <InfoItem label="Policy Number">{insuranceData.policyNumber}</InfoItem>
+          <InfoItem label="Group Number">{insuranceData.groupNumber}</InfoItem>
+          <InfoItem label="Plan Type">{insuranceData.planType}</InfoItem>
+        </dl>
 
         {/* Right Column */}
-        <div>
-          <dl>
-            <div className="mb-4">
-              <dt className="font-semibold text-gray-700">Coverage Period</dt>
-              <dd className="mt-1 text-gray-900">
-                {new Date(insuranceData.coverageStart).toLocaleDateString(undefined, {
-                  year: "numeric",
-                  month: "short",
-                  day: "numeric",
-                })}{" "}
-                -{" "}
-                {new Date(insuranceData.coverageEnd).toLocaleDateString(undefined, {
-                  year: "numeric",
-                  month: "short",
-                  day: "numeric",
-                })}
-              </dd>
-            </div>
-            <div className="mb-4">
-              <dt className="font-semibold text-gray-700">Customer Service Phone</dt>
-              <dd className="mt-1 text-blue-700 underline">
-                <a href={`tel:${insuranceData.phone.replace(/[^\d+]/g, "")}`}>
-                  {insuranceData.phone}
-                </a>
-              </dd>
-            </div>
-            <div className="mb-4">
-              <dt className="font-semibold text-gray-700">Customer Service Email</dt>
-              <dd className="mt-1 text-blue-700 underline">
-                <a href={`mailto:${insuranceData.email}`}>{insuranceData.email}</a>
-              </dd>
-            </div>
-            <div className="mb-4">
-              <dt className="font-semibold text-gray-700">Claims Address</dt>
-              <dd
-                className="mt-1 text-gray-900 whitespace-pre-line max-w-sm"
-                style={{ whiteSpace: "pre-line" }}
-              >
-                {insuranceData.claimsAddress}
-              </dd>
-            </div>
-          </dl>
-        </div>
+        <dl>
+          <InfoItem label="Coverage Period">
+            {formatDate(insuranceData.coverageStart)} - {formatDate(insuranceData.coverageEnd)}
+          </InfoItem>
+          <InfoItem label="Customer Service Phone" link={`tel:${insuranceData.phone.replace(/[^\d+]/g, "")}`}>
+            {insuranceData.phone}
+          </InfoItem>
+          <InfoItem label="Customer Service Email" link={`mailto:${insuranceData.email}`}>
+            {insuranceData.email}
+          </InfoItem>
+          <InfoItem label="Claims Address">
+            <pre className="whitespace-pre-line max-w-sm text-gray-900">{insuranceData.claimsAddress}</pre>
+          </InfoItem>
+        </dl>
       </div>
     </section>
   );

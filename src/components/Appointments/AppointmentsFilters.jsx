@@ -92,108 +92,109 @@ const FILTERS = [
 ];
 
 export default function PremiumFilters() {
-  const [active, setActive] = useState("consultation");
+  const [activeFilter, setActiveFilter] = useState("consultation");
   const [contentHeight, setContentHeight] = useState(0);
   const contentRef = useRef(null);
-  const imageContainerRef = useRef(null);
 
-  const activeData = FILTERS.find((f) => f.id === active);
+  const currentFilter = FILTERS.find((filter) => filter.id === activeFilter);
 
   useEffect(() => {
-    if (contentRef.current && imageContainerRef.current) {
-      const contentRect = contentRef.current.getBoundingClientRect();
-      setContentHeight(contentRect.height);
+    if (contentRef.current) {
+      setContentHeight(contentRef.current.getBoundingClientRect().height);
     }
-  }, [active]);
+  }, [activeFilter]);
 
   return (
     <section className="max-w-5xl mx-auto px-6 py-16 select-none">
-      {/* Title */}
-      <h2 className="text-center text-4xl font-extrabold mb-12 text-gray-900">
-        Our Appointment Types
+      {/* Section Title */}
+      <h2 className="mb-12 text-center text-4xl font-extrabold text-gray-900">
+        Our Appointment <span className="text-blue-600">Types</span>
       </h2>
 
-      {/* Filters buttons */}
-      <div className="flex justify-center gap-8 mb-12 flex-wrap">
+      {/* Filter Buttons */}
+      <div className="mb-12 flex flex-wrap justify-center gap-8">
         {FILTERS.map(({ id, label }) => {
-          const isActive = id === active;
+          const isSelected = id === activeFilter;
           return (
             <button
               key={id}
-              onClick={() => setActive(id)}
-              className={`relative px-6 py-3 font-semibold text-lg rounded-full transition-colors duration-300 whitespace-nowrap
-                ${isActive
-                  ? "bg-indigo-600 text-white shadow-lg"
-                  : "text-indigo-600 bg-indigo-100 hover:bg-indigo-200"
+              type="button"
+              onClick={() => setActiveFilter(id)}
+              aria-pressed={isSelected}
+              aria-label={`Select ${label} appointment type`}
+              className={`relative rounded-full px-6 py-3 font-semibold text-lg transition-colors duration-300 whitespace-nowrap
+                ${
+                  isSelected
+                    ? "bg-blue-600 shadow-lg text-white"
+                    : "bg-indigo-100 text-blue-600 hover:bg-indigo-200"
                 }
               `}
-              aria-pressed={isActive}
-              aria-label={`Select ${label} appointment type`}
             >
               {label}
-              {isActive && (
-                <span className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 w-4 h-1 rounded-full bg-indigo-600"></span>
+              {isSelected && (
+                <span className="absolute -bottom-3 left-1/2 h-1 w-4 -translate-x-1/2 rounded-full bg-blue-600" />
               )}
             </button>
           );
         })}
       </div>
 
-      {/* Content panel */}
-      <div className="flex flex-col md:flex-row items-start gap-12">
-        {/* Image container */}
+      {/* Content & Image */}
+      <div className="flex flex-col items-start gap-12 md:flex-row">
+        {/* Text Content */}
         <motion.div
-          ref={imageContainerRef}
-          className="md:w-1/2 rounded-xl overflow-hidden shadow-lg border border-gray-200 flex-shrink-0"
-          style={{ height: contentHeight }}
-          animate={{ height: contentHeight }}
-          transition={{ type: "spring", stiffness: 120, damping: 20 }}
-          aria-hidden="true"
-        >
-          <AnimatePresence mode="wait">
-            <motion.img
-              key={activeData.id}
-              src={activeData.image}
-              alt={`${activeData.label} appointment`}
-              className="w-full h-full object-cover rounded-xl"
-              loading="lazy"
-              draggable={false}
-              initial={{ opacity: 0, scale: 1.05 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.5, ease: "easeOut" }}
-            />
-          </AnimatePresence>
-        </motion.div>
-
-        {/* Text container */}
-        <motion.div
+          key={currentFilter.id}
           ref={contentRef}
           className="md:w-1/2 space-y-6"
-          key={activeData.id}
           initial={{ opacity: 0, x: 30 }}
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -30 }}
           transition={{ duration: 0.4, ease: "easeOut" }}
           aria-live="polite"
         >
-          <h3 className="text-3xl font-bold text-gray-900">{activeData.descriptionTitle}</h3>
+          <h3 className="text-3xl font-bold text-gray-900">
+            {currentFilter.descriptionTitle}
+          </h3>
 
-          {activeData.description.map((para, i) => (
-            <p key={i} className="text-gray-700 text-lg leading-relaxed">
-              {para}
+          {currentFilter.description.map((paragraph, i) => (
+            <p key={i} className="leading-relaxed text-gray-700 text-lg">
+              {paragraph}
             </p>
           ))}
 
-          {activeData.highlights && (
-            <ul className="list-disc list-inside text-indigo-700 font-semibold space-y-1">
-              {activeData.highlights.map((item, i) => (
+          {currentFilter.highlights && (
+            <ul className="space-y-1 list-inside list-disc font-semibold text-blue-700">
+              {currentFilter.highlights.map((highlight, i) => (
                 <li key={i} className="text-lg">
-                  {item}
+                  {highlight}
                 </li>
               ))}
             </ul>
           )}
+        </motion.div>
+
+        {/* Image Panel */}
+        <motion.div
+          aria-hidden="true"
+          className="md:w-1/2 flex-shrink-0 overflow-hidden rounded-xl border border-gray-200 shadow-lg"
+          style={{ height: contentHeight }}
+          animate={{ height: contentHeight }}
+          transition={{ type: "spring", stiffness: 120, damping: 20 }}
+        >
+          <AnimatePresence mode="wait">
+            <motion.img
+              key={currentFilter.id}
+              src={currentFilter.image}
+              alt={`${currentFilter.label} appointment`}
+              loading="lazy"
+              draggable={false}
+              className="h-full w-full rounded-xl object-cover"
+              initial={{ opacity: 0, scale: 1.05 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
+            />
+          </AnimatePresence>
         </motion.div>
       </div>
     </section>

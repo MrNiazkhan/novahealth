@@ -4,21 +4,7 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { FaChevronDown } from "react-icons/fa";
 
-const containerVariants = {
-  hidden: { opacity: 0, y: 40 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { staggerChildren: 0.15, ease: "easeOut", duration: 0.6 },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0 },
-};
-
-const faqs = [
+const faqsData = [
   {
     question: "What types of healthcare services do you provide?",
     answer:
@@ -46,41 +32,60 @@ const faqs = [
   },
 ];
 
-const FaqServices = () => {
-  const [openIndex, setOpenIndex] = useState(null);
+const containerAnimation = {
+  hidden: { opacity: 0, y: 40 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      staggerChildren: 0.15,
+      ease: "easeOut",
+      duration: 0.6,
+    },
+  },
+};
 
-  const toggleOpen = (index) => {
-    setOpenIndex(openIndex === index ? null : index);
+const itemAnimation = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0 },
+};
+
+const FaqServices = () => {
+  const [activeIndex, setActiveIndex] = useState(null);
+
+  const handleToggle = (index) => {
+    setActiveIndex((current) => (current === index ? null : index));
   };
 
   return (
     <section
       id="faq-services"
       aria-label="Frequently Asked Questions about Services"
-      className="bg-gray-50 py-20 px-6 sm:px-10 lg:px-20"
+      className="bg-white py-20 px-6 sm:px-10 lg:px-20"
     >
       <motion.div
         className="max-w-4xl mx-auto"
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true }}
-        variants={containerVariants}
+        variants={containerAnimation}
       >
         <motion.h2
-          className="text-4xl sm:text-5xl font-extrabold text-center text-blue-900 mb-12 leading-tight"
-          variants={itemVariants}
+          className="text-4xl sm:text-5xl font-extrabold text-center text-black mb-12 leading-tight"
+          variants={itemAnimation}
         >
           Frequently Asked <span className="text-blue-600">Questions</span>
         </motion.h2>
 
         <div className="space-y-5">
-          {faqs.map((faq, index) => {
-            const isOpen = index === openIndex;
+          {faqsData.map(({ question, answer }, index) => {
+            const isOpen = index === activeIndex;
+
             return (
               <motion.div
                 key={index}
-                className="bg-white hover:bg-blue-50 transition rounded-2xl shadow-md"
-                variants={itemVariants}
+                className="bg-white rounded-2xl shadow-md hover:bg-blue-50 transition"
+                variants={itemAnimation}
                 layout
               >
                 <button
@@ -88,14 +93,14 @@ const FaqServices = () => {
                   aria-expanded={isOpen}
                   aria-controls={`faq-content-${index}`}
                   id={`faq-header-${index}`}
-                  onClick={() => toggleOpen(index)}
-                  className="w-full flex items-center justify-between px-6 py-5 text-lg font-semibold text-blue-900 hover:text-blue-700 transition select-none rounded-2xl focus:outline-none focus-visible:ring-4 focus-visible:ring-blue-400"
+                  onClick={() => handleToggle(index)}
+                  className="w-full flex justify-between items-center px-6 py-5 text-lg font-semibold text-blue-600 hover:text-blue-700 rounded-2xl focus:outline-none focus-visible:ring-4 focus-visible:ring-blue-400 select-none transition"
                 >
-                  {faq.question}
+                  {question}
                   <motion.span
+                    className="text-blue-500"
                     animate={{ rotate: isOpen ? 180 : 0 }}
                     transition={{ duration: 0.3, ease: "easeInOut" }}
-                    className="text-blue-400"
                   >
                     <FaChevronDown />
                   </motion.span>
@@ -113,9 +118,9 @@ const FaqServices = () => {
                   }}
                   transition={{ duration: 0.4, ease: "easeInOut" }}
                   style={{ overflow: "hidden" }}
-                  className="px-6 pb-6 text-blue-700 text-base font-normal leading-relaxed"
+                  className="px-6 pb-6 text-black text-base font-normal leading-relaxed"
                 >
-                  {faq.answer}
+                  {answer}
                 </motion.div>
               </motion.div>
             );

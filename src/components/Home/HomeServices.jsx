@@ -12,6 +12,15 @@ import {
 } from "react-icons/fa";
 import { motion } from "framer-motion";
 
+
+const MotionLink = motion(
+  React.forwardRef(({ href, children, ...rest }, ref) => (
+    <Link href={href} ref={ref} {...rest}>
+      {children}
+    </Link>
+  ))
+);
+
 const services = [
   {
     title: "General Checkup",
@@ -158,16 +167,16 @@ const HomeServices = () => {
         whileInView="visible"
         viewport={{ once: true, amount: 0.3 }}
       >
-        <Link href="/services">
-          <motion.span
-            className="inline-block bg-blue-700 text-white hover:bg-blue-800 transition-colors duration-300 font-semibold px-10 py-4 rounded-2xl shadow-lg focus:outline-none focus:ring-4 focus:ring-blue-400"
-            variants={buttonVariants}
-            whileHover="hover"
-            aria-label="Explore all services"
-          >
-            Explore All Services
-          </motion.span>
-        </Link>
+        <MotionLink
+          href="/services"
+          className="inline-block bg-blue-700 text-white hover:bg-blue-800 transition-colors duration-300 font-semibold px-10 py-4 rounded-2xl shadow-lg focus:outline-none focus:ring-4 focus:ring-blue-400"
+          variants={buttonVariants}
+          whileHover="hover"
+          aria-label="Explore all services"
+          tabIndex={0}
+        >
+          Explore All Services
+        </MotionLink>
       </motion.div>
     </section>
   );

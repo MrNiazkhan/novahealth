@@ -34,11 +34,13 @@ const ServicesHero = () => {
   const controls = useAnimation();
   const sectionRef = useRef(null);
 
+  // Focus the heading for accessibility when component mounts
   useEffect(() => {
     const heading = document.getElementById("services-hero-heading");
     if (heading) heading.focus({ preventScroll: true });
   }, []);
 
+  // Intersection observer to trigger animation when in viewport
   useEffect(() => {
     if (!sectionRef.current) return;
 
@@ -57,6 +59,7 @@ const ServicesHero = () => {
     return () => observer.disconnect();
   }, [controls]);
 
+  // Scroll smoothly to the section with id "explore-services"
   const scrollToExplore = () => {
     const target = document.getElementById("explore-services");
     if (target) {
@@ -105,7 +108,7 @@ const ServicesHero = () => {
             type="button"
             onClick={scrollToExplore}
             aria-label="Explore our services"
-            className="mt-10 inline-block bg-indigo-600 hover:bg-indigo-700 focus-visible:ring-indigo-400 focus:outline-none focus:ring-4 text-white font-semibold px-10 py-4 rounded-lg shadow-lg select-none tracking-wide"
+            className="mt-10 inline-block bg-blue-600 hover:bg-blue-700 focus-visible:ring-indigo-400 focus:outline-none focus:ring-4 text-white font-semibold px-10 py-4 rounded-lg shadow-lg select-none tracking-wide"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             variants={itemVariants}

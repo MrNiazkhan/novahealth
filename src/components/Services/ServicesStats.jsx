@@ -11,33 +11,33 @@ const stats = [
     title: "Qualified Doctors",
     count: 1200,
     suffix: "+",
-    bg: "bg-gradient-to-r from-indigo-600 to-indigo-800",
+    bg: "bg-gradient-to-r from-blue-600 to-blue-700",
   },
   {
     id: 2,
     icon: <FaHospital className="text-4xl text-white" aria-hidden="true" />,
     title: "Successful Surgeries",
     count: 350,
-    bg: "bg-gradient-to-r from-green-600 to-green-800",
+    bg: "bg-gradient-to-r from-blue-600 to-blue-700",
   },
   {
     id: 3,
     icon: <FaHeartbeat className="text-4xl text-white" aria-hidden="true" />,
     title: "Patients Treated",
     count: 5000,
-    bg: "bg-gradient-to-r from-rose-500 to-rose-700",
     suffix: "+",
+    bg: "bg-gradient-to-r from-blue-600 to-blue-700",
   },
   {
     id: 4,
     icon: <FaClock className="text-4xl text-white" aria-hidden="true" />,
     title: "Hours Emergency Care",
     count: 24,
-    bg: "bg-gradient-to-r from-yellow-500 to-yellow-700",
+    bg: "bg-gradient-to-r from-blue-600 to-blue-700",
   },
 ];
 
-// Hook to animate count up on entering viewport
+// Custom hook to animate count up when element is in view
 const useCountUp = (target, inView, duration = 2000) => {
   const [count, setCount] = useState(0);
   const frame = useRef();
@@ -67,23 +67,29 @@ const useCountUp = (target, inView, duration = 2000) => {
 
 const ServicesStats = () => {
   return (
-    <section className="py-20 px-4 sm:px-6 lg:px-12 bg-gray-50 my-[-100px] mb-0">
+    <section
+      aria-label="Why Choose Our Services"
+      className="py-20 px-4 sm:px-6 lg:px-12 bg-gray-50 my-[-100px] mb-0"
+    >
       <div className="max-w-7xl mx-auto text-center mb-12 px-4 sm:px-0">
         <motion.h2
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-4xl sm:text-5xl font-extrabold text-gray-900 tracking-tight"
+          className="text-4xl sm:text-5xl font-extrabold tracking-tight text-gray-900"
         >
-          Why Choose Our Services
+          Why Choose{" "}
+          <span className="text-blue-600">Our Services</span>
         </motion.h2>
+
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.6 }}
           className="mt-4 text-gray-600 max-w-2xl mx-auto"
         >
-          We provide world-class medical care with a team of dedicated professionals, ensuring you get the best treatment possible.
+          We provide world-class medical care with a team of dedicated
+          professionals, ensuring you get the best treatment possible.
         </motion.p>
       </div>
 

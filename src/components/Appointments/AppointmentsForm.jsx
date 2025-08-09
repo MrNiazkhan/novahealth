@@ -3,10 +3,10 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 
-const PRIMARY_BLUE = "#2563eb"; // NovaHealth blue accent
-const INPUT_BORDER = "#d1d5db"; // light gray border
-const ERROR_RED = "#ef4444"; // red error color
-const TEXT_DARK = "#111827"; // dark gray/black text
+const PRIMARY_BLUE = "#2563eb";
+const INPUT_BORDER = "#d1d5db";
+const ERROR_RED = "#ef4444";
+const TEXT_DARK = "#111827";
 
 export default function AppointmentsForm() {
   const [formData, setFormData] = useState({
@@ -22,14 +22,11 @@ export default function AppointmentsForm() {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
-  // Validation logic
   const validate = () => {
     const errs = {};
     if (!formData.fullName.trim()) errs.fullName = "Full name is required";
     if (!formData.email.trim()) errs.email = "Email is required";
-    else if (
-      !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(formData.email.trim())
-    )
+    else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(formData.email.trim()))
       errs.email = "Invalid email address";
     if (!formData.phone.trim()) errs.phone = "Phone number is required";
     else if (!/^\+?[0-9]{7,15}$/.test(formData.phone.trim()))
@@ -46,6 +43,37 @@ export default function AppointmentsForm() {
       ...prev,
       [e.target.name]: e.target.value,
     }));
+  };
+
+  // Utility function to get styles for inputs and textarea
+  const getInputStyles = (field) => ({
+    width: "100%",
+    padding: "12px 16px",
+    borderRadius: 10,
+    border: errors[field]
+      ? `2px solid ${ERROR_RED}`
+      : `1.8px solid ${INPUT_BORDER}`,
+    backgroundColor: "#fff",
+    fontSize: 16,
+    color: TEXT_DARK,
+    outline: "none",
+    boxShadow: errors[field]
+      ? `0 0 6px ${ERROR_RED}66`
+      : "0 0 4px rgba(0,0,0,0.06)",
+    transition: "border-color 0.3s ease, box-shadow 0.3s ease",
+  });
+
+  // Handles focus & blur for input styles
+  const handleFocus = (e) => {
+    e.target.style.borderColor = PRIMARY_BLUE;
+    e.target.style.boxShadow = `0 0 8px ${PRIMARY_BLUE}88`;
+  };
+  const handleBlur = (e) => {
+    const field = e.target.name;
+    e.target.style.borderColor = errors[field] ? ERROR_RED : INPUT_BORDER;
+    e.target.style.boxShadow = errors[field]
+      ? `0 0 6px ${ERROR_RED}66`
+      : "0 0 4px rgba(0,0,0,0.06)";
   };
 
   const handleSubmit = (e) => {
@@ -94,12 +122,12 @@ export default function AppointmentsForm() {
           fontSize: 28,
           fontWeight: 700,
           marginBottom: 24,
-          color: PRIMARY_BLUE,
           textAlign: "center",
           letterSpacing: 0.5,
         }}
       >
-        Book Your Appointment
+        <span style={{ color: "black" }}>Book Your </span>
+        <span style={{ color: PRIMARY_BLUE }}>Appointment</span>
       </h2>
 
       {submitted && (
@@ -140,36 +168,11 @@ export default function AppointmentsForm() {
             placeholder="John Doe"
             value={formData.fullName}
             onChange={handleChange}
-            style={{
-              width: "100%",
-              padding: "12px 16px",
-              borderRadius: 10,
-              border: errors.fullName
-                ? `2px solid ${ERROR_RED}`
-                : `1.8px solid ${INPUT_BORDER}`,
-              backgroundColor: "#fff",
-              fontSize: 16,
-              color: TEXT_DARK,
-              outline: "none",
-              boxShadow: errors.fullName
-                ? "0 0 6px rgba(239, 68, 68, 0.4)"
-                : "0 0 4px rgba(0,0,0,0.06)",
-              transition: "border-color 0.3s ease, box-shadow 0.3s ease",
-            }}
+            style={getInputStyles("fullName")}
             aria-invalid={errors.fullName ? "true" : "false"}
             aria-describedby="fullName-error"
-            onFocus={(e) => {
-              e.target.style.borderColor = PRIMARY_BLUE;
-              e.target.style.boxShadow = `0 0 8px ${PRIMARY_BLUE}88`;
-            }}
-            onBlur={(e) => {
-              e.target.style.borderColor = errors.fullName
-                ? ERROR_RED
-                : INPUT_BORDER;
-              e.target.style.boxShadow = errors.fullName
-                ? "0 0 6px rgba(239, 68, 68, 0.4)"
-                : "0 0 4px rgba(0,0,0,0.06)";
-            }}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
           />
           {errors.fullName && (
             <p
@@ -202,34 +205,11 @@ export default function AppointmentsForm() {
             placeholder="john@example.com"
             value={formData.email}
             onChange={handleChange}
-            style={{
-              width: "100%",
-              padding: "12px 16px",
-              borderRadius: 10,
-              border: errors.email
-                ? `2px solid ${ERROR_RED}`
-                : `1.8px solid ${INPUT_BORDER}`,
-              backgroundColor: "#fff",
-              fontSize: 16,
-              color: TEXT_DARK,
-              outline: "none",
-              boxShadow: errors.email
-                ? "0 0 6px rgba(239, 68, 68, 0.4)"
-                : "0 0 4px rgba(0,0,0,0.06)",
-              transition: "border-color 0.3s ease, box-shadow 0.3s ease",
-            }}
+            style={getInputStyles("email")}
             aria-invalid={errors.email ? "true" : "false"}
             aria-describedby="email-error"
-            onFocus={(e) => {
-              e.target.style.borderColor = PRIMARY_BLUE;
-              e.target.style.boxShadow = `0 0 8px ${PRIMARY_BLUE}88`;
-            }}
-            onBlur={(e) => {
-              e.target.style.borderColor = errors.email ? ERROR_RED : INPUT_BORDER;
-              e.target.style.boxShadow = errors.email
-                ? "0 0 6px rgba(239, 68, 68, 0.4)"
-                : "0 0 4px rgba(0,0,0,0.06)";
-            }}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
           />
           {errors.email && (
             <p
@@ -262,34 +242,11 @@ export default function AppointmentsForm() {
             placeholder="+1234567890"
             value={formData.phone}
             onChange={handleChange}
-            style={{
-              width: "100%",
-              padding: "12px 16px",
-              borderRadius: 10,
-              border: errors.phone
-                ? `2px solid ${ERROR_RED}`
-                : `1.8px solid ${INPUT_BORDER}`,
-              backgroundColor: "#fff",
-              fontSize: 16,
-              color: TEXT_DARK,
-              outline: "none",
-              boxShadow: errors.phone
-                ? "0 0 6px rgba(239, 68, 68, 0.4)"
-                : "0 0 4px rgba(0,0,0,0.06)",
-              transition: "border-color 0.3s ease, box-shadow 0.3s ease",
-            }}
+            style={getInputStyles("phone")}
             aria-invalid={errors.phone ? "true" : "false"}
             aria-describedby="phone-error"
-            onFocus={(e) => {
-              e.target.style.borderColor = PRIMARY_BLUE;
-              e.target.style.boxShadow = `0 0 8px ${PRIMARY_BLUE}88`;
-            }}
-            onBlur={(e) => {
-              e.target.style.borderColor = errors.phone ? ERROR_RED : INPUT_BORDER;
-              e.target.style.boxShadow = errors.phone
-                ? "0 0 6px rgba(239, 68, 68, 0.4)"
-                : "0 0 4px rgba(0,0,0,0.06)";
-            }}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
           />
           {errors.phone && (
             <p
@@ -329,34 +286,11 @@ export default function AppointmentsForm() {
               type="date"
               value={formData.date}
               onChange={handleChange}
-              style={{
-                width: "100%",
-                padding: "12px 16px",
-                borderRadius: 10,
-                border: errors.date
-                  ? `2px solid ${ERROR_RED}`
-                  : `1.8px solid ${INPUT_BORDER}`,
-                backgroundColor: "#fff",
-                fontSize: 16,
-                color: TEXT_DARK,
-                outline: "none",
-                boxShadow: errors.date
-                  ? "0 0 6px rgba(239, 68, 68, 0.4)"
-                  : "0 0 4px rgba(0,0,0,0.06)",
-                transition: "border-color 0.3s ease, box-shadow 0.3s ease",
-              }}
+              style={getInputStyles("date")}
               aria-invalid={errors.date ? "true" : "false"}
               aria-describedby="date-error"
-              onFocus={(e) => {
-                e.target.style.borderColor = PRIMARY_BLUE;
-                e.target.style.boxShadow = `0 0 8px ${PRIMARY_BLUE}88`;
-              }}
-              onBlur={(e) => {
-                e.target.style.borderColor = errors.date ? ERROR_RED : INPUT_BORDER;
-                e.target.style.boxShadow = errors.date
-                  ? "0 0 6px rgba(239, 68, 68, 0.4)"
-                  : "0 0 4px rgba(0,0,0,0.06)";
-              }}
+              onFocus={handleFocus}
+              onBlur={handleBlur}
             />
             {errors.date && (
               <p
@@ -387,34 +321,11 @@ export default function AppointmentsForm() {
               type="time"
               value={formData.time}
               onChange={handleChange}
-              style={{
-                width: "100%",
-                padding: "12px 16px",
-                borderRadius: 10,
-                border: errors.time
-                  ? `2px solid ${ERROR_RED}`
-                  : `1.8px solid ${INPUT_BORDER}`,
-                backgroundColor: "#fff",
-                fontSize: 16,
-                color: TEXT_DARK,
-                outline: "none",
-                boxShadow: errors.time
-                  ? "0 0 6px rgba(239, 68, 68, 0.4)"
-                  : "0 0 4px rgba(0,0,0,0.06)",
-                transition: "border-color 0.3s ease, box-shadow 0.3s ease",
-              }}
+              style={getInputStyles("time")}
               aria-invalid={errors.time ? "true" : "false"}
               aria-describedby="time-error"
-              onFocus={(e) => {
-                e.target.style.borderColor = PRIMARY_BLUE;
-                e.target.style.boxShadow = `0 0 8px ${PRIMARY_BLUE}88`;
-              }}
-              onBlur={(e) => {
-                e.target.style.borderColor = errors.time ? ERROR_RED : INPUT_BORDER;
-                e.target.style.boxShadow = errors.time
-                  ? "0 0 6px rgba(239, 68, 68, 0.4)"
-                  : "0 0 4px rgba(0,0,0,0.06)";
-              }}
+              onFocus={handleFocus}
+              onBlur={handleBlur}
             />
             {errors.time && (
               <p
@@ -449,34 +360,13 @@ export default function AppointmentsForm() {
             value={formData.message}
             onChange={handleChange}
             style={{
-              width: "100%",
-              padding: "12px 16px",
-              borderRadius: 10,
-              border: errors.message
-                ? `2px solid ${ERROR_RED}`
-                : `1.8px solid ${INPUT_BORDER}`,
-              backgroundColor: "#fff",
-              fontSize: 16,
-              color: TEXT_DARK,
-              outline: "none",
+              ...getInputStyles("message"),
               resize: "vertical",
-              boxShadow: errors.message
-                ? "0 0 6px rgba(239, 68, 68, 0.4)"
-                : "0 0 4px rgba(0,0,0,0.06)",
-              transition: "border-color 0.3s ease, box-shadow 0.3s ease",
             }}
             aria-invalid={errors.message ? "true" : "false"}
             aria-describedby="message-error"
-            onFocus={(e) => {
-              e.target.style.borderColor = PRIMARY_BLUE;
-              e.target.style.boxShadow = `0 0 8px ${PRIMARY_BLUE}88`;
-            }}
-            onBlur={(e) => {
-              e.target.style.borderColor = errors.message ? ERROR_RED : INPUT_BORDER;
-              e.target.style.boxShadow = errors.message
-                ? "0 0 6px rgba(239, 68, 68, 0.4)"
-                : "0 0 4px rgba(0,0,0,0.06)";
-            }}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
           />
           {errors.message && (
             <p

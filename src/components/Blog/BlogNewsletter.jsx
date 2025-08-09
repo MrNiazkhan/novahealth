@@ -4,25 +4,26 @@ export default function BlogNewsletter() {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const validateEmail = (email) =>
-    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const isValidEmail = (email) =>
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setError("");
     setSuccess(false);
 
-    if (!validateEmail(email)) {
+    if (!isValidEmail(email)) {
       setError("Please enter a valid email address.");
       return;
     }
 
-    setLoading(true);
+    setIsSubmitting(true);
 
+    // Simulate async subscription process
     setTimeout(() => {
-      setLoading(false);
+      setIsSubmitting(false);
       setSuccess(true);
       setEmail("");
     }, 1400);
@@ -31,7 +32,7 @@ export default function BlogNewsletter() {
   return (
     <section
       aria-label="Newsletter subscription"
-      className="max-w-lg mx-auto bg-white rounded-2xl p-10  mb-5"
+      className="max-w-lg mx-auto bg-white rounded-2xl p-10 mb-5"
     >
       <h2 className="text-3xl font-bold text-center text-gray-900 mb-6 tracking-wide">
         Join Our{" "}
@@ -39,6 +40,7 @@ export default function BlogNewsletter() {
           Newsletter
         </span>
       </h2>
+
       <p className="text-center text-gray-900 mb-8">
         Stay updated with the latest blog posts and wellness tips.
       </p>
@@ -57,7 +59,7 @@ export default function BlogNewsletter() {
           } text-gray-900`}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          disabled={loading}
+          disabled={isSubmitting}
           aria-invalid={error ? "true" : "false"}
           aria-describedby={error ? "email-error" : undefined}
           required
@@ -65,11 +67,11 @@ export default function BlogNewsletter() {
 
         <button
           type="submit"
-          disabled={loading}
+          disabled={isSubmitting}
           className="bg-blue-600 text-white font-semibold px-8 py-3 rounded-lg shadow-md hover:bg-blue-700 transition flex justify-center items-center disabled:opacity-60 disabled:cursor-not-allowed"
           aria-live="polite"
         >
-          {loading ? (
+          {isSubmitting ? (
             <svg
               className="animate-spin h-6 w-6 text-white"
               xmlns="http://www.w3.org/2000/svg"
@@ -84,12 +86,12 @@ export default function BlogNewsletter() {
                 r="10"
                 stroke="currentColor"
                 strokeWidth="4"
-              ></circle>
+              />
               <path
                 className="opacity-75"
                 fill="currentColor"
                 d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 010 16v-4l-3 3 3 3v-4a8 8 0 01-8-8z"
-              ></path>
+              />
             </svg>
           ) : (
             "Subscribe"

@@ -21,13 +21,18 @@ const RequestCallbackForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Basic front-end validation could be improved or replaced with libs
-    if (!formData.name || !formData.phone || !formData.callbackDate || !formData.callbackTime) {
+    // Basic front-end validation
+    if (
+      !formData.name.trim() ||
+      !formData.phone.trim() ||
+      !formData.callbackDate ||
+      !formData.callbackTime
+    ) {
       alert("Please fill in all required fields.");
       return;
     }
 
-    // Here you can integrate your API call or backend logic
+    // Here you can integrate your API or backend logic
     console.log("Callback request submitted:", formData);
 
     setSubmitted(true);
@@ -41,9 +46,15 @@ const RequestCallbackForm = () => {
   };
 
   return (
-    <section className="max-w-3xl mx-auto p-6 sm:p-10 bg-white rounded-3xl shadow-lg">
-      <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-6 text-center">
-        Request a Callback
+    <section
+      aria-labelledby="callback-form-title"
+      className="max-w-3xl mx-auto p-6 sm:p-10 bg-white rounded-3xl shadow-lg"
+    >
+      <h2
+        id="callback-form-title"
+        className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-6 text-center"
+      >
+        Request a <span className="text-blue-600">Callback</span>
       </h2>
 
       {submitted && (
@@ -60,7 +71,7 @@ const RequestCallbackForm = () => {
           {/* Name */}
           <div className="flex flex-col">
             <label htmlFor="name" className="mb-2 font-medium text-gray-700">
-              Full Name <span className="text-red-600">*</span>
+              Full Name <span aria-hidden="true" className="text-red-600">*</span>
             </label>
             <input
               type="text"
@@ -70,6 +81,7 @@ const RequestCallbackForm = () => {
               value={formData.name}
               onChange={handleChange}
               required
+              autoComplete="name"
               className="rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-300 p-3 text-gray-900 outline-none transition"
             />
           </div>
@@ -77,7 +89,7 @@ const RequestCallbackForm = () => {
           {/* Phone */}
           <div className="flex flex-col">
             <label htmlFor="phone" className="mb-2 font-medium text-gray-700">
-              Phone Number <span className="text-red-600">*</span>
+              Phone Number <span aria-hidden="true" className="text-red-600">*</span>
             </label>
             <input
               type="tel"
@@ -89,14 +101,21 @@ const RequestCallbackForm = () => {
               required
               pattern="^\+?[0-9\s\-()]{7,}$"
               title="Please enter a valid phone number"
+              autoComplete="tel"
               className="rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-300 p-3 text-gray-900 outline-none transition"
             />
           </div>
 
           {/* Callback Date */}
           <div className="flex flex-col">
-            <label htmlFor="callbackDate" className="mb-2 font-medium text-gray-700">
-              Preferred Callback Date <span className="text-red-600">*</span>
+            <label
+              htmlFor="callbackDate"
+              className="mb-2 font-medium text-gray-700"
+            >
+              Preferred Callback Date{" "}
+              <span aria-hidden="true" className="text-red-600">
+                *
+              </span>
             </label>
             <input
               type="date"
@@ -105,15 +124,21 @@ const RequestCallbackForm = () => {
               value={formData.callbackDate}
               onChange={handleChange}
               required
-              min={new Date().toISOString().split("T")[0]} // no past dates
+              min={new Date().toISOString().split("T")[0]}
               className="rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-300 p-3 text-gray-900 outline-none transition"
             />
           </div>
 
           {/* Callback Time */}
           <div className="flex flex-col">
-            <label htmlFor="callbackTime" className="mb-2 font-medium text-gray-700">
-              Preferred Callback Time <span className="text-red-600">*</span>
+            <label
+              htmlFor="callbackTime"
+              className="mb-2 font-medium text-gray-700"
+            >
+              Preferred Callback Time{" "}
+              <span aria-hidden="true" className="text-red-600">
+                *
+              </span>
             </label>
             <input
               type="time"
@@ -129,7 +154,10 @@ const RequestCallbackForm = () => {
 
         {/* Message */}
         <div className="mt-6 flex flex-col">
-          <label htmlFor="message" className="mb-2 font-medium text-gray-700">
+          <label
+            htmlFor="message"
+            className="mb-2 font-medium text-gray-700"
+          >
             Additional Message (Optional)
           </label>
           <textarea

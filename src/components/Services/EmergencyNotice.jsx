@@ -8,10 +8,10 @@ const EmergencyNotice = () => {
     <section
       role="alert"
       aria-live="assertive"
-      className="bg-red-700 text-white px-5 sm:px-8 md:px-12 py-6 md:py-7 shadow-lg max-w-full"
+      className="bg-red-700 text-white px-5 sm:px-8 md:px-12 py-6 md:py-7 shadow-lg max-w-full animate-fadeIn"
     >
       <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 sm:gap-8">
-        {/* Icon & Text container */}
+        {/* Icon and message */}
         <div className="flex items-start sm:items-center gap-4 flex-1 min-w-0">
           <FaExclamationTriangle
             className="flex-shrink-0 text-4xl sm:text-5xl md:text-6xl mt-1 sm:mt-0"
@@ -28,7 +28,7 @@ const EmergencyNotice = () => {
           </div>
         </div>
 
-        {/* Call to Action */}
+        {/* Call to action button */}
         <div className="flex-shrink-0 self-center sm:self-auto">
           <a
             href="/emergency"

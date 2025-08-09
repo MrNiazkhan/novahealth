@@ -4,21 +4,7 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { FaChevronDown } from "react-icons/fa";
 
-const containerVariants = {
-  hidden: { opacity: 0, y: 40 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { staggerChildren: 0.15, ease: "easeOut", duration: 0.6 },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0 },
-};
-
-const faqs = [
+const faqItems = [
   {
     question: "What services does NovaHealth offer?",
     answer:
@@ -41,66 +27,82 @@ const faqs = [
   },
 ];
 
-const AppointmentsFAQ = () => {
-  const [openIndex, setOpenIndex] = useState(null);
+// Animation variants for container and individual FAQ items
+const containerAnimation = {
+  hidden: { opacity: 0, y: 40 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { staggerChildren: 0.15, ease: "easeOut", duration: 0.6 },
+  },
+};
 
-  const toggleOpen = (index) => {
-    setOpenIndex(openIndex === index ? null : index);
+const itemAnimation = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0 },
+};
+
+export default function AppointmentsFAQ() {
+  const [expandedIndex, setExpandedIndex] = useState(null);
+
+  const handleToggle = (index) => {
+    setExpandedIndex(prev => (prev === index ? null : index));
   };
 
   return (
     <section
       id="faq"
       aria-label="Frequently Asked Questions"
-      className="bg-white py-20 px-6 sm:px-10 lg:px-20 my-[-30px]"
+      className="my-[-30px] bg-white py-20 px-6 sm:px-10 lg:px-20"
     >
       <motion.div
-        className="max-w-5xl mx-auto"
+        className="mx-auto max-w-5xl"
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.3 }}
-        variants={containerVariants}
+        variants={containerAnimation}
       >
         <motion.h2
-          className="text-4xl sm:text-5xl font-extrabold text-center text-gray-900 mb-12 leading-tight"
-          variants={itemVariants}
+          className="mb-12 text-center text-4xl font-extrabold leading-tight text-gray-900 sm:text-5xl"
+          variants={itemAnimation}
         >
           Frequently Asked <span className="text-blue-700">Questions</span>
         </motion.h2>
 
         <div className="space-y-6">
-          {faqs.map((faq, index) => {
-            const isOpen = index === openIndex;
+          {faqItems.map((faq, idx) => {
+            const isOpen = expandedIndex === idx;
+
             return (
               <motion.div
-                key={index}
-                className="bg-gray-50 hover:bg-gray-100 transition rounded-xl shadow-md"
-                variants={itemVariants}
+                key={idx}
                 layout
+                variants={itemAnimation}
+                className="rounded-xl bg-gray-50 shadow-md transition hover:bg-gray-100"
               >
                 <button
-                  type="button"
+                  id={`faq-header-${idx}`}
+                  aria-controls={`faq-content-${idx}`}
                   aria-expanded={isOpen}
-                  aria-controls={`faq-content-${index}`}
-                  id={`faq-header-${index}`}
-                  onClick={() => toggleOpen(index)}
-                  className="w-full flex items-center justify-between px-6 py-5 text-base sm:text-lg font-medium text-gray-800 hover:text-blue-700 transition select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 rounded-xl"
+                  onClick={() => handleToggle(idx)}
+                  className="flex w-full select-none items-center justify-between rounded-xl px-6 py-5 text-base font-medium text-gray-800 transition hover:text-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 sm:text-lg"
+                  type="button"
                 >
                   {faq.question}
                   <motion.span
+                    aria-hidden="true"
                     animate={{ rotate: isOpen ? 180 : 0 }}
                     transition={{ duration: 0.3, ease: "easeInOut" }}
                     className="text-gray-500"
-                    aria-hidden="true"
                   >
                     <FaChevronDown />
                   </motion.span>
                 </button>
 
                 <motion.div
-                  id={`faq-content-${index}`}
+                  id={`faq-content-${idx}`}
                   role="region"
-                  aria-labelledby={`faq-header-${index}`}
+                  aria-labelledby={`faq-header-${idx}`}
                   initial={false}
                   animate={{
                     opacity: isOpen ? 1 : 0,
@@ -109,7 +111,7 @@ const AppointmentsFAQ = () => {
                   }}
                   transition={{ duration: 0.4, ease: "easeInOut" }}
                   style={{ overflow: "hidden" }}
-                  className="px-6 pb-5 text-gray-700 text-sm sm:text-base font-light leading-relaxed select-text"
+                  className="select-text px-6 pb-5 text-sm leading-relaxed text-gray-700 sm:text-base font-light"
                 >
                   {faq.answer}
                 </motion.div>
@@ -120,6 +122,4 @@ const AppointmentsFAQ = () => {
       </motion.div>
     </section>
   );
-};
-
-export default AppointmentsFAQ;
+}

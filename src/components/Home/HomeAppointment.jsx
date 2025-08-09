@@ -12,29 +12,26 @@ const APPOINTMENT_REASONS = [
   "Other",
 ];
 
-const containerVariants = {
+const containerMotion = {
   hidden: {},
   visible: {
-    transition: {
-      staggerChildren: 0.12,
-      delayChildren: 0.15,
-    },
+    transition: { staggerChildren: 0.12, delayChildren: 0.15 },
   },
 };
 
-const itemVariants = {
+const fadeUpMotion = {
   hidden: { opacity: 0, y: 30 },
   visible: { opacity: 1, y: 0, transition: { ease: "easeOut", duration: 0.6 } },
 };
 
-const buttonVariants = {
+const buttonMotion = {
   rest: { scale: 1 },
   hover: { scale: 1.05 },
   tap: { scale: 0.95 },
 };
 
-const HomeAppointment = () => {
-  const controls = useAnimation();
+export default function HomeAppointment() {
+  const animationControls = useAnimation();
   const sectionRef = useRef(null);
 
   const [formData, setFormData] = useState({
@@ -46,20 +43,20 @@ const HomeAppointment = () => {
     reason: "",
   });
 
-  const [formErrors, setFormErrors] = useState({});
-  const [submitting, setSubmitting] = useState(false);
-  const [submitSuccess, setSubmitSuccess] = useState(false);
-  const [submitError, setSubmitError] = useState("");
+  const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [successMessage, setSuccessMessage] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
-  // Scroll-trigger animation setup
+  // Trigger animation when section scrolls into view
   useEffect(() => {
     if (!sectionRef.current) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          controls.start("visible");
-          observer.disconnect(); // Animate only once
+          animationControls.start("visible");
+          observer.disconnect(); // Animate once
         }
       },
       { threshold: 0.25 }
@@ -68,60 +65,74 @@ const HomeAppointment = () => {
     observer.observe(sectionRef.current);
 
     return () => observer.disconnect();
-  }, [controls]);
+  }, [animationControls]);
 
-  const validate = () => {
-    const errors = {};
+  // Validate form fields
+  function validateForm() {
+    const newErrors = {};
 
-    if (!formData.name.trim()) errors.name = "Full name is required";
+    if (!formData.name.trim()) newErrors.name = "Full name is required";
+
     if (!formData.email.trim()) {
-      errors.email = "Email is required";
+      newErrors.email = "Email is required";
     } else if (
       !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(formData.email)
     ) {
-      errors.email = "Invalid email address";
+      newErrors.email = "Invalid email address";
     }
+
     if (!formData.phone.trim()) {
-      errors.phone = "Phone number is required";
+      newErrors.phone = "Phone number is required";
     } else if (!/^\+?[\d\s-]{7,15}$/.test(formData.phone)) {
-      errors.phone = "Invalid phone number";
+      newErrors.phone = "Invalid phone number";
     }
-    if (!formData.date) errors.date = "Date is required";
-    else if (new Date(formData.date) < new Date(new Date().toDateString())) {
-      errors.date = "Date cannot be in the past";
+
+    if (!formData.date) {
+      newErrors.date = "Date is required";
+    } else if (new Date(formData.date) < new Date(new Date().toDateString())) {
+      newErrors.date = "Date cannot be in the past";
     }
-    if (!formData.time) errors.time = "Time is required";
-    if (!formData.reason) errors.reason = "Please select a reason";
 
-    return errors;
-  };
+    if (!formData.time) newErrors.time = "Time is required";
 
-  const handleChange = (e) => {
+    if (!formData.reason) newErrors.reason = "Please select a reason";
+
+    return newErrors;
+  }
+
+  // Handle input changes and reset related errors/messages
+  function handleChange(e) {
     const { name, value } = e.target;
+
     setFormData((prev) => ({ ...prev, [name]: value }));
-    setFormErrors((prev) => ({ ...prev, [name]: "" }));
-    setSubmitError("");
-    setSubmitSuccess(false);
-  };
 
-  const handleSubmit = async (e) => {
+    setErrors((prev) => ({ ...prev, [name]: "" }));
+
+    setErrorMessage("");
+    setSuccessMessage(false);
+  }
+
+  // Handle form submission
+  async function handleSubmit(e) {
     e.preventDefault();
-    setSubmitError("");
-    setSubmitSuccess(false);
 
-    const errors = validate();
-    if (Object.keys(errors).length > 0) {
-      setFormErrors(errors);
+    setErrorMessage("");
+    setSuccessMessage(false);
+
+    const validationErrors = validateForm();
+
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
       return;
     }
 
-    setSubmitting(true);
+    setIsSubmitting(true);
 
     try {
-      // Simulate async request
+      // Simulate async call (replace with real API request)
       await new Promise((res) => setTimeout(res, 1500));
 
-      setSubmitSuccess(true);
+      setSuccessMessage(true);
       setFormData({
         name: "",
         email: "",
@@ -130,58 +141,58 @@ const HomeAppointment = () => {
         time: "",
         reason: "",
       });
-    } catch (error) {
-      setSubmitError("Something went wrong. Please try again later.");
+    } catch {
+      setErrorMessage("Something went wrong. Please try again later.");
     } finally {
-      setSubmitting(false);
+      setIsSubmitting(false);
     }
-  };
+  }
 
   return (
     <section
-      className="bg-white py-16 px-6 sm:px-12 md:px-20 max-w-7xl mx-auto"
       ref={sectionRef}
       aria-labelledby="appointment-title"
+      className="bg-white py-16 px-6 sm:px-12 md:px-20 max-w-7xl mx-auto"
     >
       <motion.div
-        variants={containerVariants}
-        initial="hidden"
-        animate={controls}
         className="max-w-xl mx-auto"
+        variants={containerMotion}
+        initial="hidden"
+        animate={animationControls}
       >
         <motion.h2
           id="appointment-title"
           className="text-3xl font-extrabold text-gray-900 mb-4 text-center"
-          variants={itemVariants}
+          variants={fadeUpMotion}
         >
           Schedule an <span className="text-blue-700">Appointment</span>
         </motion.h2>
 
         <motion.p
           className="text-center text-gray-600 max-w-xl mx-auto mb-12"
-          variants={itemVariants}
+          variants={fadeUpMotion}
         >
-          Book your appointment easily with our expert medical team. We’re here to
-          help you.
+          Book your appointment easily with our expert medical team. We’re here
+          to help you.
         </motion.p>
 
-        {submitSuccess && (
+        {successMessage && (
           <motion.div
             role="alert"
-            className="mb-8 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-md max-w-xl mx-auto text-center font-semibold"
-            variants={itemVariants}
+            className="mb-8 max-w-xl mx-auto bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-md text-center font-semibold"
+            variants={fadeUpMotion}
           >
             Your appointment has been scheduled successfully!
           </motion.div>
         )}
 
-        {submitError && (
+        {errorMessage && (
           <motion.div
             role="alert"
-            className="mb-8 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-md max-w-xl mx-auto text-center font-semibold"
-            variants={itemVariants}
+            className="mb-8 max-w-xl mx-auto bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-md text-center font-semibold"
+            variants={fadeUpMotion}
           >
-            {submitError}
+            {errorMessage}
           </motion.div>
         )}
 
@@ -189,10 +200,10 @@ const HomeAppointment = () => {
           onSubmit={handleSubmit}
           noValidate
           className="grid grid-cols-1 gap-6 sm:grid-cols-2"
-          variants={containerVariants}
+          variants={containerMotion}
         >
-          {/* Name */}
-          <motion.div className="sm:col-span-2" variants={itemVariants}>
+          {/* Full Name */}
+          <motion.div className="sm:col-span-2" variants={fadeUpMotion}>
             <label
               htmlFor="name"
               className="block text-sm font-medium text-gray-700 mb-1"
@@ -200,35 +211,35 @@ const HomeAppointment = () => {
               Full Name <span className="text-red-600">*</span>
             </label>
             <input
-              type="text"
-              name="name"
               id="name"
+              name="name"
+              type="text"
               value={formData.name}
               onChange={handleChange}
-              disabled={submitting}
+              disabled={isSubmitting}
+              placeholder="Your full name"
+              required
+              aria-invalid={!!errors.name}
+              aria-describedby={errors.name ? "name-error" : undefined}
               className={`block w-full rounded-md border px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                formErrors.name
+                errors.name
                   ? "border-red-500 focus:ring-red-500"
                   : "border-gray-300"
               }`}
-              aria-invalid={!!formErrors.name}
-              aria-describedby={formErrors.name ? "name-error" : undefined}
-              placeholder="Your full name"
-              required
             />
-            {formErrors.name && (
+            {errors.name && (
               <p
-                className="mt-1 text-red-600 text-sm"
                 id="name-error"
                 role="alert"
+                className="mt-1 text-red-600 text-sm"
               >
-                {formErrors.name}
+                {errors.name}
               </p>
             )}
           </motion.div>
 
           {/* Email */}
-          <motion.div className="sm:col-span-2" variants={itemVariants}>
+          <motion.div className="sm:col-span-2" variants={fadeUpMotion}>
             <label
               htmlFor="email"
               className="block text-sm font-medium text-gray-700 mb-1"
@@ -236,35 +247,35 @@ const HomeAppointment = () => {
               Email Address <span className="text-red-600">*</span>
             </label>
             <input
-              type="email"
-              name="email"
               id="email"
+              name="email"
+              type="email"
               value={formData.email}
               onChange={handleChange}
-              disabled={submitting}
+              disabled={isSubmitting}
+              placeholder="you@example.com"
+              required
+              aria-invalid={!!errors.email}
+              aria-describedby={errors.email ? "email-error" : undefined}
               className={`block w-full rounded-md border px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                formErrors.email
+                errors.email
                   ? "border-red-500 focus:ring-red-500"
                   : "border-gray-300"
               }`}
-              aria-invalid={!!formErrors.email}
-              aria-describedby={formErrors.email ? "email-error" : undefined}
-              placeholder="you@example.com"
-              required
             />
-            {formErrors.email && (
+            {errors.email && (
               <p
-                className="mt-1 text-red-600 text-sm"
                 id="email-error"
                 role="alert"
+                className="mt-1 text-red-600 text-sm"
               >
-                {formErrors.email}
+                {errors.email}
               </p>
             )}
           </motion.div>
 
           {/* Phone */}
-          <motion.div className="sm:col-span-2" variants={itemVariants}>
+          <motion.div className="sm:col-span-2" variants={fadeUpMotion}>
             <label
               htmlFor="phone"
               className="block text-sm font-medium text-gray-700 mb-1"
@@ -272,35 +283,35 @@ const HomeAppointment = () => {
               Phone Number <span className="text-red-600">*</span>
             </label>
             <input
-              type="tel"
-              name="phone"
               id="phone"
+              name="phone"
+              type="tel"
               value={formData.phone}
               onChange={handleChange}
-              disabled={submitting}
+              disabled={isSubmitting}
+              placeholder="+1234567890"
+              required
+              aria-invalid={!!errors.phone}
+              aria-describedby={errors.phone ? "phone-error" : undefined}
               className={`block w-full rounded-md border px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                formErrors.phone
+                errors.phone
                   ? "border-red-500 focus:ring-red-500"
                   : "border-gray-300"
               }`}
-              aria-invalid={!!formErrors.phone}
-              aria-describedby={formErrors.phone ? "phone-error" : undefined}
-              placeholder="+1234567890"
-              required
             />
-            {formErrors.phone && (
+            {errors.phone && (
               <p
-                className="mt-1 text-red-600 text-sm"
                 id="phone-error"
                 role="alert"
+                className="mt-1 text-red-600 text-sm"
               >
-                {formErrors.phone}
+                {errors.phone}
               </p>
             )}
           </motion.div>
 
           {/* Date */}
-          <motion.div variants={itemVariants}>
+          <motion.div variants={fadeUpMotion}>
             <label
               htmlFor="date"
               className="block text-sm font-medium text-gray-700 mb-1"
@@ -308,35 +319,35 @@ const HomeAppointment = () => {
               Preferred Date <span className="text-red-600">*</span>
             </label>
             <input
-              type="date"
-              name="date"
               id="date"
+              name="date"
+              type="date"
               value={formData.date}
               onChange={handleChange}
-              disabled={submitting}
+              disabled={isSubmitting}
               min={new Date().toISOString().split("T")[0]}
+              required
+              aria-invalid={!!errors.date}
+              aria-describedby={errors.date ? "date-error" : undefined}
               className={`block w-full rounded-md border px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                formErrors.date
+                errors.date
                   ? "border-red-500 focus:ring-red-500"
                   : "border-gray-300"
               }`}
-              aria-invalid={!!formErrors.date}
-              aria-describedby={formErrors.date ? "date-error" : undefined}
-              required
             />
-            {formErrors.date && (
+            {errors.date && (
               <p
-                className="mt-1 text-red-600 text-sm"
                 id="date-error"
                 role="alert"
+                className="mt-1 text-red-600 text-sm"
               >
-                {formErrors.date}
+                {errors.date}
               </p>
             )}
           </motion.div>
 
           {/* Time */}
-          <motion.div variants={itemVariants}>
+          <motion.div variants={fadeUpMotion}>
             <label
               htmlFor="time"
               className="block text-sm font-medium text-gray-700 mb-1"
@@ -344,30 +355,30 @@ const HomeAppointment = () => {
               Preferred Time <span className="text-red-600">*</span>
             </label>
             <input
-              type="time"
-              name="time"
               id="time"
+              name="time"
+              type="time"
               value={formData.time}
               onChange={handleChange}
-              disabled={submitting}
+              disabled={isSubmitting}
               min="08:00"
               max="18:00"
+              required
+              aria-invalid={!!errors.time}
+              aria-describedby={errors.time ? "time-error" : undefined}
               className={`block w-full rounded-md border px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                formErrors.time
+                errors.time
                   ? "border-red-500 focus:ring-red-500"
                   : "border-gray-300"
               }`}
-              aria-invalid={!!formErrors.time}
-              aria-describedby={formErrors.time ? "time-error" : undefined}
-              required
             />
-            {formErrors.time && (
+            {errors.time && (
               <p
-                className="mt-1 text-red-600 text-sm"
                 id="time-error"
                 role="alert"
+                className="mt-1 text-red-600 text-sm"
               >
-                {formErrors.time}
+                {errors.time}
               </p>
             )}
             <p className="text-xs text-gray-500 mt-1">
@@ -376,7 +387,7 @@ const HomeAppointment = () => {
           </motion.div>
 
           {/* Reason */}
-          <motion.div className="sm:col-span-2" variants={itemVariants}>
+          <motion.div className="sm:col-span-2" variants={fadeUpMotion}>
             <label
               htmlFor="reason"
               className="block text-sm font-medium text-gray-700 mb-1"
@@ -388,15 +399,15 @@ const HomeAppointment = () => {
               name="reason"
               value={formData.reason}
               onChange={handleChange}
-              disabled={submitting}
+              disabled={isSubmitting}
+              required
+              aria-invalid={!!errors.reason}
+              aria-describedby={errors.reason ? "reason-error" : undefined}
               className={`block w-full rounded-md border px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                formErrors.reason
+                errors.reason
                   ? "border-red-500 focus:ring-red-500"
                   : "border-gray-300"
               }`}
-              aria-invalid={!!formErrors.reason}
-              aria-describedby={formErrors.reason ? "reason-error" : undefined}
-              required
             >
               <option value="" disabled>
                 Select reason
@@ -407,39 +418,37 @@ const HomeAppointment = () => {
                 </option>
               ))}
             </select>
-            {formErrors.reason && (
+            {errors.reason && (
               <p
-                className="mt-1 text-red-600 text-sm"
                 id="reason-error"
                 role="alert"
+                className="mt-1 text-red-600 text-sm"
               >
-                {formErrors.reason}
+                {errors.reason}
               </p>
             )}
           </motion.div>
 
-          {/* Submit button */}
+          {/* Submit Button */}
           <motion.div
             className="sm:col-span-2"
-            variants={itemVariants}
+            variants={fadeUpMotion}
             initial="rest"
+            animate="rest"
             whileHover="hover"
             whileTap="tap"
-            animate="rest"
           >
             <motion.button
               type="submit"
-              disabled={submitting}
+              disabled={isSubmitting}
               className="w-full bg-blue-700 hover:bg-blue-800 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-lg transition-colors"
-              variants={buttonVariants}
+              variants={buttonMotion}
             >
-              {submitting ? "Scheduling..." : "Schedule Appointment"}
+              {isSubmitting ? "Scheduling..." : "Schedule Appointment"}
             </motion.button>
           </motion.div>
         </motion.form>
       </motion.div>
     </section>
   );
-};
-
-export default HomeAppointment;
+}

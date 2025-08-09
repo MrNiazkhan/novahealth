@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState, useRef } from "react";
 
-const MAX_FILE_SIZE_MB = 10; // Max file size allowed
-const ACCEPTED_FILE_TYPES = [
+// Allowed file types and max size
+const ALLOWED_TYPES = [
   "application/pdf",
   "image/jpeg",
   "image/png",
@@ -11,129 +11,184 @@ const ACCEPTED_FILE_TYPES = [
   "application/msword",
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
 ];
+const MAX_SIZE_MB = 10;
 
-const formatFileSize = (bytes) => {
-  if (bytes < 1024) return bytes + " B";
-  else if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
-  else return (bytes / (1024 * 1024)).toFixed(2) + " MB";
-};
+// Helper to show human-readable file size
+function prettyFileSize(bytes) {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+}
 
-const PatientDocumentsUpload = () => {
-  const [files, setFiles] = useState([]);
-  const [error, setError] = useState("");
-  const fileInputRef = useRef(null);
-  const [dragActive, setDragActive] = useState(false);
+// Single file item component
+function UploadedFileItem({ file, onRemove }) {
+  return (
+    <li
+      className="flex items-center justify-between border border-gray-300 rounded-md p-3 shadow-sm"
+      title={file.name}
+    >
+      <div className="flex items-center space-x-3 overflow-hidden">
+        <svg
+          className="w-6 h-6 text-gray-600 flex-shrink-0"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"
+          />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M14 2v6h6" />
+        </svg>
+        <span className="truncate max-w-xs">{file.name}</span>
+      </div>
+      <div className="flex items-center space-x-4">
+        <span className="text-sm text-gray-600">{prettyFileSize(file.size)}</span>
+        <button
+          onClick={onRemove}
+          type="button"
+          aria-label={`Remove file ${file.name}`}
+          className="text-red-600 hover:text-red-800 focus:outline-none"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-5 w-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+    </li>
+  );
+}
 
-  const validateFile = (file) => {
-    if (!ACCEPTED_FILE_TYPES.includes(file.type)) {
-      return `File type not supported: ${file.name}`;
+// Main component
+export default function PatientDocumentsUpload() {
+  const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [uploadError, setUploadError] = useState("");
+  const [isDragging, setIsDragging] = useState(false);
+  const inputRef = useRef(null);
+
+  // Validate file size and type
+  function validateFile(file) {
+    if (!ALLOWED_TYPES.includes(file.type)) {
+      return `Unsupported file type: ${file.name}`;
     }
-    if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
-      return `File too large (max ${MAX_FILE_SIZE_MB} MB): ${file.name}`;
+    if (file.size > MAX_SIZE_MB * 1024 * 1024) {
+      return `File too large (max ${MAX_SIZE_MB}MB): ${file.name}`;
     }
     return null;
-  };
+  }
 
-  const handleFiles = (selectedFiles) => {
-    let newFiles = [];
-    let validationError = "";
-
-    for (let i = 0; i < selectedFiles.length; i++) {
-      const file = selectedFiles[i];
-      const err = validateFile(file);
-      if (err) {
-        validationError = err;
-        break;
+  // Handle selected files from input or drop
+  function handleSelectedFiles(fileList) {
+    const newFiles = [];
+    for (let i = 0; i < fileList.length; i++) {
+      const file = fileList[i];
+      const errorMsg = validateFile(file);
+      if (errorMsg) {
+        setUploadError(errorMsg);
+        return;
       }
       newFiles.push(file);
     }
 
-    if (validationError) {
-      setError(validationError);
-      return;
-    }
-
-    // Avoid duplicate files by name+size
-    setFiles((prev) => {
-      const filteredPrev = prev.filter(
+    // Prevent duplicates by name & size
+    setUploadedFiles((existing) => {
+      const filtered = existing.filter(
         (f) => !newFiles.some((nf) => nf.name === f.name && nf.size === f.size)
       );
-      return [...filteredPrev, ...newFiles];
+      return [...filtered, ...newFiles];
     });
-    setError("");
-  };
 
-  const onInputChange = (e) => {
+    setUploadError("");
+  }
+
+  // Reset input and process files from file input
+  function onFileInputChange(e) {
     if (!e.target.files) return;
-    handleFiles(e.target.files);
-    e.target.value = null; // reset input
-  };
+    handleSelectedFiles(e.target.files);
+    e.target.value = null; // Reset input so same file can be reselected if needed
+  }
 
-  const onDragOver = (e) => {
+  // Drag events for UI feedback
+  function onDragOver(e) {
     e.preventDefault();
     e.stopPropagation();
-    setDragActive(true);
-  };
-
-  const onDragLeave = (e) => {
+    setIsDragging(true);
+  }
+  function onDragLeave(e) {
     e.preventDefault();
     e.stopPropagation();
-    setDragActive(false);
-  };
+    setIsDragging(false);
+  }
 
-  const onDrop = (e) => {
+  // Handle dropped files
+  function onDrop(e) {
     e.preventDefault();
     e.stopPropagation();
-    setDragActive(false);
+    setIsDragging(false);
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      handleFiles(e.dataTransfer.files);
+      handleSelectedFiles(e.dataTransfer.files);
       e.dataTransfer.clearData();
     }
-  };
+  }
 
-  const removeFile = (index) => {
-    setFiles((prev) => prev.filter((_, i) => i !== index));
-  };
+  // Remove file by index
+  function removeFileAtIndex(idx) {
+    setUploadedFiles((files) => files.filter((_, i) => i !== idx));
+  }
 
-  const openFileDialog = () => {
-    fileInputRef.current?.click();
-  };
+  // Trigger hidden input click
+  function openFileSelector() {
+    if (inputRef.current) {
+      inputRef.current.click();
+    }
+  }
 
   return (
     <section
-      aria-labelledby="documents-upload-title"
+      aria-labelledby="upload-section-title"
       className="max-w-4xl mx-auto p-6 bg-white rounded-xl shadow-md"
     >
       <h2
-        id="documents-upload-title"
+        id="upload-section-title"
         className="text-3xl font-extrabold text-blue-700 mb-6 text-center"
       >
         Upload Documents
       </h2>
 
       <div
+        role="button"
+        tabIndex={0}
+        onClick={openFileSelector}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            openFileSelector();
+          }
+        }}
         onDragOver={onDragOver}
         onDragLeave={onDragLeave}
         onDrop={onDrop}
-        className={`border-4 border-dashed rounded-lg p-10 cursor-pointer transition-colors ${
-          dragActive ? "border-blue-600 bg-blue-50" : "border-gray-300 bg-gray-50"
-        } flex flex-col items-center justify-center text-center`}
-        onClick={openFileDialog}
-        role="button"
-        tabIndex={0}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ") {
-            openFileDialog();
-          }
-        }}
-        aria-describedby="documents-upload-desc"
+        aria-describedby="upload-section-desc"
+        className={`border-4 border-dashed rounded-lg p-10 cursor-pointer flex flex-col items-center justify-center text-center transition-colors ${
+          isDragging ? "border-blue-600 bg-blue-50" : "border-gray-300 bg-gray-50"
+        }`}
       >
         <input
-          ref={fileInputRef}
+          ref={inputRef}
           type="file"
           multiple
-          onChange={onInputChange}
-          accept={ACCEPTED_FILE_TYPES.join(",")}
+          accept={ALLOWED_TYPES.join(",")}
+          onChange={onFileInputChange}
           className="hidden"
           aria-hidden="true"
         />
@@ -146,98 +201,40 @@ const PatientDocumentsUpload = () => {
           aria-hidden="true"
           focusable="false"
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M7 16v4h10v-4M7 12l5-5 5 5M12 3v9"
-          />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M7 16v4h10v-4M7 12l5-5 5 5M12 3v9" />
         </svg>
         <p className="text-lg font-medium text-blue-700 mb-1">
-          Drag & drop files here, or click to select files
+          Drag &amp; drop files here, or click to select files
         </p>
-        <p
-          id="documents-upload-desc"
-          className="text-sm text-gray-600 select-none"
-        >
-          Supported formats: PDF, JPG, PNG, DOC, DOCX. Max file size: {MAX_FILE_SIZE_MB}MB
+        <p id="upload-section-desc" className="text-sm text-gray-600 select-none">
+          Supported formats: PDF, JPG, PNG, DOC, DOCX. Max file size: {MAX_SIZE_MB}MB
         </p>
       </div>
 
-      {error && (
+      {uploadError && (
         <p
           role="alert"
-          className="mt-4 text-center text-red-600 font-semibold"
           aria-live="assertive"
+          className="mt-4 text-center text-red-600 font-semibold"
         >
-          {error}
+          {uploadError}
         </p>
       )}
 
-      {files.length > 0 && (
+      {uploadedFiles.length > 0 && (
         <div className="mt-8">
-          <h3 className="text-xl font-semibold mb-4 text-gray-900">
-            Uploaded Files
-          </h3>
+          <h3 className="text-xl font-semibold mb-4 text-gray-900">Uploaded Files</h3>
           <ul className="space-y-3 max-h-60 overflow-y-auto">
-            {files.map((file, idx) => (
-              <li
-                key={`${file.name}-${file.size}-${idx}`}
-                className="flex items-center justify-between border border-gray-300 rounded-md p-3 shadow-sm"
-              >
-                <div className="flex items-center space-x-3 overflow-hidden">
-                  <svg
-                    className="w-6 h-6 text-gray-600 flex-shrink-0"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                    focusable="false"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"
-                    />
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M14 2v6h6" />
-                  </svg>
-                  <div className="truncate max-w-xs" title={file.name}>
-                    {file.name}
-                  </div>
-                </div>
-                <div className="flex items-center space-x-4">
-                  <span className="text-sm text-gray-600">
-                    {formatFileSize(file.size)}
-                  </span>
-                  <button
-                    onClick={() => removeFile(idx)}
-                    type="button"
-                    aria-label={`Remove file ${file.name}`}
-                    className="text-red-600 hover:text-red-800 focus:outline-none"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M6 18L18 6M6 6l12 12"
-                      />
-                    </svg>
-                  </button>
-                </div>
-              </li>
+            {uploadedFiles.map((file, index) => (
+              <UploadedFileItem
+                key={`${file.name}-${file.size}-${index}`}
+                file={file}
+                onRemove={() => removeFileAtIndex(index)}
+              />
             ))}
           </ul>
         </div>
       )}
     </section>
   );
-};
-
-export default PatientDocumentsUpload;
+}

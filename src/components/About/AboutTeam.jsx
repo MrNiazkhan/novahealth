@@ -16,7 +16,11 @@ const containerVariants = {
 
 const cardVariants = {
   hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: "easeOut" },
+  },
   hover: { scale: 1.05, boxShadow: "0 15px 25px rgba(0,0,0,0.15)" },
 };
 
@@ -75,79 +79,86 @@ const AboutTeam = () => {
   return (
     <section
       aria-label="Meet Our Team"
-      className="bg-white py-20 px-6 sm:px-12 max-w-7xl mx-auto "
+      className="bg-white py-20 px-6 sm:px-12 max-w-7xl mx-auto"
     >
-      {/* Header */}
+      {/* Section header */}
       <motion.div
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.3 }}
         variants={containerVariants}
-        className="mb-12 text-center max-w-3xl mx-auto"
+        className="mb-12 max-w-3xl mx-auto text-center"
       >
         <motion.h2
-          className="text-4xl sm:text-5xl font-extrabold tracking-tight text-gray-900"
           variants={{
             hidden: { opacity: 0, y: 20 },
             visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
           }}
           tabIndex={-1}
+          className="text-4xl sm:text-5xl font-extrabold tracking-tight text-gray-900"
         >
           Meet Our <span className="text-blue-600">Team</span>
         </motion.h2>
+
         <motion.p
-          className="mt-4 text-gray-600 text-lg sm:text-xl font-light"
           variants={{
             hidden: { opacity: 0, y: 20 },
-            visible: { opacity: 1, y: 0, transition: { duration: 0.6, delay: 0.2 } },
+            visible: {
+              opacity: 1,
+              y: 0,
+              transition: { duration: 0.6, delay: 0.2 },
+            },
           }}
+          className="mt-4 text-gray-600 text-lg sm:text-xl font-light"
         >
           Our dedicated experts are committed to providing the highest quality
           care and innovation.
         </motion.p>
       </motion.div>
 
-      {/* Team Grid */}
+      {/* Team members grid */}
       <motion.div
         className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8"
         variants={containerVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.3 }}
       >
         {teamMembers.map(({ id, name, role, image, socials }) => (
           <motion.article
             key={id}
-            className="bg-gray-50 rounded-2xl p-6 flex flex-col items-center text-center shadow-sm cursor-pointer select-none focus:outline-none focus-visible:ring-4 focus-visible:ring-blue-400"
             variants={cardVariants}
             whileHover="hover"
             tabIndex={0}
             aria-label={`${name}, ${role}`}
+            className="bg-gray-50 rounded-2xl p-6 flex flex-col items-center text-center shadow-sm cursor-pointer select-none focus:outline-none focus-visible:ring-4 focus-visible:ring-blue-400"
           >
             <motion.img
               src={image}
               alt={`${name} profile picture`}
-              className="w-32 h-32 rounded-full object-cover mb-4 shadow-md"
               loading="lazy"
               decoding="async"
+              draggable={false}
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 0.6, ease: "easeOut" }}
-              draggable={false}
+              className="w-32 h-32 rounded-full object-cover mb-4 shadow-md"
             />
 
-            <motion.h3
-              className="text-lg sm:text-xl font-semibold text-gray-900 max-w-[180px] truncate"
+            <h3
               title={name}
+              className="text-lg sm:text-xl font-semibold text-gray-900 max-w-[180px] truncate"
             >
               {name}
-            </motion.h3>
-
-            <motion.p
-              className="text-blue-600 text-sm font-medium mb-4 max-w-[180px] truncate"
+            </h3>
+            <p
               title={role}
+              className="text-blue-600 text-sm font-medium mb-4 max-w-[180px] truncate"
             >
               {role}
-            </motion.p>
+            </p>
 
-            <motion.div className="flex space-x-6 text-gray-400 hover:text-blue-600">
+            <div className="flex space-x-6 text-gray-400 hover:text-blue-600">
               <a
                 href={socials.twitter}
                 target="_blank"
@@ -175,7 +186,7 @@ const AboutTeam = () => {
               >
                 <FaInstagram size={20} />
               </a>
-            </motion.div>
+            </div>
           </motion.article>
         ))}
       </motion.div>

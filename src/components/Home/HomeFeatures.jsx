@@ -73,6 +73,7 @@ const features = [
   },
 ];
 
+// Animation variants for container and cards
 const containerVariants = {
   hidden: {},
   visible: {
@@ -96,10 +97,11 @@ const headingVariants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
 };
 
-const HomeFeatures = () => {
+export default function HomeFeatures() {
   const controls = useAnimation();
   const sectionRef = useRef(null);
 
+  // Animate when the section scrolls into view
   useEffect(() => {
     if (!sectionRef.current) return;
 
@@ -107,7 +109,7 @@ const HomeFeatures = () => {
       ([entry]) => {
         if (entry.isIntersecting) {
           controls.start("visible");
-          observer.disconnect(); // animate once
+          observer.disconnect(); // only animate once
         }
       },
       { threshold: 0.25 }
@@ -175,6 +177,4 @@ const HomeFeatures = () => {
       </div>
     </section>
   );
-};
-
-export default HomeFeatures;
+}
