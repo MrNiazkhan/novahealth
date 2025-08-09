@@ -99,11 +99,9 @@ export default function PremiumFilters() {
 
   const activeData = FILTERS.find((f) => f.id === active);
 
-  // Smooth height adjustment when content changes
   useEffect(() => {
     if (contentRef.current && imageContainerRef.current) {
       const contentRect = contentRef.current.getBoundingClientRect();
-      // add some padding to image container height for shadow etc
       setContentHeight(contentRect.height);
     }
   }, [active]);
@@ -115,7 +113,7 @@ export default function PremiumFilters() {
         Our Appointment Types
       </h2>
 
-      {/* Filters horizontal buttons */}
+      {/* Filters buttons */}
       <div className="flex justify-center gap-8 mb-12 flex-wrap">
         {FILTERS.map(({ id, label }) => {
           const isActive = id === active;
@@ -143,7 +141,7 @@ export default function PremiumFilters() {
 
       {/* Content panel */}
       <div className="flex flex-col md:flex-row items-start gap-12">
-        {/* Image container with smooth height transition */}
+        {/* Image container */}
         <motion.div
           ref={imageContainerRef}
           className="md:w-1/2 rounded-xl overflow-hidden shadow-lg border border-gray-200 flex-shrink-0"
@@ -163,7 +161,7 @@ export default function PremiumFilters() {
               initial={{ opacity: 0, scale: 1.05 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.5 }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
             />
           </AnimatePresence>
         </motion.div>
@@ -176,7 +174,7 @@ export default function PremiumFilters() {
           initial={{ opacity: 0, x: 30 }}
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -30 }}
-          transition={{ duration: 0.4 }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
           aria-live="polite"
         >
           <h3 className="text-3xl font-bold text-gray-900">{activeData.descriptionTitle}</h3>

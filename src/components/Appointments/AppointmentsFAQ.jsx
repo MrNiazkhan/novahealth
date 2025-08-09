@@ -58,7 +58,7 @@ const AppointmentsFAQ = () => {
         className="max-w-5xl mx-auto"
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true }}
+        viewport={{ once: true, amount: 0.3 }}
         variants={containerVariants}
       >
         <motion.h2
@@ -84,19 +84,19 @@ const AppointmentsFAQ = () => {
                   aria-controls={`faq-content-${index}`}
                   id={`faq-header-${index}`}
                   onClick={() => toggleOpen(index)}
-                  className="w-full flex items-center justify-between px-6 py-5 text-base sm:text-lg font-medium text-gray-800 hover:text-blue-700 transition select-none"
+                  className="w-full flex items-center justify-between px-6 py-5 text-base sm:text-lg font-medium text-gray-800 hover:text-blue-700 transition select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 rounded-xl"
                 >
                   {faq.question}
                   <motion.span
                     animate={{ rotate: isOpen ? 180 : 0 }}
                     transition={{ duration: 0.3, ease: "easeInOut" }}
                     className="text-gray-500"
+                    aria-hidden="true"
                   >
                     <FaChevronDown />
                   </motion.span>
                 </button>
 
-                {/* Content container always mounted for smooth animation */}
                 <motion.div
                   id={`faq-content-${index}`}
                   role="region"
@@ -109,7 +109,7 @@ const AppointmentsFAQ = () => {
                   }}
                   transition={{ duration: 0.4, ease: "easeInOut" }}
                   style={{ overflow: "hidden" }}
-                  className="px-6 pb-5 text-gray-700 text-sm sm:text-base font-light leading-relaxed"
+                  className="px-6 pb-5 text-gray-700 text-sm sm:text-base font-light leading-relaxed select-text"
                 >
                   {faq.answer}
                 </motion.div>

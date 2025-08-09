@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { motion } from "framer-motion";
 
 const PRIMARY_BLUE = "#2563eb"; // NovaHealth blue accent
 const INPUT_BORDER = "#d1d5db"; // light gray border
@@ -71,20 +72,23 @@ export default function AppointmentsForm() {
   };
 
   return (
-    <section
-  style={{
-    backgroundColor: "#fff",
-    maxWidth: 600,
-    margin: "-1px auto 2rem auto", // top -50px, left/right auto, bottom 2rem
-    padding: 24,
-    borderRadius: 12,
-    boxShadow: "0 6px 16px rgba(0,0,0,0.08)",
-    fontFamily: "'Inter', sans-serif",
-    color: TEXT_DARK,
-  }}
-  aria-label="NovaHealth Appointment Form"
->
-
+    <motion.section
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+      style={{
+        backgroundColor: "#fff",
+        maxWidth: 600,
+        margin: "-1px auto 2rem auto",
+        padding: 24,
+        borderRadius: 12,
+        boxShadow: "0 6px 16px rgba(0,0,0,0.08)",
+        fontFamily: "'Inter', sans-serif",
+        color: TEXT_DARK,
+        userSelect: "none",
+      }}
+      aria-label="NovaHealth Appointment Form"
+    >
       <h2
         style={{
           fontSize: 28,
@@ -298,7 +302,7 @@ export default function AppointmentsForm() {
           )}
         </div>
 
-        {/* Date & Time side by side on desktop */}
+        {/* Date & Time side by side */}
         <div
           style={{
             display: "flex",
@@ -485,30 +489,32 @@ export default function AppointmentsForm() {
           )}
         </div>
 
-        <button
-  type="submit"
-  disabled={submitting}
-  style={{
-    width: "80%",
-    padding: "10px 12px",
-    fontSize: 14,
-    fontWeight: 600,
-    color: "#fff",
-    backgroundColor: submitting ? "#9ca3af" : PRIMARY_BLUE,
-    border: "none",
-    borderRadius: 8,
-    cursor: submitting ? "not-allowed" : "pointer",
-    transition: "background-color 0.3s ease",
-    letterSpacing: 0.3,
-    display: "block",      // block bana diya taake margin kaam kare
-    margin: "0 auto",      // horizontally center karega
-  }}
-  aria-busy={submitting}
->
-  {submitting ? "Submitting..." : "Book Appointment"}
-</button>
-
+        <motion.button
+          type="submit"
+          disabled={submitting}
+          whileHover={submitting ? {} : { scale: 1.05 }}
+          whileTap={submitting ? {} : { scale: 0.95 }}
+          style={{
+            width: "80%",
+            padding: "10px 12px",
+            fontSize: 14,
+            fontWeight: 600,
+            color: "#fff",
+            backgroundColor: submitting ? "#9ca3af" : PRIMARY_BLUE,
+            border: "none",
+            borderRadius: 8,
+            cursor: submitting ? "not-allowed" : "pointer",
+            transition: "background-color 0.3s ease",
+            letterSpacing: 0.3,
+            display: "block",
+            margin: "0 auto",
+            userSelect: "none",
+          }}
+          aria-busy={submitting}
+        >
+          {submitting ? "Submitting..." : "Book Appointment"}
+        </motion.button>
       </form>
-    </section>
+    </motion.section>
   );
 }

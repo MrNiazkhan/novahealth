@@ -1,7 +1,7 @@
 "use client";
 
-import React from "react";
-import { motion } from "framer-motion";
+import React, { useRef, useEffect } from "react";
+import { motion, useAnimation } from "framer-motion";
 
 const blogPosts = [
   {
@@ -102,17 +102,42 @@ const focusRingScale = {
 };
 
 const HomeBlogPreview = () => {
+  const controls = useAnimation();
+  const sectionRef = useRef(null);
+
+  useEffect(() => {
+    if (!sectionRef.current) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          controls.start("visible");
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.25 }
+    );
+
+    observer.observe(sectionRef.current);
+
+    return () => observer.disconnect();
+  }, [controls]);
+
   return (
     <section
       aria-labelledby="blog-preview-title"
       className="bg-white py-16 px-6 sm:px-12 md:px-20 max-w-7xl mx-auto my-[-30px]"
+      ref={sectionRef}
     >
       <motion.h2
         id="blog-preview-title"
         className="text-3xl font-extrabold text-gray-900 mb-10 text-center"
         initial={{ opacity: 0, y: 40 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7, ease: "easeOut" }}
+        animate={controls}
+        variants={{
+          hidden: { opacity: 0, y: 40 },
+          visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: "easeOut" } },
+        }}
       >
         Latest From Our <span className="text-blue-700">Blog</span>
       </motion.h2>
@@ -121,7 +146,7 @@ const HomeBlogPreview = () => {
         className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3"
         variants={containerVariants}
         initial="hidden"
-        animate="visible"
+        animate={controls}
       >
         {blogPosts.map(({ id, title, summary, image, url, date }) => (
           <motion.article

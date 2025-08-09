@@ -40,10 +40,11 @@ const HomeAbout = () => {
         className="max-w-7xl mx-auto flex flex-col-reverse md:flex-row items-center gap-14 min-h-[560px]"
         variants={containerVariants}
         initial="hidden"
-        animate="visible"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.3 }}
       >
         {/* Text Content */}
-        <motion.div className="flex-1 text-center md:text-left">
+        <motion.div className="flex-1 text-center md:text-left" variants={containerVariants}>
           <motion.h2
             className="text-4xl sm:text-5xl font-extrabold text-blue-700 leading-tight tracking-tight"
             variants={itemVariants}
@@ -63,8 +64,6 @@ const HomeAbout = () => {
           <motion.ul
             className="mt-8 space-y-4 text-left text-sm sm:text-base font-medium text-gray-800 max-w-md mx-auto md:mx-0"
             variants={containerVariants} // Stagger list children again inside
-            initial="hidden"
-            animate="visible"
           >
             {listItems.map((item, idx) => (
               <motion.li
@@ -101,8 +100,6 @@ const HomeAbout = () => {
             className="rounded-2xl shadow-xl max-w-xs sm:max-w-sm md:max-w-md w-full object-cover"
             loading="lazy"
             variants={imageVariants}
-            initial="hidden"
-            animate="visible"
           />
         </motion.div>
       </motion.div>

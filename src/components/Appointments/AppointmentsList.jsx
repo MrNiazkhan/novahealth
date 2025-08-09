@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
+import { motion } from "framer-motion";
 
 const STATUS_OPTIONS = ["All", "Confirmed", "Pending", "Cancelled"];
 
@@ -69,9 +70,12 @@ export default function AppointmentsList({ appointments = dummyAppointments }) {
   }
 
   return (
-    <section
-      className="max-w-4xl mx-auto p-8 bg-white rounded-2xl shadow-lg select-none"
+    <motion.section
       aria-label="Appointments List"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+      className="max-w-4xl mx-auto p-8 bg-white rounded-2xl shadow-lg select-none"
     >
       {/* Header */}
       <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 gap-6">
@@ -108,7 +112,6 @@ export default function AppointmentsList({ appointments = dummyAppointments }) {
           </li>
         ) : (
           filteredAppointments.map((app) => {
-            const isConfirmed = app.status === "Confirmed";
             return (
               <li
                 key={app.id}
@@ -174,6 +177,6 @@ export default function AppointmentsList({ appointments = dummyAppointments }) {
           })
         )}
       </ul>
-    </section>
+    </motion.section>
   );
 }

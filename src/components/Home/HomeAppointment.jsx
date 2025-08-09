@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
-import { motion } from "framer-motion";
+import React, { useState, useRef, useEffect } from "react";
+import { motion, useAnimation } from "framer-motion";
 
 const APPOINTMENT_REASONS = [
   "General Consultation",
@@ -34,6 +34,9 @@ const buttonVariants = {
 };
 
 const HomeAppointment = () => {
+  const controls = useAnimation();
+  const sectionRef = useRef(null);
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -47,6 +50,25 @@ const HomeAppointment = () => {
   const [submitting, setSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState("");
+
+  // Scroll-trigger animation setup
+  useEffect(() => {
+    if (!sectionRef.current) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          controls.start("visible");
+          observer.disconnect(); // Animate only once
+        }
+      },
+      { threshold: 0.25 }
+    );
+
+    observer.observe(sectionRef.current);
+
+    return () => observer.disconnect();
+  }, [controls]);
 
   const validate = () => {
     const errors = {};
@@ -96,6 +118,7 @@ const HomeAppointment = () => {
     setSubmitting(true);
 
     try {
+      // Simulate async request
       await new Promise((res) => setTimeout(res, 1500));
 
       setSubmitSuccess(true);
@@ -115,14 +138,19 @@ const HomeAppointment = () => {
   };
 
   return (
-    <section className="bg-white py-16 px-6 sm:px-12 md:px-20 max-w-7xl mx-auto">
+    <section
+      className="bg-white py-16 px-6 sm:px-12 md:px-20 max-w-7xl mx-auto"
+      ref={sectionRef}
+      aria-labelledby="appointment-title"
+    >
       <motion.div
         variants={containerVariants}
         initial="hidden"
-        animate="visible"
+        animate={controls}
         className="max-w-xl mx-auto"
       >
         <motion.h2
+          id="appointment-title"
           className="text-3xl font-extrabold text-gray-900 mb-4 text-center"
           variants={itemVariants}
         >
@@ -162,8 +190,6 @@ const HomeAppointment = () => {
           noValidate
           className="grid grid-cols-1 gap-6 sm:grid-cols-2"
           variants={containerVariants}
-          initial="hidden"
-          animate="visible"
         >
           {/* Name */}
           <motion.div className="sm:col-span-2" variants={itemVariants}>

@@ -28,7 +28,7 @@ export default function AppointmentDetailsPanel() {
   }, [showDetails]);
 
   return (
-    <main className=" my-10 bg-gray-50 flex items-center justify-center p-6">
+    <main className=" my-10 bg-white flex items-center justify-center p-6">
       {!showDetails ? (
         <button
           onClick={() => setShowDetails(true)}

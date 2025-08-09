@@ -1,10 +1,17 @@
 "use client";
 
 import React from "react";
+import { motion } from "framer-motion";
 
 const AppointmentsLoading = () => {
   return (
-    <section className="max-w-5xl mx-auto p-6 sm:p-10 lg:p-20 bg-white rounded-lg shadow-md">
+    <motion.section
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+      className="max-w-5xl mx-auto p-6 sm:p-10 lg:p-20 bg-white rounded-lg "
+      aria-label="Loading appointments"
+    >
       <div className="space-y-6 animate-pulse">
         {/* Title placeholder */}
         <div className="h-12 w-3/5 bg-gray-300 rounded-md mx-auto mb-10"></div>
@@ -23,7 +30,7 @@ const AppointmentsLoading = () => {
           </div>
         ))}
       </div>
-    </section>
+    </motion.section>
   );
 };
 

@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React, { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence, useAnimation } from "framer-motion";
 
 const HomeContact = () => {
   const [formData, setFormData] = useState({
@@ -16,6 +16,9 @@ const HomeContact = () => {
   const [submitting, setSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState("");
+
+  const controls = useAnimation();
+  const sectionRef = useRef(null);
 
   const validate = () => {
     const errors = {};
@@ -58,6 +61,7 @@ const HomeContact = () => {
 
     setSubmitting(true);
     try {
+      // Simulate async submission
       await new Promise((res) => setTimeout(res, 1800));
 
       setSubmitSuccess(true);
@@ -75,6 +79,7 @@ const HomeContact = () => {
     }
   };
 
+  // Animation variants
   const containerVariants = {
     hidden: { opacity: 0, y: 30 },
     visible: {
@@ -93,13 +98,33 @@ const HomeContact = () => {
     visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.4 } },
   };
 
+  // Intersection Observer to trigger animation when in viewport
+  useEffect(() => {
+    if (!sectionRef.current) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          controls.start("visible");
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.25 }
+    );
+
+    observer.observe(sectionRef.current);
+
+    return () => observer.disconnect();
+  }, [controls]);
+
   return (
     <motion.section
       aria-labelledby="contact-title"
-      className="max-w-4xl mx-auto bg-white p-10 rounded-lg shadow-lg my-16 sm:my-24 mb-5"
+      className="max-w-4xl mx-auto bg-white p-10 rounded-lg  my-16  sm:my-24 mb-5"
       initial="hidden"
-      animate="visible"
+      animate={controls}
       variants={containerVariants}
+      ref={sectionRef}
     >
       <motion.h2
         id="contact-title"
@@ -118,6 +143,7 @@ const HomeContact = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.3 }}
+            variants={itemVariants}
           >
             Thank you! Your message has been sent successfully.
           </motion.div>
@@ -133,6 +159,7 @@ const HomeContact = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.3 }}
+            variants={itemVariants}
           >
             {submitError}
           </motion.div>

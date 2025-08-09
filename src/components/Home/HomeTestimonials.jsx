@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useAnimation } from "framer-motion";
 
 import {
   FaStar,
@@ -211,14 +211,44 @@ const buttonVariants = {
   hover: { scale: 1.1, color: "#1D4ED8", transition: { duration: 0.3 } },
 };
 
+const containerVariants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.2,
+      delayChildren: 0.2,
+    },
+  },
+};
+
 const HomeTestimonials = () => {
   const [expandedId, setExpandedId] = useState(null);
   const [copiedId, setCopiedId] = useState(null);
   const [currentUrl, setCurrentUrl] = useState("");
+  const controls = useAnimation();
+  const sectionRef = useRef(null);
 
   useEffect(() => {
     setCurrentUrl(window.location.href);
   }, []);
+
+  useEffect(() => {
+    if (!sectionRef.current) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          controls.start("visible");
+          observer.disconnect(); // only trigger once
+        }
+      },
+      { threshold: 0.3 }
+    );
+
+    observer.observe(sectionRef.current);
+
+    return () => observer.disconnect();
+  }, [controls]);
 
   const handleToggle = (id) => {
     setExpandedId(expandedId === id ? null : id);
@@ -233,19 +263,41 @@ const HomeTestimonials = () => {
   return (
     <section
       id="testimonials"
+      ref={sectionRef}
       className="bg-white w-full py-16 px-6 sm:px-12 lg:px-24 rounded-3xl"
     >
       <div className="max-w-5xl mx-auto text-center mb-14">
-        <h2 className="text-4xl sm:text-5xl font-extrabold text-gray-900 leading-tight">
+        <motion.h2
+          className="text-4xl sm:text-5xl font-extrabold text-gray-900 leading-tight"
+          initial={{ opacity: 0, y: 20 }}
+          animate={controls}
+          variants={{
+            visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
+            hidden: { opacity: 0, y: 20 },
+          }}
+        >
           Trusted Voices{" "}
           <span className="text-blue-700 font-extrabold">From Our Patients</span>
-        </h2>
-        <p className="text-gray-800 mt-4 text-lg sm:text-xl max-w-2xl mx-auto leading-relaxed">
+        </motion.h2>
+        <motion.p
+          className="text-gray-800 mt-4 text-lg sm:text-xl max-w-2xl mx-auto leading-relaxed"
+          initial={{ opacity: 0, y: 20 }}
+          animate={controls}
+          variants={{
+            visible: { opacity: 1, y: 0, transition: { delay: 0.2, duration: 0.8, ease: "easeOut" } },
+            hidden: { opacity: 0, y: 20 },
+          }}
+        >
           Real stories from people who received expert care across various specialties.
-        </p>
+        </motion.p>
       </div>
 
-      <div className="relative max-w-4xl mx-auto">
+      <motion.div
+        className="relative max-w-4xl mx-auto"
+        initial="hidden"
+        animate={controls}
+        variants={containerVariants}
+      >
         <Swiper
           modules={[Autoplay]}
           slidesPerView={1}
@@ -268,14 +320,12 @@ const HomeTestimonials = () => {
               <SwiperSlide key={id}>
                 <motion.article
                   id={`testimonial-${id}`}
-                  className="bg-gray-50 rounded-3xl p-8 sm:p-10 shadow-xl flex flex-col items-center text-center max-h-full"
+                  className="bg-white rounded-3xl p-8 sm:p-10 shadow-xl flex flex-col items-center text-center max-h-full"
                   variants={cardVariants}
-                  initial="hidden"
-                  animate="visible"
-                  whileHover="hover"
                   tabIndex={0}
                   role="group"
                   aria-label={`Testimonial by ${name}`}
+                  whileHover="hover"
                 >
                   <motion.img
                     src={photo}
@@ -283,7 +333,6 @@ const HomeTestimonials = () => {
                     className="w-28 h-28 sm:w-32 sm:h-32 rounded-full object-cover border-4 border-blue-700 shadow-lg mb-6"
                     loading="lazy"
                     decoding="async"
-                    layout="intrinsic"
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.8, ease: "easeOut" }}
@@ -354,7 +403,7 @@ const HomeTestimonials = () => {
             );
           })}
         </Swiper>
-      </div>
+      </motion.div>
     </section>
   );
 };

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 const BlogHero = () => {
   let imageDiv = null;
@@ -9,7 +9,13 @@ const BlogHero = () => {
     imageDiv = el;
   };
 
+  // State to trigger animation once
+  const [animate, setAnimate] = useState(false);
+
   useEffect(() => {
+    // Start animations immediately on mount
+    setAnimate(true);
+
     const handleScroll = () => {
       if (!imageDiv) return;
 
@@ -51,19 +57,23 @@ const BlogHero = () => {
           className="text-3xl sm:text-4xl md:text-5xl font-extrabold leading-tight text-white drop-shadow-lg max-w-3xl mx-auto md:mx-0"
           aria-label="Insights and Stories from Our Health Experts"
         >
-          {"Insights & Stories".split("").map((char, idx) => (
-            <span
-              key={idx}
-              className="inline-block animate-slideInLeft"
-              style={{ animationDelay: `${idx * 0.04}s`, willChange: "transform, opacity" }}
-            >
-              {char === " " ? "\u00A0" : char}
-            </span>
-          ))}
+          {animate &&
+            "Insights & Stories".split("").map((char, idx) => (
+              <span
+                key={idx}
+                className="inline-block animate-slideInLeft"
+                style={{ animationDelay: `${idx * 0.03}s`, willChange: "transform, opacity" }}
+              >
+                {char === " " ? "\u00A0" : char}
+              </span>
+            ))}
+          {!animate && "Insights & Stories"}
           <br />
           <span
-            className="text-indigo-400 block mt-2 font-semibold tracking-wide glow-underline animate-fadeIn"
-            style={{ animationDelay: "1.0s" }}
+            className={`text-indigo-400 block mt-2 font-semibold tracking-wide glow-underline ${
+              animate ? "animate-fadeIn" : ""
+            }`}
+            style={{ animationDelay: "0.9s" }}
           >
             From Our Health Experts
           </span>
@@ -71,8 +81,10 @@ const BlogHero = () => {
 
         {/* Paragraph with fadeIn and delay */}
         <p
-          className="mt-5 max-w-xl mx-auto md:mx-0 text-gray-300 text-base sm:text-lg font-light leading-relaxed animate-fadeIn"
-          style={{ animationDelay: "1.3s" }}
+          className={`mt-5 max-w-xl mx-auto md:mx-0 text-gray-300 text-base sm:text-lg font-light leading-relaxed ${
+            animate ? "animate-fadeIn" : ""
+          }`}
+          style={{ animationDelay: "1.2s" }}
         >
           Stay updated with the latest health news, expert advice, and wellness tips to help you live your best life.
         </p>
@@ -80,8 +92,10 @@ const BlogHero = () => {
         {/* Button with fadeIn and delay */}
         <a
           href="https://medium.com/"
-          className="inline-block mt-8 px-7 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg shadow-lg transition duration-300 animate-fadeIn max-w-max mx-auto md:mx-0"
-          style={{ animationDelay: "1.6s" }}
+          className={`inline-block mt-8 px-7 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg shadow-lg transition duration-300 max-w-max mx-auto md:mx-0 ${
+            animate ? "animate-fadeIn" : ""
+          }`}
+          style={{ animationDelay: "1.5s" }}
           aria-label="Read our blog articles"
         >
           Explore Articles

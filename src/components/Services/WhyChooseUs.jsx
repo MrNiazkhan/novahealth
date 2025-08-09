@@ -77,7 +77,7 @@ const WhyChooseUs = () => {
     <section
       role="region"
       aria-label="Why Choose Us"
-      className="bg-gray-50 py-20 px-6 md:px-12 my-[-50px]"
+      className="bg-white py-20 px-6 md:px-12 my-[-50px]"
     >
       <div className="max-w-7xl mx-auto">
         {/* Header */}

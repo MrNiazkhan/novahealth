@@ -1,7 +1,7 @@
 "use client";
 
-import React from "react";
-import { motion } from "framer-motion";
+import React, { useRef, useEffect } from "react";
+import { motion, useAnimation } from "framer-motion";
 
 const features = [
   {
@@ -91,31 +91,66 @@ const cardVariants = {
   },
 };
 
+const headingVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
+};
+
 const HomeFeatures = () => {
+  const controls = useAnimation();
+  const sectionRef = useRef(null);
+
+  useEffect(() => {
+    if (!sectionRef.current) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          controls.start("visible");
+          observer.disconnect(); // animate once
+        }
+      },
+      { threshold: 0.25 }
+    );
+
+    observer.observe(sectionRef.current);
+
+    return () => observer.disconnect();
+  }, [controls]);
+
   return (
     <section
       aria-labelledby="features-title"
-      className="bg-white py-20 px-6 md:px-12 my-[-50px]"
+      ref={sectionRef}
+      className="bg-white py-20 px-6 md:px-12 my-[-90px] mb-[-50px]"
     >
       <div className="max-w-7xl mx-auto text-center">
-        <h2
+        <motion.h2
           id="features-title"
           className="text-3xl md:text-4xl font-extrabold mb-6"
           style={{ color: "#000" }}
+          initial="hidden"
+          animate={controls}
+          variants={headingVariants}
         >
-          <span style={{ color: "#1D4ED8" /* blue-700 */ }}>Why</span> Choose Us?
-        </h2>
+          <span style={{ color: "#1D4ED8" }}>Why</span> Choose Us?
+        </motion.h2>
 
-        <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-16">
+        <motion.p
+          className="text-lg text-gray-600 max-w-2xl mx-auto mb-16"
+          initial="hidden"
+          animate={controls}
+          variants={headingVariants}
+          transition={{ delay: 0.2 }}
+        >
           We provide expert healthcare services with compassion, modern technology, and personalized care.
-        </p>
+        </motion.p>
 
         <motion.div
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10"
           variants={containerVariants}
           initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.25 }}
+          animate={controls}
         >
           {features.map(({ id, title, description, icon }) => (
             <motion.article

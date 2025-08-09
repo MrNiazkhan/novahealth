@@ -157,7 +157,7 @@ const HomeHero = () => {
     });
   };
 
-  // Framer Motion variants for hero text and image
+  // Framer Motion variants for hero text and image, trigger on page load
   const heroVariants = {
     hidden: { opacity: 0, y: 40 },
     visible: (custom) => ({

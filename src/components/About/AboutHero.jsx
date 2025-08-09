@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import React, { useEffect } from "react"
-import { motion } from "framer-motion"
+import React, { useEffect, useRef } from "react";
+import { motion, useAnimation } from "framer-motion";
 
 const containerVariants = {
   hidden: { opacity: 0, y: 40 },
@@ -10,12 +10,12 @@ const containerVariants = {
     y: 0,
     transition: { staggerChildren: 0.18, ease: "easeOut", duration: 0.7 },
   },
-}
+};
 
 const itemVariants = {
   hidden: { opacity: 0, y: 20 },
   visible: { opacity: 1, y: 0, transition: { ease: "easeOut", duration: 0.5 } },
-}
+};
 
 const imageVariants = {
   hidden: { opacity: 0, scale: 0.95 },
@@ -24,33 +24,55 @@ const imageVariants = {
     scale: 1,
     transition: { duration: 0.8, ease: "easeOut", delay: 0.6 },
   },
-}
+};
 
 const AboutHero = () => {
+  const controls = useAnimation();
+  const sectionRef = useRef(null);
+
   useEffect(() => {
     // Focus heading on mount for accessibility
-    const heading = document.getElementById("about-hero-heading")
-    if (heading) heading.focus({ preventScroll: true })
-  }, [])
+    const heading = document.getElementById("about-hero-heading");
+    if (heading) heading.focus({ preventScroll: true });
+  }, []);
+
+  useEffect(() => {
+    if (!sectionRef.current) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          controls.start("visible");
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.3 }
+    );
+
+    observer.observe(sectionRef.current);
+
+    return () => observer.disconnect();
+  }, [controls]);
 
   const scrollToLearnMore = () => {
-    const target = document.getElementById("learn-more")
+    const target = document.getElementById("learn-more");
     if (target) {
-      target.scrollIntoView({ behavior: "smooth" })
+      target.scrollIntoView({ behavior: "smooth" });
     }
-  }
+  };
 
   return (
     <section
       aria-label="About Hero Section"
       role="region"
       className="bg-white overflow-hidden"
+      ref={sectionRef}
     >
       <motion.div
         className="max-w-7xl mx-auto px-6 md:px-12 py-24 flex flex-col md:flex-row items-center min-h-[520px] md:min-h-[600px]"
         variants={containerVariants}
         initial="hidden"
-        animate="visible"
+        animate={controls}
       >
         {/* Left Text */}
         <motion.div
@@ -104,12 +126,12 @@ const AboutHero = () => {
             className="rounded-xl shadow-xl max-w-full w-80 sm:w-96 object-cover"
             variants={imageVariants}
             initial="hidden"
-            animate="visible"
+            animate={controls}
           />
         </motion.div>
       </motion.div>
     </section>
-  )
-}
+  );
+};
 
-export default AboutHero
+export default AboutHero;

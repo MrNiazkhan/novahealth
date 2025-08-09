@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React, { useState, useRef, useEffect } from "react";
+import { motion, AnimatePresence, useAnimation } from "framer-motion";
 
 const FAQ_DATA = [
   {
@@ -42,33 +42,85 @@ const FAQ_DATA = [
   },
 ];
 
+const containerVariants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.15,
+      delayChildren: 0.25,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { ease: "easeOut", duration: 0.5 },
+  },
+};
+
 const HomeFAQ = () => {
   const [openId, setOpenId] = useState(null);
+  const controls = useAnimation();
+  const sectionRef = useRef(null);
 
   const toggle = (id) => {
     setOpenId((prev) => (prev === id ? null : id));
   };
 
+  useEffect(() => {
+    if (!sectionRef.current) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          controls.start("visible");
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.25 }
+    );
+
+    observer.observe(sectionRef.current);
+
+    return () => observer.disconnect();
+  }, [controls]);
+
   return (
     <section
       aria-labelledby="faq-heading"
-      className="max-w-4xl mx-auto px-6 sm:px-10 py-16 mb-[-80px]"
+      className="max-w-4xl mx-auto px-6 sm:px-10 py-16 mb-[-110px]"
+      ref={sectionRef}
     >
-      <h2
+      <motion.h2
         id="faq-heading"
         className="text-4xl font-extrabold text-gray-900 text-center mb-12"
+        initial={{ opacity: 0, y: 40 }}
+        animate={controls}
+        variants={{
+          hidden: { opacity: 0, y: 40 },
+          visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: "easeOut" } },
+        }}
       >
         Frequently Asked <span className="text-blue-700">Questions</span>
-      </h2>
+      </motion.h2>
 
-      <div className="space-y-4">
+      <motion.div
+        className="space-y-4"
+        variants={containerVariants}
+        initial="hidden"
+        animate={controls}
+      >
         {FAQ_DATA.map(({ id, question, answer }) => {
           const isOpen = id === openId;
 
           return (
-            <div
+            <motion.div
               key={id}
               className="border border-gray-300 rounded-lg overflow-hidden shadow-sm"
+              variants={itemVariants}
             >
               <button
                 onClick={() => toggle(id)}
@@ -116,10 +168,10 @@ const HomeFAQ = () => {
                   </motion.div>
                 )}
               </AnimatePresence>
-            </div>
+            </motion.div>
           );
         })}
-      </div>
+      </motion.div>
     </section>
   );
 };

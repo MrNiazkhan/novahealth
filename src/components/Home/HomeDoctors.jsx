@@ -67,6 +67,7 @@ const doctors = [
   },
 ];
 
+// Variants for the container that staggers children animation
 const containerVariants = {
   hidden: {},
   visible: {
@@ -77,17 +78,26 @@ const containerVariants = {
   },
 };
 
+// Each card fades up and scales in
 const cardVariants = {
   hidden: { opacity: 0, y: 30, scale: 0.95 },
   visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.4 } },
 };
 
+// Heading & paragraph fade up
+const textVariants = {
+  hidden: { opacity: 0, y: 40 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
+};
+
+// Modal backdrop fade in/out
 const modalBackdropVariants = {
   hidden: { opacity: 0 },
   visible: { opacity: 1 },
   exit: { opacity: 0 },
 };
 
+// Modal content fade + scale + slide
 const modalContentVariants = {
   hidden: { opacity: 0, scale: 0.95, y: 20 },
   visible: { opacity: 1, scale: 1, y: 0, transition: { duration: 0.35 } },
@@ -115,21 +125,37 @@ const HomeDoctors = () => {
   };
 
   return (
-    <section className="bg-white py-16 px-6 sm:px-12 lg:px-24">
-      <div className="max-w-7xl mx-auto text-center mb-12">
-        <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900">
+    <section className="bg-white py-16 px-6 sm:px-12 lg:px-24 my-[-60px] mb-[-30px]">
+      {/* Animated Heading & Subtitle */}
+      <motion.div
+        className="max-w-7xl mx-auto text-center mb-12"
+        variants={containerVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.3 }}
+      >
+        <motion.h2
+          className="text-3xl sm:text-4xl font-extrabold text-gray-900"
+          variants={textVariants}
+        >
           Meet Our <span className="text-blue-700">Doctors</span>
-        </h2>
-        <p className="text-gray-700 mt-3 max-w-xl mx-auto text-base sm:text-lg">
+        </motion.h2>
+        <motion.p
+          className="text-gray-700 mt-3 max-w-xl mx-auto text-base sm:text-lg"
+          variants={textVariants}
+          transition={{ delay: 0.2 }}
+        >
           Professional care from our certified and experienced medical experts.
-        </p>
-      </div>
+        </motion.p>
+      </motion.div>
 
+      {/* Animated Doctors Grid */}
       <motion.div
         className="max-w-7xl mx-auto grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6"
         variants={containerVariants}
         initial="hidden"
-        animate="visible"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.3 }}
         aria-live="polite"
       >
         {doctors.map((doc) => (

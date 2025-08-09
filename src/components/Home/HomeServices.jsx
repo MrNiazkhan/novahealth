@@ -50,6 +50,7 @@ const containerVariants = {
   visible: {
     transition: {
       staggerChildren: 0.15,
+      delayChildren: 0.15,
     },
   },
 };
@@ -82,15 +83,17 @@ const buttonVariants = {
 const HomeServices = () => {
   return (
     <section
-      className="flex flex-col justify-center items-center bg-white px-6 md:px-12 lg:px-24 my-25"
+      className="flex flex-col justify-center items-center bg-white px-6 md:px-12 lg:px-24 my-20"
       style={{ textAlign: "center" }}
       aria-label="Our Medical Services Section"
     >
+      {/* Heading & Paragraph Container */}
       <motion.div
         className="max-w-4xl mb-12"
+        variants={containerVariants}
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true }}
+        viewport={{ once: true, amount: 0.3 }}
       >
         <motion.h2
           className="text-4xl sm:text-5xl md:text-6xl font-extrabold leading-tight tracking-tight drop-shadow-sm"
@@ -111,12 +114,13 @@ const HomeServices = () => {
         </motion.p>
       </motion.div>
 
+      {/* Services Grid */}
       <motion.div
         className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 max-w-7xl w-full"
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true }}
+        viewport={{ once: true, amount: 0.3 }}
       >
         {services.map((service, idx) => (
           <motion.div
@@ -142,11 +146,13 @@ const HomeServices = () => {
         ))}
       </motion.div>
 
+      {/* Explore All Services Button */}
       <motion.div
         className="mt-16"
+        variants={containerVariants}
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true }}
+        viewport={{ once: true, amount: 0.3 }}
       >
         <Link href="/services" passHref legacyBehavior>
           <motion.a

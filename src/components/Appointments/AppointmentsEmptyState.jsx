@@ -1,10 +1,27 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
+import { motion, useAnimation } from "framer-motion";
 
 const AppointmentsEmptyState = () => {
+  const controls = useAnimation();
+
+  useEffect(() => {
+    controls.start({
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.6, ease: "easeOut" },
+    });
+  }, [controls]);
+
   return (
-    <section className="flex flex-col items-center justify-center  px-6 py-20 bg-white rounded-lg shadow-md max-w-3xl mx-auto text-center my-10">
+    <motion.section
+      initial={{ opacity: 0, y: 15 }}
+      animate={controls}
+      className="flex flex-col items-center justify-center px-6 py-20 bg-white rounded-lg shadow-md max-w-3xl mx-auto text-center my-10"
+      aria-label="No appointments empty state"
+      role="region"
+    >
       {/* Illustration (simple SVG) */}
       <svg
         className="w-32 h-32 mb-8 text-blue-600 mx-auto"
@@ -43,7 +60,7 @@ const AppointmentsEmptyState = () => {
       >
         Book Appointment
       </button>
-    </section>
+    </motion.section>
   );
 };
 

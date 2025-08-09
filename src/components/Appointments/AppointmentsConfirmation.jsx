@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
+import { motion, useAnimation } from "framer-motion";
 
 const PRIMARY_BLUE = "#2563eb";
 const PRIMARY_BLUE_HOVER = "#1e40af";
-const SUCCESS_GREEN = "#16a34a";
 const TEXT_DARK = "#111827";
 
 const AppointmentsConfirmation = ({
@@ -17,14 +17,28 @@ const AppointmentsConfirmation = ({
   onReset,
 }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [fadeIn, setFadeIn] = useState(false);
+  const controls = useAnimation();
+  const containerRef = useRef(null);
 
-  // Trigger fade-in animation on mount
+  // Intersection Observer to trigger animation on scroll into view
   useEffect(() => {
-    setFadeIn(true);
-  }, []);
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          controls.start({
+            opacity: 1,
+            y: 0,
+            transition: { duration: 0.5, ease: "easeOut" },
+          });
+        }
+      },
+      { threshold: 0.3 }
+    );
 
-  // Format date nicely
+    if (containerRef.current) observer.observe(containerRef.current);
+    return () => observer.disconnect();
+  }, [controls]);
+
   const formatDate = (d) => {
     try {
       const options = { year: "numeric", month: "long", day: "numeric" };
@@ -34,7 +48,6 @@ const AppointmentsConfirmation = ({
     }
   };
 
-  // Format time nicely
   const formatTime = (t) => {
     try {
       if (!t) return "N/A";
@@ -51,12 +64,10 @@ const AppointmentsConfirmation = ({
     }
   };
 
-  // Handle button click with debounce to prevent double clicks
   const handleReset = () => {
     if (isSubmitting) return;
     setIsSubmitting(true);
     onReset && onReset();
-    // Allow button again after short delay
     setTimeout(() => setIsSubmitting(false), 1500);
   };
 
@@ -75,13 +86,8 @@ const AppointmentsConfirmation = ({
           font-family: 'Inter', sans-serif;
           color: ${TEXT_DARK};
           user-select: none;
-          opacity: 0;
-          transform: translateY(15px);
-          transition: opacity 0.5s ease, transform 0.5s ease;
-        }
-        .appointment-confirmation.fade-in {
-          opacity: 1;
-          transform: translateY(0);
+          /* Remove old fade-in CSS */
+          /* opacity and transform are handled by framer-motion */
         }
         .appointment-confirmation h2 {
           font-size: 28px;
@@ -148,7 +154,6 @@ const AppointmentsConfirmation = ({
           outline: 2px solid ${PRIMARY_BLUE_HOVER};
           outline-offset: 4px;
         }
-        /* Responsive */
         @media (max-width: 640px) {
           .appointment-confirmation {
             padding: 24px 16px;
@@ -172,11 +177,14 @@ const AppointmentsConfirmation = ({
         }
       `}</style>
 
-      <section
+      <motion.section
+        ref={containerRef}
         role="alert"
         aria-live="polite"
         aria-atomic="true"
-        className={`appointment-confirmation ${fadeIn ? "fade-in" : ""}`}
+        className="appointment-confirmation"
+        initial={{ opacity: 0, y: 15 }}
+        animate={controls}
       >
         <h2 tabIndex={-1}>Appointment Confirmed</h2>
 
@@ -214,7 +222,7 @@ const AppointmentsConfirmation = ({
         >
           {isSubmitting ? "Processing..." : "Book Another Appointment"}
         </button>
-      </section>
+      </motion.section>
     </>
   );
 };

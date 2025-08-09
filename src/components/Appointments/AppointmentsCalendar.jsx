@@ -1,16 +1,16 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import { motion, useAnimation } from "framer-motion";
 
 const WEEK_DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 function getDaysInMonth(year, month) {
-  // Month is 0-based (0=Jan, 11=Dec)
   return new Date(year, month + 1, 0).getDate();
 }
 
 function getFirstDayOfMonth(year, month) {
-  return new Date(year, month, 1).getDay(); // 0=Sun, 6=Sat
+  return new Date(year, month, 1).getDay();
 }
 
 function isSameDate(d1, d2) {
@@ -22,42 +22,30 @@ function isSameDate(d1, d2) {
 }
 
 const AppointmentsCalendar = ({ onDateSelect }) => {
-  // State for current displayed month & year
   const [currentDate, setCurrentDate] = useState(() => new Date());
-  // Selected date state
   const [selectedDate, setSelectedDate] = useState(null);
-
-  // For accessibility focus management
   const gridRef = useRef(null);
 
-  // Extract year and month from currentDate
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
 
-  // Calculate number of days and first weekday in current month
   const daysInMonth = getDaysInMonth(year, month);
   const firstDay = getFirstDayOfMonth(year, month);
 
-  // Calculate previous month info (for leading blank days)
   const prevMonth = month === 0 ? 11 : month - 1;
   const prevYear = month === 0 ? year - 1 : year;
   const daysInPrevMonth = getDaysInMonth(prevYear, prevMonth);
 
-  // Today for reference
   const today = new Date();
 
-  // Generate calendar days including previous month's trailing days & next month's leading days to fill 6 rows (42 cells)
   const calendarDays = [];
 
-  // Fill previous month's trailing days
   for (let i = firstDay - 1; i >= 0; i--) {
     calendarDays.push({
       date: new Date(prevYear, prevMonth, daysInPrevMonth - i),
       isCurrentMonth: false,
     });
   }
-
-  // Fill current month days
   for (let day = 1; day <= daysInMonth; day++) {
     calendarDays.push({
       date: new Date(year, month, day),
@@ -65,7 +53,6 @@ const AppointmentsCalendar = ({ onDateSelect }) => {
     });
   }
 
-  // Fill next month's leading days to complete 42 cells (6 weeks)
   const nextMonth = month === 11 ? 0 : month + 1;
   const nextYear = month === 11 ? year + 1 : year;
   while (calendarDays.length < 42) {
@@ -76,7 +63,6 @@ const AppointmentsCalendar = ({ onDateSelect }) => {
     });
   }
 
-  // Handle prev month button click
   function goToPrevMonth() {
     setCurrentDate((prev) => {
       const y = prev.getFullYear();
@@ -85,7 +71,6 @@ const AppointmentsCalendar = ({ onDateSelect }) => {
     });
   }
 
-  // Handle next month button click
   function goToNextMonth() {
     setCurrentDate((prev) => {
       const y = prev.getFullYear();
@@ -94,14 +79,12 @@ const AppointmentsCalendar = ({ onDateSelect }) => {
     });
   }
 
-  // Handle date click - only allow current month dates for selection
   function handleDateClick(day) {
-    if (!day.isCurrentMonth) return; // prevent selecting other months days
+    if (!day.isCurrentMonth) return;
     setSelectedDate(day.date);
     if (onDateSelect) onDateSelect(day.date);
   }
 
-  // Keyboard navigation (left/right/up/down arrows to navigate dates)
   function handleKeyDown(e) {
     if (!selectedDate) return;
     let newDate = new Date(selectedDate);
@@ -121,7 +104,6 @@ const AppointmentsCalendar = ({ onDateSelect }) => {
       default:
         return;
     }
-    // Only allow navigating within current month
     if (newDate.getMonth() === currentDate.getMonth()) {
       e.preventDefault();
       setSelectedDate(newDate);
@@ -129,12 +111,39 @@ const AppointmentsCalendar = ({ onDateSelect }) => {
     }
   }
 
+  // ----------- ANIMATION SETUP -----------
+
+  const controls = useAnimation();
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          controls.start({
+            opacity: 1,
+            y: 0,
+            transition: { duration: 0.7, ease: "easeOut" },
+          });
+        }
+      },
+      { threshold: 0.3 }
+    );
+    if (containerRef.current) observer.observe(containerRef.current);
+    return () => observer.disconnect();
+  }, [controls]);
+
+  // ---------------------------------------
+
   return (
-    <section
-      className="max-w-md mx-auto p-6 bg-white rounded-xl shadow-lg select-none"
+    <motion.section
+      ref={containerRef}
+      initial={{ opacity: 0, y: 20 }}
+      animate={controls}
+      className="max-w-md mx-auto p-6 bg-white rounded-xl shadow-lg select-none mb-10"
       aria-label="Appointments Calendar"
     >
-      {/* Header with month navigation */}
+      {/* Header */}
       <header className="flex items-center justify-between mb-6">
         <button
           onClick={goToPrevMonth}
@@ -196,7 +205,8 @@ const AppointmentsCalendar = ({ onDateSelect }) => {
         {calendarDays.map((day, i) => {
           const isToday = isSameDate(day.date, today);
           const isSelected = selectedDate && isSameDate(day.date, selectedDate);
-          const isDisabled = !day.isCurrentMonth || day.date < today.setHours(0, 0, 0, 0); // Disable past dates (optional)
+          const isDisabled =
+            !day.isCurrentMonth || day.date < new Date(today.getFullYear(), today.getMonth(), today.getDate()); // Disable past dates
 
           return (
             <button
@@ -215,7 +225,7 @@ const AppointmentsCalendar = ({ onDateSelect }) => {
                     ? "text-gray-900 hover:bg-indigo-50"
                     : "text-gray-400 cursor-default"
                 }
-                ${isDisabled && "cursor-not-allowed opacity-50 pointer-events-none"}
+                ${isDisabled ? "cursor-not-allowed opacity-50 pointer-events-none" : ""}
               `}
               onClick={() => handleDateClick(day)}
               aria-selected={isSelected}
@@ -234,7 +244,7 @@ const AppointmentsCalendar = ({ onDateSelect }) => {
           );
         })}
       </div>
-    </section>
+    </motion.section>
   );
 };
 
