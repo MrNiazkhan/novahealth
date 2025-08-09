@@ -52,7 +52,7 @@ const AppointmentsFAQ = () => {
     <section
       id="faq"
       aria-label="Frequently Asked Questions"
-      className="bg-white py-20 px-6 sm:px-10 lg:px-20 my-[-50px]"
+      className="bg-white py-20 px-6 sm:px-10 lg:px-20 my-[-30px]"
     >
       <motion.div
         className="max-w-5xl mx-auto"

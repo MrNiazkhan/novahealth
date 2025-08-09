@@ -63,7 +63,7 @@ const OurteamContact = () => {
           </div>
 
           {/* Contact Info */}
-          <div className="flex flex-col justify-between bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl shadow-lg p-6 sm:p-8">
+          <div className="flex flex-col justify-between bg-white rounded-2xl shadow-lg p-6 sm:p-8">
             <div className="space-y-6">
               <div className="flex items-center space-x-4">
                 <div className="w-12 h-12 flex items-center justify-center bg-blue-600 text-white rounded-lg text-lg">

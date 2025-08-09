@@ -65,7 +65,7 @@ const TestimonialsList = () => {
   return (
     <section
       aria-label="Customer Testimonials List"
-      className="bg-gray-50 py-16 px-5 sm:px-8 md:px-12"
+      className="bg-white py-16 px-5 sm:px-8 md:px-12"
     >
       <div className="max-w-7xl mx-auto">
         {/* Section Heading */}

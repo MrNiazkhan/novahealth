@@ -8,7 +8,7 @@ const EmergencyNotice = () => {
     <section
       role="alert"
       aria-live="assertive"
-      className="bg-red-600 text-white px-5 sm:px-8 md:px-12 py-6 md:py-7 shadow-lg max-w-full"
+      className="bg-red-700 text-white px-5 sm:px-8 md:px-12 py-6 md:py-7 shadow-lg max-w-full"
     >
       <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 sm:gap-8">
         {/* Icon & Text container */}

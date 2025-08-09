@@ -45,7 +45,7 @@ const TestimonialsFAQ = () => {
       className="relative max-w-5xl mx-auto px-4 sm:px-8 py-12"
     >
       {/* Background */}
-      <div className="absolute inset-0 bg-gray-50 rounded-3xl shadow-xl pointer-events-none"></div>
+      <div className="absolute inset-0 bg-white rounded-3xl shadow-xl pointer-events-none"></div>
 
       {/* Content */}
       <div className="relative z-10">

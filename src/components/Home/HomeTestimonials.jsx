@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper";
-import { motion, AnimatePresence, useAnimation } from "framer-motion";
+import { motion, useAnimation } from "framer-motion";
 
 import {
   FaStar,
@@ -25,7 +25,7 @@ const testimonials = [
       "https://media.istockphoto.com/id/96455213/photo/young-medical-girl.webp?a=1&s=612x612&w=0&k=20&c=dae8Fb4n-UyxsDwrr79DRgrBfORqzgoDGzNXK4V_-eM=",
     rating: 4.5,
     testimonial:
-      "Dr. Emma is an exceptional cardiologist who provided excellent care. Highly recommended!",
+      "Dr. Emma provided outstanding cardiac care with professionalism and empathy, focusing on patient comfort and ensuring a smooth recovery.",
   },
   {
     id: 2,
@@ -35,7 +35,7 @@ const testimonials = [
       "https://images.unsplash.com/photo-1645066928295-2506defde470?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MzF8fGRvY3RvcnN8ZW58MHx8MHx8fDA%3D",
     rating: 5,
     testimonial:
-      "Dr. Michael is very patient and caring with children. We felt very comfortable with him.",
+      "Dr. Michael’s gentle manner and thorough care made every visit reassuring. He truly cares about children’s well-being and listens carefully to parents.",
   },
   {
     id: 3,
@@ -45,7 +45,7 @@ const testimonials = [
       "https://media.istockphoto.com/id/1211631919/photo/friendly-nurse-in-blue-scrubs.webp?a=1&s=612x612&w=0&k=20&c=ifOl1w6Kxua7GrlZjiqeW9-DhOmjtcQvM71v-iZdo6s=",
     rating: 4,
     testimonial:
-      "Great neurologist with deep knowledge and friendly approach. Highly satisfied.",
+      "Dr. Sophia’s expert knowledge and approachable demeanor helped me understand my condition clearly. I appreciate her time and professionalism.",
   },
   {
     id: 4,
@@ -55,7 +55,7 @@ const testimonials = [
       "https://plus.unsplash.com/premium_photo-1677165481551-c91ed6e15f09?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDEyfHx8ZW58MHx8fHx8",
     rating: 4.8,
     testimonial:
-      "Dr. David is an expert surgeon. My recovery was smooth thanks to his care.",
+      "Dr. David’s surgical expertise and careful follow-up made my treatment successful. His team was professional and supportive throughout my recovery.",
   },
   {
     id: 5,
@@ -65,7 +65,7 @@ const testimonials = [
       "https://plus.unsplash.com/premium_photo-1681967035389-84aabd80cb1e?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     rating: 5,
     testimonial:
-      "Dr. Aisha helped me with my skin issues professionally and kindly. Outstanding results!",
+      "Dr. Aisha provided expert skincare advice and treatment that transformed my skin. Her approachable style made every appointment comfortable.",
   },
   {
     id: 6,
@@ -75,7 +75,7 @@ const testimonials = [
       "https://images.unsplash.com/photo-1612523138351-4643808db8f3?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDExfHx8ZW58MHx8fHx8",
     rating: 4.2,
     testimonial:
-      "Very attentive and knowledgeable. Dr. Mendes made my ENT treatment simple and effective.",
+      "Dr. Mendes was very attentive and explained every step of my ENT treatment clearly. I felt well cared for and confident in his expertise.",
   },
   {
     id: 7,
@@ -85,7 +85,7 @@ const testimonials = [
       "https://plus.unsplash.com/premium_photo-1702599029013-883a56a51fdc?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDh8fHxlbnwwfHx8fHw%3D",
     rating: 4.9,
     testimonial:
-      "Dr. Laura is compassionate and helped me feel mentally stronger. Highly trustworthy.",
+      "Dr. Laura’s compassionate care helped me regain mental strength. She listens carefully and provides thoughtful guidance every session.",
   },
   {
     id: 8,
@@ -95,7 +95,7 @@ const testimonials = [
       "https://images.unsplash.com/photo-1612276529731-4b21494e6d71?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDd8fHxlbnwwfHx8fHw%3D",
     rating: 4.6,
     testimonial:
-      "Professional and respectful. Dr. James provided excellent treatment throughout.",
+      "Dr. James is a skilled and respectful professional who provided clear explanations, helping me feel confident and at ease throughout my treatment.",
   },
   {
     id: 9,
@@ -105,7 +105,7 @@ const testimonials = [
       "https://plus.unsplash.com/premium_photo-1661436275595-e6a8a3943f7a?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDEyfHx8ZW58MHx8fHx8",
     rating: 4.4,
     testimonial:
-      "Helped me manage my diabetes with a clear plan and patience. Great doctor.",
+      "Dr. Priya offered a clear plan for managing my condition and supported me patiently throughout. Highly professional care.",
   },
   {
     id: 10,
@@ -115,7 +115,7 @@ const testimonials = [
       "https://images.unsplash.com/photo-1612531385446-f7e6d131e1d0?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDV8fHxlbnwwfHx8fHw%3D",
     rating: 4.7,
     testimonial:
-      "He made a complex procedure seem easy. I felt safe and informed throughout.",
+      "Dr. Thomas simplified a complex procedure with clarity and a calm approach, putting me at ease throughout the treatment.",
   },
   {
     id: 11,
@@ -125,7 +125,7 @@ const testimonials = [
       "https://plus.unsplash.com/premium_photo-1661700138215-2ade8dd6f0c9?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDIyfHx8ZW58MHx8fHx8",
     rating: 5,
     testimonial:
-      "Dr. Fatima was gentle and explained every step of my eye exam. Amazing care!",
+      "Dr. Fatima was gentle, thorough, and explained every step clearly. Her care made a real difference in my vision.",
   },
   {
     id: 12,
@@ -135,7 +135,7 @@ const testimonials = [
       "https://plus.unsplash.com/premium_photo-1723514536306-26fe5c4adeb7?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDR8fHxlbnwwfHx8fHw%3D",
     rating: 4.3,
     testimonial:
-      "Dr. Scott is very approachable and accurate with diagnosis. A dependable doctor.",
+      "Dr. Scott is approachable and accurate with his diagnoses. I trust his advice and appreciate his professionalism.",
   },
   {
     id: 13,
@@ -145,7 +145,7 @@ const testimonials = [
       "https://plus.unsplash.com/premium_photo-1661700176531-c8bd4603030f?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDI3fHx8ZW58MHx8fHx8",
     rating: 4.8,
     testimonial:
-      "Helped me breathe easy again! Thankful for her thorough treatment plan.",
+      "Thanks to Dr. Elena’s thorough treatment, my breathing has improved significantly. She is very caring and professional.",
   },
   {
     id: 14,
@@ -155,7 +155,7 @@ const testimonials = [
       "https://media.istockphoto.com/id/2161181257/photo/photo-of-doctor-guy-cross-arms-smiling-isolated-grey-color-background.webp?a=1&s=612x612&w=0&k=20&c=U9syri__PrnlJoIy7f9ABirWpQS9cbtFkwNkHWF4UpU=",
     rating: 4.9,
     testimonial:
-      "Gave us hope and clarity during a tough time. Extremely dedicated and skilled.",
+      "Dr. Benjamin provided expert guidance and compassion during a challenging time. His skill and dedication are unmatched.",
   },
   {
     id: 15,
@@ -165,7 +165,7 @@ const testimonials = [
       "https://plus.unsplash.com/premium_photo-1702598649611-725ca8ca3ab6?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDM1fHx8ZW58MHx8fHx8",
     rating: 4.5,
     testimonial:
-      "Thanks to Dr. Hana, my joint pain is finally under control. She truly listens.",
+      "Dr. Hana listens attentively and provided me with effective treatment to manage my joint pain. Highly recommended.",
   },
   {
     id: 16,
@@ -175,40 +175,31 @@ const testimonials = [
       "https://images.unsplash.com/photo-1622253692010-333f2da6031d?q=80&w=464&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     rating: 4.6,
     testimonial:
-      "Very knowledgeable and approachable. Dr. Omar explained everything clearly.",
+      "Dr. Omar’s knowledge and clear explanations helped me understand my condition and the treatment plan thoroughly.",
   },
 ];
+
 
 const StarRating = ({ rating }) => {
   const stars = [];
   for (let i = 1; i <= 5; i++) {
     if (rating >= i) {
-      stars.push(<FaStar key={i} className="text-yellow-400" />);
+      stars.push(<FaStar key={i} className="text-yellow-500" aria-hidden="true" />);
     } else if (rating >= i - 0.5) {
-      stars.push(<FaStarHalfAlt key={i} className="text-yellow-400" />);
+      stars.push(<FaStarHalfAlt key={i} className="text-yellow-500" aria-hidden="true" />);
     } else {
-      stars.push(<FaRegStar key={i} className="text-yellow-400" />);
+      stars.push(<FaRegStar key={i} className="text-yellow-500" aria-hidden="true" />);
     }
   }
   return (
     <div
-      className="flex justify-center gap-1 mt-2 text-lg"
-      title={`${rating} out of 5 stars`}
+      className="flex gap-1 mt-2 text-lg"
+      role="img"
+      aria-label={`${rating} out of 5 stars`}
     >
       {stars}
     </div>
   );
-};
-
-const cardVariants = {
-  hidden: { opacity: 0, y: 30, scale: 0.95 },
-  visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.6, ease: "easeOut" } },
-  hover: { scale: 1.03, boxShadow: "0 8px 20px rgba(0,0,0,0.12)", transition: { duration: 0.3 } },
-};
-
-const buttonVariants = {
-  initial: { opacity: 1, scale: 1 },
-  hover: { scale: 1.1, color: "#1D4ED8", transition: { duration: 0.3 } },
 };
 
 const containerVariants = {
@@ -221,6 +212,97 @@ const containerVariants = {
   },
 };
 
+const ModernCard = ({
+  id,
+  name,
+  specialty,
+  photo,
+  testimonial,
+  rating,
+  isExpanded,
+  onToggle,
+  copied,
+  onCopy,
+  currentUrl,
+}) => {
+  const words = testimonial.split(" ");
+  const shouldTruncate = words.length > 30;
+  const displayedText = isExpanded || !shouldTruncate ? testimonial : words.slice(0, 30).join(" ") + "...";
+
+  return (
+    <motion.article
+    id={`testimonial-${id}`}
+    layout
+    initial={{ opacity: 0, y: 40 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.6, ease: "easeOut" }}
+    className="relative bg-white border border-gray-300 rounded-3xl max-w-3xl mx-auto p-8 sm:p-12 flex flex-col sm:flex-row items-center gap-8 cursor-default select-none"
+    tabIndex={0}
+    role="group"
+    aria-label={`Testimonial by ${name}`}
+  >
+    {/* Avatar container with fixed size */}
+    <div className="flex-shrink-0 w-32 h-32 relative">
+      <img
+        src={photo}
+        alt={`Photo of ${name}`}
+        className="w-full h-full rounded-full object-cover"
+        loading="lazy"
+        decoding="async"
+      />
+      <FaCheckCircle
+        className="absolute bottom-1 right-1 text-green-600 text-2xl bg-white rounded-full border border-gray-300"
+        title="Verified"
+        aria-label="Verified"
+      />
+    </div>
+  
+    {/* Content container takes remaining space */}
+    <div className="flex-1 text-left">
+      <p className="text-gray-900 text-lg italic leading-relaxed mb-4" aria-live="polite">
+        “{displayedText}{" "}
+        {shouldTruncate && (
+          <button
+            onClick={() => onToggle(id)}
+            className="text-blue-700 font-semibold underline hover:text-blue-900 transition-colors focus:outline-none"
+            aria-expanded={isExpanded}
+            aria-controls={`testimonial-text-${id}`}
+          >
+            {isExpanded ? "Show Less" : "Read More"}
+          </button>
+        )}
+      </p>
+  
+      <StarRating rating={rating} />
+  
+      <h3 className="mt-6 font-extrabold text-2xl text-gray-900 flex items-center gap-2">
+        {name}
+      </h3>
+      <p className="text-blue-800 font-semibold tracking-wide">{specialty}</p>
+  
+      <div className="mt-6 flex gap-6 flex-wrap">
+        <button
+          onClick={() => onCopy(id)}
+          className="flex items-center gap-2 text-blue-700 hover:text-blue-900 transition-colors font-semibold text-base focus:outline-none focus:ring-2 focus:ring-blue-500 rounded"
+          aria-label={`Copy link for testimonial by ${name}`}
+          type="button"
+        >
+          {copied === id ? "Link Copied!" : "Copy Link"} <FaCopy />
+        </button>
+        <a
+          href={`mailto:?subject=Check this testimonial&body=Check this: ${currentUrl}#testimonial-${id}`}
+          className="flex items-center gap-2 text-blue-700 hover:text-blue-900 transition-colors font-semibold text-base focus:outline-none focus:ring-2 focus:ring-blue-500 rounded"
+          aria-label={`Share testimonial by ${name}`}
+        >
+          Share <FaShareAlt />
+        </a>
+      </div>
+    </div>
+  </motion.article>
+  
+  );
+};
+
 const HomeTestimonials = () => {
   const [expandedId, setExpandedId] = useState(null);
   const [copiedId, setCopiedId] = useState(null);
@@ -229,7 +311,7 @@ const HomeTestimonials = () => {
   const sectionRef = useRef(null);
 
   useEffect(() => {
-    setCurrentUrl(window.location.href);
+    if (typeof window !== "undefined") setCurrentUrl(window.location.href);
   }, []);
 
   useEffect(() => {
@@ -239,7 +321,7 @@ const HomeTestimonials = () => {
       ([entry]) => {
         if (entry.isIntersecting) {
           controls.start("visible");
-          observer.disconnect(); // only trigger once
+          observer.disconnect();
         }
       },
       { threshold: 0.3 }
@@ -284,7 +366,11 @@ const HomeTestimonials = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={controls}
           variants={{
-            visible: { opacity: 1, y: 0, transition: { delay: 0.2, duration: 0.8, ease: "easeOut" } },
+            visible: {
+              opacity: 1,
+              y: 0,
+              transition: { delay: 0.2, duration: 0.8, ease: "easeOut" },
+            },
             hidden: { opacity: 0, y: 20 },
           }}
         >
@@ -304,104 +390,26 @@ const HomeTestimonials = () => {
           loop={true}
           autoplay={{ delay: 6000, disableOnInteraction: false }}
           allowTouchMove={true}
-          spaceBetween={5}
+          spaceBetween={24}
           className="w-full"
         >
-          {testimonials.map(({ id, name, specialty, photo, testimonial, rating }) => {
-            const isExpanded = expandedId === id;
-            const words = testimonial.split(" ");
-            const shouldTruncate = words.length > 25;
-            const displayedText =
-              isExpanded || !shouldTruncate
-                ? testimonial
-                : words.slice(0, 25).join(" ") + "...";
-
-            return (
-              <SwiperSlide key={id}>
-                <motion.article
-                  id={`testimonial-${id}`}
-                  className="bg-white rounded-3xl p-8 sm:p-10 shadow-xl flex flex-col items-center text-center max-h-full"
-                  variants={cardVariants}
-                  tabIndex={0}
-                  role="group"
-                  aria-label={`Testimonial by ${name}`}
-                  whileHover="hover"
-                >
-                  <motion.img
-                    src={photo}
-                    alt={`Photo of ${name}`}
-                    className="w-28 h-28 sm:w-32 sm:h-32 rounded-full object-cover border-4 border-blue-700 shadow-lg mb-6"
-                    loading="lazy"
-                    decoding="async"
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.8, ease: "easeOut" }}
-                  />
-
-                  <motion.p
-                    className="text-gray-900 text-base sm:text-lg italic leading-relaxed max-w-xl px-4 relative"
-                    layout
-                    aria-live="polite"
-                  >
-                    “{displayedText}{" "}
-                    {shouldTruncate && (
-                      <motion.button
-                        onClick={() => handleToggle(id)}
-                        className="text-blue-800 text-sm font-semibold ml-2 underline hover:text-blue-900 transition-colors"
-                        aria-expanded={isExpanded}
-                        aria-controls={`testimonial-text-${id}`}
-                        whileHover={{ scale: 1.1, color: "#1E40AF" }}
-                        transition={{ type: "spring", stiffness: 300 }}
-                      >
-                        {isExpanded ? "Show Less" : "Read More"}
-                      </motion.button>
-                    )}
-                  </motion.p>
-
-                  <StarRating rating={rating} />
-
-                  <h3 className="mt-6 font-semibold text-xl sm:text-2xl text-gray-900 flex items-center gap-2">
-                    {name}
-                    <FaCheckCircle
-                      className="text-green-600 text-lg"
-                      title="Verified"
-                      aria-label="Verified"
-                    />
-                  </h3>
-                  <p className="text-blue-900 font-semibold text-sm sm:text-base tracking-wide">
-                    {specialty}
-                  </p>
-
-                  <div className="mt-4 flex gap-6 justify-center">
-                    <motion.button
-                      onClick={() => handleCopy(id)}
-                      className="flex items-center gap-1 text-sm sm:text-base text-gray-700 hover:text-blue-900 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 rounded"
-                      aria-label={`Copy link for testimonial by ${name}`}
-                      variants={buttonVariants}
-                      initial="initial"
-                      whileHover="hover"
-                      type="button"
-                    >
-                      {copiedId === id ? "Link Copied!" : "Copy Link"}
-                      <FaCopy />
-                    </motion.button>
-
-                    <motion.a
-                      href={`mailto:?subject=Check this testimonial&body=Check this: ${currentUrl}#testimonial-${id}`}
-                      className="flex items-center gap-1 text-sm sm:text-base text-gray-700 hover:text-blue-900 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 rounded"
-                      aria-label={`Share testimonial by ${name}`}
-                      variants={buttonVariants}
-                      initial="initial"
-                      whileHover="hover"
-                    >
-                      Share
-                      <FaShareAlt />
-                    </motion.a>
-                  </div>
-                </motion.article>
-              </SwiperSlide>
-            );
-          })}
+          {testimonials.map(({ id, name, specialty, photo, testimonial, rating }) => (
+            <SwiperSlide key={id}>
+              <ModernCard
+                id={id}
+                name={name}
+                specialty={specialty}
+                photo={photo}
+                testimonial={testimonial}
+                rating={rating}
+                isExpanded={expandedId === id}
+                onToggle={handleToggle}
+                copied={copiedId}
+                onCopy={handleCopy}
+                currentUrl={currentUrl}
+              />
+            </SwiperSlide>
+          ))}
         </Swiper>
       </motion.div>
     </section>

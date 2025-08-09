@@ -18,7 +18,7 @@ const AppointmentsEmptyState = () => {
     <motion.section
       initial={{ opacity: 0, y: 15 }}
       animate={controls}
-      className="flex flex-col items-center justify-center px-6 py-20 bg-white rounded-lg shadow-md max-w-3xl mx-auto text-center my-10"
+      className="flex flex-col items-center justify-center px-6 py-20 bg-white rounded-lg  max-w-3xl mx-auto text-center my-[-50px] mb-0"
       aria-label="No appointments empty state"
       role="region"
     >

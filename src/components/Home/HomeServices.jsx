@@ -76,7 +76,11 @@ const textVariants = {
 
 const buttonVariants = {
   hidden: { opacity: 0, scale: 0.9 },
-  visible: { opacity: 1, scale: 1, transition: { duration: 0.6, ease: "easeOut" } },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: { duration: 0.6, ease: "easeOut" },
+  },
   hover: { scale: 1.05, transition: { duration: 0.3, ease: "easeInOut" } },
 };
 
@@ -154,15 +158,15 @@ const HomeServices = () => {
         whileInView="visible"
         viewport={{ once: true, amount: 0.3 }}
       >
-        <Link href="/services" passHref legacyBehavior>
-          <motion.a
+        <Link href="/services">
+          <motion.span
             className="inline-block bg-blue-700 text-white hover:bg-blue-800 transition-colors duration-300 font-semibold px-10 py-4 rounded-2xl shadow-lg focus:outline-none focus:ring-4 focus:ring-blue-400"
             variants={buttonVariants}
             whileHover="hover"
             aria-label="Explore all services"
           >
             Explore All Services
-          </motion.a>
+          </motion.span>
         </Link>
       </motion.div>
     </section>
