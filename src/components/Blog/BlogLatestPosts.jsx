@@ -19,10 +19,10 @@ const SAMPLE_POSTS = [
       title: "5 Proven Ways to Boost Your Immune System",
       excerpt: "Simple lifestyle changes to keep illnesses at bay.",
       image:
-        "https://livewellcc.com/wp-content/uploads/2020/01/5-Ways-To-Boost-Your-Immune-System-Naturally-.png",
+        "https://cdn.shopify.com/s/files/1/0550/5217/3532/files/Blog-How-to-Boost-Your-Immune-System-Naturally.jpg?v=1636571842",
       author: "Emma Johnson",
       date: "Aug 28, 2025",
-      href: "https://www.google.com/url?sa=i&url=https%3A%2F%2Flivewellcc.com%2F5-ways-to-boost-your-immune-system-naturally%2F&psig=AOvVaw0s1KfLsmqkfEi-fbumUUVs&ust=1754804403388000&source=images&cd=vfe&opi=89978449&ved=0CBgQjhxqFwoTCLCvmpiC_Y4DFQAAAAAdAAAAABAE",
+      href: "https://www.google.com/url?sa=i&url=https%3A%2F%2Fcedarcide.com%2Fblogs%2Fguides%2Fhow-to-boost-your-immune-system-naturally%3Fsrsltid%3DAfmBOop6wp4yPHxGLUsoFiCsBzkyyLDWrfX1x1x3WX2fjWJGEc5VHloB&psig=AOvVaw0_-tJjtaoDuNnEmD7LuTUk&ust=1754853917762000&source=images&cd=vfe&opi=89978449&ved=0CBgQjhxqFwoTCIjuyLW6_o4DFQAAAAAdAAAAABAE",
     },
     {
       id: 2,
@@ -87,10 +87,10 @@ const SAMPLE_POSTS = [
       title: "5 Morning Habits to Improve Your Wellness",
       excerpt: "Start your day with intention and clarity.",
       image:
-        "https://bradsugars.com/wp-content/uploads/2022/06/Daily-Habits-To-Improve-Your-Life.webp",
+        "https://midwestexpressclinic.com/wp-content/uploads/Blog-Post-4-Instagram-.png",
       author: "Ella Thompson",
       date: "Aug 27, 2025",
-      href: "https://www.google.com/url?sa=i&url=https%3A%2F%2Fbradsugars.com%2Fdaily-habits-to-improve-your-life%2F&psig=AOvVaw0S9rQkQIjdFekI3mDLqiFt&ust=1754804795395000&source=images&cd=vfe&opi=89978449&ved=0CBgQjhxqFwoTCICv47aD_Y4DFQAAAAAdAAAAABAE",
+      href: "https://www.google.com/url?sa=i&url=https%3A%2F%2Fmidwestexpressclinic.com%2Fhealthy-habits-to-kickstart-the-year%2F&psig=AOvVaw1iUNNNPQZj_WLjwg9xw3cf&ust=1754853828793000&source=images&cd=vfe&opi=89978449&ved=0CBgQjhxqFwoTCJDXro26_o4DFQAAAAAdAAAAABAE",
     },
     {
       id: 8,
